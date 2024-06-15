@@ -1,0 +1,16 @@
+<div class="content">
+    <mat-form-field class="search-form-field">
+        <mat-label>Clearable input</mat-label>
+        <input matInput type="text" [(ngModel)]="searchFilter">
+        @if (searchFilter) {
+            <button matSuffix mat-icon-button aria-label="Clear" (click)="searchFilter=''">
+                <mat-icon>close</mat-icon>
+            </button>
+        }
+    </mat-form-field>
+    <mat-selection-list #items>
+        <cdk-virtual-scroll-viewport [itemSize]="50" class="example-viewport">
+            <mat-list-option togglePosition="before" lines="1" *cdkVirtualFor="let item of (items$ | async | filter: searchFilter)">{{item.name}}</mat-list-option>
+        </cdk-virtual-scroll-viewport>
+    </mat-selection-list>
+</div>

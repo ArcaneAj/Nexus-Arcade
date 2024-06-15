@@ -1,18 +1,22 @@
-.main {
+.grid {
     width: 100%;
-    min-height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0rem;
-    box-sizing: inherit;
-    position: relative;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 2fr 5fr;
+    grid-template-rows: 100px 1fr;
 }
 
-.content {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    max-width: 700px;
-    margin-bottom: 3rem;
+app-sidebar {
+    grid-column: 1;
+    grid-row: 1 / 3;
+}
+header {
+    grid-column: 2;
+    grid-row: 1;
+    background-color: blue;
+}
+main {
+    grid-column: 2;
+    grid-row: 2;
+    background-color: red;
 }
