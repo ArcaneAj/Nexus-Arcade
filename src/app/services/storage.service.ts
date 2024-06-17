@@ -4,6 +4,9 @@ import { UniversalisService } from './universalis.service';
 import { TeamcraftService } from './teamcraft.service';
 import { forkJoin, Subscription } from 'rxjs';
 import { LanguageService } from './language.service';
+import { liveQuery, Observable } from 'dexie';
+import { DataCenter } from '../models/datacenter.model';
+import { World } from '../models/world.model';
 
 @Injectable({
     providedIn: 'root'
@@ -18,8 +21,20 @@ export class StorageService {
         private language: LanguageService
     ) {
     }
+
+    public Items(): Observable<Item[]> {
+        return liveQuery(() => db.items.toArray());
+    }
+
+    public DataCenters(): Observable<DataCenter[]> {
+        return liveQuery(() => db.dataCenters.toArray());
+    }
+
+    public Worlds(): Observable<World[]> {
+        return liveQuery(() => db.worlds.toArray());
+    }
     
-    updateCache() {
+    updateItemNameCache() {
         const observable = forkJoin({
             names: this.teamcraft.names(),
             marketable: this.universalis.marketable()
@@ -35,11 +50,23 @@ export class StorageService {
 
                 items.push({
                     id: key,
-                    name: value[lang]
+                    selected: false,
+                    en: value.en,
+                    de: value.de,
+                    ja: value.ja,
+                    fr: value.fr,
                 })
             }
-
-            await db.populate(items);
+            
+            await db.populateItemNames(items);
         }));
+    }
+    
+    updateDataCenterCache() {
+        this.subscription.add(this.universalis.dataCenters().subscribe( async x => db.populateDataCenters(x)));
+    }
+    
+    updateWorldCache() {
+        this.subscription.add(this.universalis.worlds().subscribe( async x => db.populateWorlds(x)));
     }
 }

@@ -13,9 +13,10 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { FilterPipe } from '../pipes/filter.pipe';
 import { OrderPipe } from '../pipes/order.pipe';
 
-import { Item, db } from '../db';
-import { liveQuery } from 'dexie';
-import { Subscription } from 'rxjs';
+import { Item } from '../db';
+import { BaseComponent } from '../base.component';
+import { StorageService } from '../services/storage.service';
+import { LanguageService } from '../services/language.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -39,26 +40,24 @@ import { Subscription } from 'rxjs';
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.scss'
 })
-export class SidebarComponent implements OnInit, OnDestroy {
+export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy {
 
     public searchFilter: string = 'dia fen';
     public changeFlag: boolean = false;
 
     public items: Item[] = [];
 
-    private items$ = liveQuery(() => db.items
-        .toArray());
-
-    private subscription: Subscription = new Subscription();
+    private items$ = this.storage.Items();
 
     constructor(
         private filterPipe: FilterPipe,
         private orderPipe: OrderPipe,
-    ) {}
-
-    ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        private storage: StorageService,
+        public language: LanguageService,
+    ) {
+        super();
     }
+
     ngOnInit(): void {
         this.subscription.add(this.items$.subscribe(items => {
             this.setSelected(items, false);

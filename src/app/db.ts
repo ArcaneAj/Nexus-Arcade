@@ -1,34 +1,40 @@
 import Dexie, { Table } from 'dexie';
+import { DataCenter } from './models/datacenter.model';
+import { World } from './models/world.model';
 
 export interface Item {
     id: string;
-    name: string;
+    en: string,
+    de: string,
+    ja: string,
+    fr: string,
     selected: boolean;
 }
 
-export interface TodoItem {
-    id?: number;
-    todoListId: number;
-    title: string;
-    done?: boolean;
-}
-
 export class AppDB extends Dexie {
-    items!: Table<Item, number>;
+    items!: Table<Item, string>;
+    dataCenters!: Table<DataCenter, string>;
+    worlds!: Table<World, number>;
 
     constructor() {
         super('ngdexieliveQuery');
         this.version(3).stores({
-            items: 'name',
+            items: 'id',
+            dataCenters: 'name',
+            worlds: 'id'
         });
     }
 
-    public async populate(itemsToAdd: Item[]) {
+    public async populateItemNames(itemsToAdd: Item[]) {
         await db.items.bulkAdd(itemsToAdd);
     }
 
-    public async clear() {
-        await db.items.clear();
+    public async populateDataCenters(dataCenters: DataCenter[]) {
+        await db.dataCenters.bulkAdd(dataCenters);
+    }
+
+    public async populateWorlds(worlds: World[]) {
+        await db.worlds.bulkAdd(worlds);
     }
 }
 

@@ -1,11 +1,14 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Item } from '../db';
+import { LanguageService } from '../services/language.service';
 
 @Pipe({
     name: 'filter',
     standalone: true
 })
 export class FilterPipe implements PipeTransform {
+
+    constructor(public language: LanguageService) {}
 
     transform(value: Item[] | null, filter: string): Item[] {
         if (value === null) {
@@ -18,7 +21,8 @@ export class FilterPipe implements PipeTransform {
             if (i.selected) {
                 return true;
             }
-            const words = i.name.split(/\s+/);
+            
+            const words = i[this.language.getCurrent()].split(/\s+/);
             for (const prefix of prefixes) {
                 if (!words.some(w => w.toLowerCase().startsWith(prefix.toLowerCase()))) {
                     return false;
