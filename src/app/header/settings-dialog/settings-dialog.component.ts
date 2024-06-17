@@ -3,86 +3,84 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { DataCenter } from '../../models/datacenter.model';
 import { World } from '../../models/world.model';
-import { MatTreeFlatDataSource, MatTreeFlattener, MatTreeModule } from '@angular/material/tree';
-import { FlatTreeControl } from '@angular/cdk/tree';
+import { MatTreeModule } from '@angular/material/tree';
 import { MatIconModule } from '@angular/material/icon';
-
-interface TreeNode {
-    name: string;
-    selected: boolean;
-    children?: TreeNode[];
-}
-
-interface FlatNode {
-    expandable: boolean;
-    name: string;
-    level: number;
-}
+import { SettingsService } from '../../services/settings.service';
+import { CommonModule } from '@angular/common';
+import { SelectionTreeComponent } from '../../selection-tree/selection-tree.component';
+import { TreeNode } from '../../selection-tree/tree-node.model';
   
 @Component({
     selector: 'app-settings-dialog',
     standalone: true,
-    imports: [MatTreeModule, MatDialogModule, MatButtonModule, MatIconModule],
+    imports: [
+        CommonModule,
+        MatTreeModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatIconModule,
+        SelectionTreeComponent,
+    ],
     templateUrl: './settings-dialog.component.html',
     styleUrl: './settings-dialog.component.scss'
 })
 export class SettingsDialogComponent {
 
+    public tree!: TreeNode;
+    public expanded: number[] = [];
+
     constructor(@Inject(MAT_DIALOG_DATA) public data: {
         worlds: World[],
         dataCenters: DataCenter[]
-    }) {
-        const worldData: TreeNode = {
-            name: "World Select",
-            selected: false,
-            children: []
-        };
+        },
+        private settings: SettingsService
+    ) {
+        this.GenerateWorldTree();
+    }
 
-        const worldDict: { [id: number]: World; } = Object.fromEntries(data.worlds.map(item => [item.id, item]));
-        
-        for (const dataCenter of data.dataCenters) {
+    private GenerateWorldTree() {
+        const selectedWorld: World = this.settings.getCurrentWorld();
+
+        const worldDict: { [id: number]: World; } = Object.fromEntries(this.data.worlds.map(item => [item.id, item]));
+        const root: TreeNode = {
+            name: 'World Select',
+            children: []
+        }
+
+        const sortedDataCenters = this.data.dataCenters.sort((a, b) => (+isASCII(b.region)) - (+isASCII(a.region)) || b.region.localeCompare(a.region) || a.name.localeCompare(b.name));
+        for (const [dcIndex, dataCenter] of sortedDataCenters.entries()) {
             const dataCenterNode: TreeNode = {
                 name: dataCenter.name,
-                selected: false,
                 children: []
-            };
-            worldData.children?.push(dataCenterNode);
+            }
+            root.children.push(dataCenterNode);
 
-            for (const worldId of dataCenter.worlds) {
-                const world: World = worldDict[worldId];
+            for (const [worldIndex, worldId] of dataCenter.worlds.entries()) {
+                const world = worldDict[worldId];
                 const worldNode: TreeNode = {
                     name: world.name,
-                    selected: false,
+                    children: []
                 }
+                dataCenterNode.children.push(worldNode);
 
-                dataCenterNode.children?.push(worldNode);
+                // Expand out to the currently selected node
+                if (selectedWorld.name === world.name) {
+                    this.expanded = [
+                        0,
+                        dcIndex,
+                        worldIndex
+                    ]
+                }
             }
         }
 
-        this.dataSource.data = [worldData];
+        this.tree = root;
     }
+    selectionChange(node: TreeNode) {
+        console.log(node);
+    }
+}
 
-    private _transformer = (node: TreeNode, level: number) => {
-        return {
-            expandable: !!node.children && node.children.length > 0,
-            name: node.name,
-            level: level,
-        };
-    };
-  
-    treeControl = new FlatTreeControl<FlatNode>(
-        node => node.level,
-        node => node.expandable,
-    );
-  
-    treeFlattener = new MatTreeFlattener(
-        this._transformer,
-        node => node.level,
-        node => node.expandable,
-        node => node.children,
-    );
-  
-    dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-  
-    hasChild = (_: number, node: FlatNode) => node.expandable;
+function isASCII(str: string): boolean {
+    return /^[\x00-\x7F]*$/.test(str);
 }

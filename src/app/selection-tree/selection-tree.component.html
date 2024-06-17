@@ -1,0 +1,18 @@
+<p
+    [ngStyle]="{'padding-left' : this.depth() + 'em'}"
+    [ngClass]="{'selected': expanded()[depth()] === index() && tree().children.length === 0}"
+    (mousedown)="toggle()"
+    >
+    {{tree().name}}
+</p>
+@if (expanded()[depth()] === index()) {
+    @for (child of tree().children; track $index) {
+        <app-selection-tree
+            [tree]="child"
+            [depth]="depth() + 1"
+            [expanded]="expanded()"
+            [index]="$index"
+            (selectionChange)="selectionChange($event)">
+        </app-selection-tree>
+    }
+}
