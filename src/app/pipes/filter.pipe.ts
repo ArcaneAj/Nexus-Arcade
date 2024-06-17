@@ -15,6 +15,9 @@ export class FilterPipe implements PipeTransform {
         const prefixes = filter.split(/\s+/)
 
         const filtered = value.filter(i => {
+            if (i.selected) {
+                return true;
+            }
             const words = i.name.split(/\s+/);
             for (const prefix of prefixes) {
                 if (!words.some(w => w.toLowerCase().startsWith(prefix.toLowerCase()))) {

@@ -3,6 +3,7 @@ import Dexie, { Table } from 'dexie';
 export interface Item {
     id: string;
     name: string;
+    selected: boolean;
 }
 
 export interface TodoItem {
@@ -24,6 +25,10 @@ export class AppDB extends Dexie {
 
     public async populate(itemsToAdd: Item[]) {
         await db.items.bulkAdd(itemsToAdd);
+    }
+
+    public async clear() {
+        await db.items.clear();
     }
 }
 

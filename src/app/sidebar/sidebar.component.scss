@@ -11,23 +11,31 @@
     width: 100%;
 }
 
-.example-viewport {
+.virtual-viewport {
     height: 100%;
     width: 100%;
-    border: 1px solid black;
     overflow-x: hidden;
     overflow-y: auto;
-}
-
-::ng-deep .mdc-list-item--with-leading-checkbox .mdc-list-item__start {
-    margin-right: 0px !important;
 }
 
 ::ng-deep .mat-mdc-form-field-subscript-wrapper {
     display: none;
 }
 
-mat-selection-list {
+::ng-deep .mat-mdc-text-field-wrapper.mdc-text-field.mdc-text-field--filled {
+    border-radius: 0px;
+}
+
+mat-list {
     padding: 0px;
     height: 100%;
+}
+
+.half-button {
+    border-radius: 0px;
+    width: 50%;
+}
+
+.item-selected {
+    background-color: red;
 }

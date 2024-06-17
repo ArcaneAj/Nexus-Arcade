@@ -11,14 +11,11 @@ import { MatListModule } from '@angular/material/list';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 // Custom components
 import { FilterPipe } from '../pipes/filter.pipe';
-// Services
-import { UniversalisService } from '../services/universalis.service';
-import { TeamcraftService } from '../services/teamcraft.service';
-import { LanguageService } from '../services/language.service';
+import { OrderPipe } from '../pipes/order.pipe';
 
-import { Subscription, forkJoin } from 'rxjs';
 import { Item, db } from '../db';
 import { liveQuery } from 'dexie';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-sidebar',
@@ -36,50 +33,89 @@ import { liveQuery } from 'dexie';
         ScrollingModule,
         // Custom components
         FilterPipe,
+        OrderPipe,
     ],
+    providers: [FilterPipe, OrderPipe],
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-    
-    private subscription: Subscription = new Subscription();
 
     public searchFilter: string = 'dia fen';
+    public changeFlag: boolean = false;
 
-    public items$ = liveQuery(() => db.items
-            .toArray());
+    public items: Item[] = [];
+
+    private items$ = liveQuery(() => db.items
+        .toArray());
+
+    private subscription: Subscription = new Subscription();
 
     constructor(
-        private universalis: UniversalisService,
-        private teamcraft: TeamcraftService,
-        private language: LanguageService
-    ) {
-    }
-    
-    updateCache() {
-        const observable = forkJoin({
-            names: this.teamcraft.names(),
-            marketable: this.universalis.marketable()
-          })
-        this.subscription.add(observable.subscribe(async response => {
-            const items: Item[] = [];
-            for (const key in response.names) {
-                const value = response.names[key];
-                items.push({
-                    id: key,
-                    name: value[this.language.getCurrent()]
-                })
-            }
+        private filterPipe: FilterPipe,
+        private orderPipe: OrderPipe,
+    ) {}
 
-            console.log(items);
-            await db.populate(items);
-        }));
-    }
-    
     ngOnDestroy(): void {
         this.subscription.unsubscribe();
     }
-
     ngOnInit(): void {
+        this.subscription.add(this.items$.subscribe(items => {
+            this.setSelected(items, false);
+        }));
+    }
+
+    private setSelected(items: Item[], selected: boolean): void {
+        const initialisedItems = [...items];
+        for (const item of initialisedItems) {
+            item.selected = selected;
+        }
+
+        this.items = initialisedItems;
+    }
+
+    onSelect(item: Item): void {
+        item.selected = !item.selected;
+        this.changeFlag = !this.changeFlag;
+    }
+
+    selectFirst(): void {
+        const orderedItems = this.orderPipe.transform(this.filterPipe.transform(this.items, this.searchFilter), false);
+        for (const item of orderedItems) {
+            if (!item.selected) {
+                item.selected = true;
+                this.changeFlag = !this.changeFlag;
+                return;
+            }
+        }
+    }
+
+    deselectLast(): void {
+        const orderedItems = this.orderPipe.transform(this.filterPipe.transform(this.items, this.searchFilter), false);
+        let previousItem = null;
+        for (const item of orderedItems) {
+            if (!item.selected) {
+                if (previousItem !== null) {
+                    previousItem.selected = false;
+                    this.changeFlag = !this.changeFlag;
+                }
+                return;
+            }
+
+            previousItem = item;
+        }
+
+        if (previousItem !== null) {
+            previousItem.selected = false;
+            this.changeFlag = !this.changeFlag;
+        }
+    }
+
+    clearSelection(): void {
+        this.setSelected(this.items, false);
+    }
+
+    calculate() {
+        throw new Error('Method not implemented.');
     }
 }

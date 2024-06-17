@@ -1,16 +1,29 @@
 <div class="content">
     <mat-form-field class="search-form-field">
-        <mat-label>Clearable input</mat-label>
-        <input matInput type="text" [(ngModel)]="searchFilter">
+        <mat-label>Item Search</mat-label>
+        <input matInput
+            type="text" 
+            (keydown.enter)="selectFirst()"
+            (keydown.escape)="deselectLast()"
+            [(ngModel)]="searchFilter">
         @if (searchFilter) {
             <button matSuffix mat-icon-button aria-label="Clear" (click)="searchFilter=''">
                 <mat-icon>close</mat-icon>
             </button>
         }
     </mat-form-field>
-    <mat-selection-list #items>
-        <cdk-virtual-scroll-viewport [itemSize]="50" class="example-viewport">
-            <mat-list-option togglePosition="before" lines="1" *cdkVirtualFor="let item of (items$ | async | filter: searchFilter)">{{item.name}}</mat-list-option>
+    <div>
+        <button mat-flat-button color="warn" class="half-button" (mousedown)="clearSelection()">Reset</button>
+        <button mat-flat-button color="primary" class="half-button" (mousedown)="calculate()">Calculate</button>
+    </div>
+    <mat-list>
+        <cdk-virtual-scroll-viewport [itemSize]="50" class="virtual-viewport">
+            <mat-list-item
+                *cdkVirtualFor="let item of (items | filter: searchFilter | order: changeFlag)"
+                (mousedown)="onSelect(item)"
+                [ngClass]="{'item-selected': item.selected}">
+                {{item.name}}
+            </mat-list-item>
         </cdk-virtual-scroll-viewport>
-    </mat-selection-list>
+    </mat-list>
 </div>
