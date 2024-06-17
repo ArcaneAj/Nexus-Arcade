@@ -8,6 +8,7 @@ import { liveQuery, Observable } from 'dexie';
 import { DataCenter } from '../models/datacenter.model';
 import { World } from '../models/world.model';
 import { Item } from '../models/item.model';
+import { NamedObject } from '../models/named-object.model';
 
 @Injectable({
     providedIn: 'root'
@@ -33,6 +34,13 @@ export class StorageService {
 
     public Worlds(): Observable<World[]> {
         return liveQuery(() => db.worlds.toArray());
+    }
+
+    public async FetchSettings(): Promise<void> {
+        const currentWorld: NamedObject | undefined = await db.settings.get('currentWorld');
+        if (currentWorld != null) {
+            this.settings.setCurrentWorld(currentWorld as World);
+        }
     }
     
     updateItemNameCache() {
@@ -63,11 +71,27 @@ export class StorageService {
         }));
     }
     
-    updateDataCenterCache() {
-        this.subscription.add(this.universalis.dataCenters().subscribe( async x => db.populateDataCenters(x)));
-    }
-    
     updateWorldCache() {
-        this.subscription.add(this.universalis.worlds().subscribe( async x => db.populateWorlds(x)));
+        const observable = forkJoin({
+            worlds: this.universalis.worlds(),
+            dataCenters: this.universalis.dataCenters()
+        })
+        this.subscription.add(observable.subscribe(async response =>
+            {
+                for (const datacenter of response.dataCenters) {
+                    for (const worldId of datacenter.worlds) {
+                        const world = response.worlds.find(x => x.id === worldId);
+                        if (world == null) {
+                            continue;
+                        }
+
+                        world.dataCenter = datacenter;
+                    }
+                }
+
+                db.populateWorlds(response.worlds);
+                db.populateDataCenters(response.dataCenters);
+            }
+        ));
     }
 }

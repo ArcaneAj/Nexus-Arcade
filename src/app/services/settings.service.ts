@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { World } from '../models/world.model';
 import { DataCenter } from '../models/datacenter.model';
+import { StorageService } from './storage.service';
+import { db } from '../db';
 
 export const languages = {
     "en" : "English",
@@ -47,5 +49,6 @@ export class SettingsService {
 
     public setCurrentWorld(world: World): void {
         this.currentWorld = world;
+        db.upsertSetting('currentWorld', world);
     }
 }

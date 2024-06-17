@@ -26,11 +26,6 @@ export class AppComponent extends BaseComponent {
     }
     
     ngOnInit(): void {
-        this.subscription.add(this.storage.DataCenters().subscribe(x => {
-            if (x == null || x.length === 0) {
-                this.storage.updateDataCenterCache();
-            }
-        }));
         this.subscription.add(this.storage.Worlds().subscribe(x => {
             if (x == null || x.length === 0) {
                 this.storage.updateWorldCache();
@@ -41,5 +36,7 @@ export class AppComponent extends BaseComponent {
                 this.storage.updateItemNameCache();
             }
         }));
+
+        this.storage.FetchSettings();
     }
 }

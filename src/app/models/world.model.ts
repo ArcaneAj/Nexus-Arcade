@@ -1,4 +1,7 @@
-export interface World {
+import { DataCenter } from "./datacenter.model";
+import { NamedObject } from "./named-object.model";
+
+export interface World extends NamedObject {
     id: number;
-    name: string;
+    dataCenter?: DataCenter;
 }

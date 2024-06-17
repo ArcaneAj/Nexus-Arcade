@@ -6,6 +6,7 @@ import { World } from '../models/world.model';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { SettingsDialogComponent } from './settings-dialog/settings-dialog.component';
+import { SettingsService } from '../services/settings.service';
 
 @Component({
     selector: 'app-header',
@@ -27,8 +28,10 @@ export class HeaderComponent extends BaseComponent implements OnInit {
             height: "80vh"
           });
     
-        dialogRef.afterClosed().subscribe(result => {
-            console.log(`Dialog result: ${result}`);
+        dialogRef.afterClosed().subscribe((result: World | undefined) => {
+            if (result !== undefined) {
+                this.settings.setCurrentWorld(result);
+            }
         });
     }
 
@@ -37,6 +40,7 @@ export class HeaderComponent extends BaseComponent implements OnInit {
 
     constructor(
         private storage: StorageService,
+        private settings: SettingsService,
     ) {
         super();
     }

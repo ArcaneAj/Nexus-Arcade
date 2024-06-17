@@ -3,6 +3,14 @@
     <app-selection-tree [tree]="tree" [expanded]="expanded" [index]="0" (selectionChange)="selectionChange($event)"></app-selection-tree>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Save</button>
+    <button mat-button
+    [mat-dialog-close]="undefined"
+        cdkFocusInitial>
+        Cancel
+    </button>
+    <button mat-button
+        [mat-dialog-close]="this.newWorld"
+        [disabled]="this.newWorld === this.currentWorld || expanded[expanded.length-1] === -1">
+        Save
+    </button>
 </mat-dialog-actions>

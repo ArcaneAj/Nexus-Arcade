@@ -28,6 +28,8 @@ export class SettingsDialogComponent {
 
     public tree!: TreeNode;
     public expanded: number[] = [];
+    public currentWorld: World;
+    public newWorld: World;
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: {
         worlds: World[],
@@ -35,12 +37,12 @@ export class SettingsDialogComponent {
         },
         private settings: SettingsService
     ) {
+        this.currentWorld = this.data.worlds.find(x => x.name === this.settings.getCurrentWorld().name)!;
+        this.newWorld = this.currentWorld;
         this.GenerateWorldTree();
     }
 
     private GenerateWorldTree() {
-        const selectedWorld: World = this.settings.getCurrentWorld();
-
         const worldDict: { [id: number]: World; } = Object.fromEntries(this.data.worlds.map(item => [item.id, item]));
         const root: TreeNode = {
             name: 'World Select',
@@ -64,7 +66,7 @@ export class SettingsDialogComponent {
                 dataCenterNode.children.push(worldNode);
 
                 // Expand out to the currently selected node
-                if (selectedWorld.name === world.name) {
+                if (this.currentWorld.name === world.name) {
                     this.expanded = [
                         0,
                         dcIndex,
@@ -76,8 +78,15 @@ export class SettingsDialogComponent {
 
         this.tree = root;
     }
+
     selectionChange(node: TreeNode) {
-        console.log(node);
+        const newWorld = this.data.worlds.find(x => x.name === node.name);
+        if (newWorld != null) {
+            this.newWorld = newWorld;
+            console.log(newWorld);
+            console.log(this.currentWorld);
+            console.log(newWorld === this.currentWorld);
+        }
     }
 }
 
