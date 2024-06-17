@@ -12,16 +12,16 @@ export type Language = keyof typeof languages;
 @Injectable({
     providedIn: 'root'
 })
-export class LanguageService {
+export class SettingsService {
 
     private currentLanguage: Language = 'en';
     constructor() { }
 
-    public getCurrent(): Language {
+    public getCurrentLanguage(): Language {
         return this.currentLanguage;
     }
 
-    public setCurrent(language: Language) {
+    public setCurrentLanguage(language: Language) {
         this.currentLanguage = language;
     }
 }

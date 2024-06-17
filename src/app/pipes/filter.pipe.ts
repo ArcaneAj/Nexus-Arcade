@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { LanguageService } from '../services/language.service';
+import { SettingsService } from '../services/settings.service';
 import { Item } from '../models/item.model';
 
 @Pipe({
@@ -8,7 +8,7 @@ import { Item } from '../models/item.model';
 })
 export class FilterPipe implements PipeTransform {
 
-    constructor(public language: LanguageService) {}
+    constructor(public settings: SettingsService) {}
 
     transform(value: Item[] | null, filter: string): Item[] {
         if (value === null) {
@@ -22,7 +22,7 @@ export class FilterPipe implements PipeTransform {
                 return true;
             }
             
-            const words = i[this.language.getCurrent()].split(/\s+/);
+            const words = i[this.settings.getCurrentLanguage()].split(/\s+/);
             for (const prefix of prefixes) {
                 if (!words.some(w => w.toLowerCase().startsWith(prefix.toLowerCase()))) {
                     return false;

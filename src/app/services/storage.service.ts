@@ -3,7 +3,7 @@ import { db } from '../db';
 import { UniversalisService } from './universalis.service';
 import { TeamcraftService } from './teamcraft.service';
 import { forkJoin, Subscription } from 'rxjs';
-import { LanguageService } from './language.service';
+import { SettingsService } from './settings.service';
 import { liveQuery, Observable } from 'dexie';
 import { DataCenter } from '../models/datacenter.model';
 import { World } from '../models/world.model';
@@ -19,7 +19,7 @@ export class StorageService {
     constructor(
         private universalis: UniversalisService,
         private teamcraft: TeamcraftService,
-        private language: LanguageService
+        private settings: SettingsService
     ) {
     }
 
@@ -42,7 +42,7 @@ export class StorageService {
           })
         this.subscription.add(observable.subscribe(async response => {
             const items: Item[] = [];
-            const lang = this.language.getCurrent();
+            const lang = this.settings.getCurrentLanguage();
             for (const key in response.names) {
                 const value = response.names[key];
                 if (value[lang] === null || value[lang] === '') {

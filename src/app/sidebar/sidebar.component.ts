@@ -15,7 +15,7 @@ import { OrderPipe } from '../pipes/order.pipe';
 
 import { BaseComponent } from '../base.component';
 import { StorageService } from '../services/storage.service';
-import { LanguageService } from '../services/language.service';
+import { SettingsService } from '../services/settings.service';
 import { Item } from '../models/item.model';
 
 @Component({
@@ -53,7 +53,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
         private filterPipe: FilterPipe,
         private orderPipe: OrderPipe,
         private storage: StorageService,
-        public language: LanguageService,
+        public settings: SettingsService,
     ) {
         super();
     }

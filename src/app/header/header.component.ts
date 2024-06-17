@@ -1,17 +1,36 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { StorageService } from '../services/storage.service';
 import { DataCenter } from '../models/datacenter.model';
 import { World } from '../models/world.model';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { SettingsDialogComponent } from './settings-dialog/settings-dialog.component';
 
 @Component({
     selector: 'app-header',
     standalone: true,
-    imports: [],
+    imports: [MatButtonModule, MatDialogModule],
     templateUrl: './header.component.html',
     styleUrl: './header.component.scss'
 })
 export class HeaderComponent extends BaseComponent implements OnInit {
+
+    readonly dialog = inject(MatDialog);
+
+    openDialog() {
+        const dialogRef = this.dialog.open(SettingsDialogComponent, {
+            data: {
+                worlds: this.worlds,
+                dataCenters: this.dataCenters
+            },
+            height: "80vh"
+          });
+    
+        dialogRef.afterClosed().subscribe(result => {
+            console.log(`Dialog result: ${result}`);
+        });
+    }
 
     public dataCenters: DataCenter[] = [];
     public worlds: World[] = [];
