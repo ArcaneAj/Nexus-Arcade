@@ -1,5 +1,6 @@
 mat-dialog-content {
-    width: 40vw;
+    min-width: 25vw;
+    max-width: 40vw;
 }
 
 .node-selected {

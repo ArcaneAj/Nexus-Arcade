@@ -42,7 +42,7 @@ import { Item } from '../models/item.model';
 })
 export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy {
 
-    public searchFilter: string = 'dia fen';
+    public searchFilter: string = '';
     public changeFlag: boolean = false;
 
     public items: Item[] = [];
