@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { db, Item } from '../db';
+import { db } from '../db';
 import { UniversalisService } from './universalis.service';
 import { TeamcraftService } from './teamcraft.service';
 import { forkJoin, Subscription } from 'rxjs';
@@ -7,6 +7,7 @@ import { LanguageService } from './language.service';
 import { liveQuery, Observable } from 'dexie';
 import { DataCenter } from '../models/datacenter.model';
 import { World } from '../models/world.model';
+import { Item } from '../models/item.model';
 
 @Injectable({
     providedIn: 'root'

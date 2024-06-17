@@ -1,15 +1,8 @@
 import Dexie, { Table } from 'dexie';
 import { DataCenter } from './models/datacenter.model';
 import { World } from './models/world.model';
+import { Item } from './models/item.model';
 
-export interface Item {
-    id: string;
-    en: string,
-    de: string,
-    ja: string,
-    fr: string,
-    selected: boolean;
-}
 
 export class AppDB extends Dexie {
     items!: Table<Item, string>;

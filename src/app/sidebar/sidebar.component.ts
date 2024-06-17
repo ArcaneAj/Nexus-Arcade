@@ -13,10 +13,10 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { FilterPipe } from '../pipes/filter.pipe';
 import { OrderPipe } from '../pipes/order.pipe';
 
-import { Item } from '../db';
 import { BaseComponent } from '../base.component';
 import { StorageService } from '../services/storage.service';
 import { LanguageService } from '../services/language.service';
+import { Item } from '../models/item.model';
 
 @Component({
     selector: 'app-sidebar',

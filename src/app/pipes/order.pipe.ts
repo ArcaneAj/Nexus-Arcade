@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Item } from '../db';
 import { LanguageService } from '../services/language.service';
+import { Item } from '../models/item.model';
 
 @Pipe({
     name: 'order',
