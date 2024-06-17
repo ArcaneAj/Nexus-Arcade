@@ -47,11 +47,15 @@ export class StorageService {
         const observable = forkJoin({
             names: this.teamcraft.names(),
             marketable: this.universalis.marketable()
-          })
+          });
         this.subscription.add(observable.subscribe(async response => {
             const items: Item[] = [];
             const lang = this.settings.getCurrentLanguage();
             for (const key in response.names) {
+                if (response.marketable.findIndex(x => x.toString() === key) < 0) {
+                    continue;
+                }
+
                 const value = response.names[key];
                 if (value[lang] === null || value[lang] === '') {
                     continue;
@@ -75,7 +79,7 @@ export class StorageService {
         const observable = forkJoin({
             worlds: this.universalis.worlds(),
             dataCenters: this.universalis.dataCenters()
-        })
+        });
         this.subscription.add(observable.subscribe(async response =>
             {
                 for (const datacenter of response.dataCenters) {

@@ -115,6 +115,6 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     calculate() {
-        throw new Error('Method not implemented.');
+        console.log(this.items.filter(x => x.selected));
     }
 }
