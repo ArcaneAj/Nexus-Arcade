@@ -241,7 +241,7 @@ function parseRecipe(properties: string[], types: string[], values: string[]): R
         id: obj.id,
         CraftJobId: +obj.CraftType,
         CraftJob: CrafterJobs[+obj.CraftType],
-        RecipeLevelTable: +obj.RecipeLevelTable,
+        RecipeLevel: +obj.RecipeLevelTable,
         ItemId: +obj.Item_Result_,
         Amount: obj.Amount_Result_,
         Ingredients: [

@@ -83,9 +83,6 @@ export class SettingsDialogComponent {
         const newWorld = this.data.worlds.find(x => x.name === node.name);
         if (newWorld != null) {
             this.newWorld = newWorld;
-            console.log(newWorld);
-            console.log(this.currentWorld);
-            console.log(newWorld === this.currentWorld);
         }
     }
 }

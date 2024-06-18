@@ -18,6 +18,7 @@ import { StorageService } from '../services/storage.service';
 import { SettingsService } from '../services/settings.service';
 import { Item } from '../models/item.model';
 import { UniversalisService } from '../services/universalis.service';
+import { XivApiService } from '../services/xivapi.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -54,7 +55,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
         private filterPipe: FilterPipe,
         private orderPipe: OrderPipe,
         private storage: StorageService,
-        private universalis: UniversalisService,
+        private xivApi: XivApiService,
         public settings: SettingsService,
     ) {
         super();
@@ -121,7 +122,9 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
         if (itemIds.length === 0) {
             return;
         }
-        
-        this.subscription.add(this.universalis.history(itemIds, this.settings.getCurrentWorld().dataCenter).subscribe(x => console.log(x)))
+
+        this.subscription.add(this.storage.Recipes().subscribe(recipes => {
+            console.log(recipes.filter(x => itemIds.includes(x.id)))
+        }));
     }
 }

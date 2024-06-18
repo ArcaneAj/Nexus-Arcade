@@ -4,7 +4,7 @@ export interface Recipe {
     id: number,
     CraftJobId: number,
     CraftJob: CraftJob,
-    RecipeLevelTable: number,
+    RecipeLevel: number,
     ItemId: number,
     Amount: number,
     Ingredients: {itemId: number, amount: number}[],
