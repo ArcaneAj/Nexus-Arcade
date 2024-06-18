@@ -7,6 +7,7 @@ import { NamedObject } from './models/named-object.model';
 
 export class AppDB extends Dexie {
     items!: Table<Item, string>;
+    marketableItems!: Table<Item, string>;
     dataCenters!: Table<DataCenter, string>;
     worlds!: Table<World, number>;
     settings!: Table<NamedObject, string>;
@@ -15,6 +16,7 @@ export class AppDB extends Dexie {
         super('ngdexieliveQuery');
         this.version(3).stores({
             items: 'id',
+            marketableItems: 'id',
             dataCenters: 'name',
             worlds: 'id',
             settings: '',
@@ -23,6 +25,10 @@ export class AppDB extends Dexie {
 
     public async populateItemNames(itemsToAdd: Item[]) {
         await db.items.bulkPut(itemsToAdd);
+    }
+
+    public async populateMarketableItemNames(itemsToAdd: Item[]) {
+        await db.marketableItems.bulkPut(itemsToAdd);
     }
 
     public async populateDataCenters(dataCenters: DataCenter[]) {

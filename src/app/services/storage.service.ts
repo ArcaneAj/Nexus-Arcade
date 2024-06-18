@@ -28,6 +28,10 @@ export class StorageService {
         return liveQuery(() => db.items.toArray());
     }
 
+    public MarketableItems(): Observable<Item[]> {
+        return liveQuery(() => db.marketableItems.toArray());
+    }
+
     public DataCenters(): Observable<DataCenter[]> {
         return liveQuery(() => db.dataCenters.toArray());
     }
@@ -51,10 +55,8 @@ export class StorageService {
         this.subscription.add(observable.subscribe(async response => {
             const items: Item[] = [];
             const lang = this.settings.getCurrentLanguage();
+            const start = Date.now();
             for (const key in response.names) {
-                if (response.marketable.findIndex(x => x.toString() === key) < 0) {
-                    continue;
-                }
 
                 const value = response.names[key];
                 if (value[lang] === null || value[lang] === '') {
@@ -70,7 +72,27 @@ export class StorageService {
                     fr: value.fr,
                 })
             }
+
+            const marketableItems: Item[] = [];
+            for (const marketId of response.marketable) {
+                const value = response.names[marketId.toString()];
+                if (value[lang] === null || value[lang] === '') {
+                    continue;
+                }
+
+                marketableItems.push({
+                    id: marketId.toString(),
+                    selected: false,
+                    en: value.en,
+                    de: value.de,
+                    ja: value.ja,
+                    fr: value.fr,
+                })
+            }
+
+            console.log(Date.now() - start);
             
+            await db.populateMarketableItemNames(marketableItems);
             await db.populateItemNames(items);
         }));
     }

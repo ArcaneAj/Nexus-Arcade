@@ -47,7 +47,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
 
     public items: Item[] = [];
 
-    private items$ = this.storage.Items();
+    private items$ = this.storage.MarketableItems();
 
     constructor(
         private filterPipe: FilterPipe,
