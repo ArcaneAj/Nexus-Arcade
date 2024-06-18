@@ -9,6 +9,7 @@ import { World } from '../models/world.model';
 import { Item } from '../models/item.model';
 import { NamedObject } from '../models/named-object.model';
 import { XivApiService } from './xivapi.service';
+import { ItemRecipe } from '../models/item-recipe.model';
 
 @Injectable({
     providedIn: 'root'
@@ -40,6 +41,10 @@ export class StorageService {
         return liveQuery(() => db.worlds.toArray());
     }
 
+    public Recipes(): Observable<ItemRecipe[]> {
+        return liveQuery(() => db.recipes.toArray());
+    }
+
     public async FetchSettings(): Promise<void> {
         const currentWorld: NamedObject | undefined = await db.settings.get('currentWorld');
         if (currentWorld != null) {
@@ -59,12 +64,17 @@ export class StorageService {
         }));
         this.subscription.add(this.Items().subscribe(x => {
             if (x == null || x.length === 0) {
-                this.updateItemNameCache();
+                this.updateItemCache();
+            }
+        }));
+        this.subscription.add(this.Recipes().subscribe(x => {
+            if (x == null || x.length === 0) {
+                this.updateRecipeCache();
             }
         }));
     }
     
-    private updateItemNameCache() {
+    private updateItemCache() {
         const observable = forkJoin({
             items: this.xivApi.items(),
             marketable: this.universalis.marketable()
@@ -98,8 +108,36 @@ export class StorageService {
                     }
                 }
 
-                db.populateWorlds(response.worlds);
-                db.populateDataCenters(response.dataCenters);
+                await db.populateWorlds(response.worlds);
+                await db.populateDataCenters(response.dataCenters);
+            }
+        ));
+    }
+    
+    private updateRecipeCache() {
+        this.subscription.add(this.xivApi.recipes().subscribe(async recipes =>
+            {
+                const recipesByItem: { [id: number] : ItemRecipe; } = {};
+                for (const recipe of recipes) {
+                    const itemId = recipe.ItemId;
+                    if (!itemId) {
+                        continue;
+                    }
+
+                    let entry = recipesByItem[itemId];
+                    if (entry == null) {
+                        entry = {
+                            id: itemId,
+                            recipes: {}
+                        };
+                        recipesByItem[itemId] = entry;
+                    }
+
+                    entry.recipes[recipe.CraftJobId] = recipe
+                }
+
+                const itemRecipes: ItemRecipe[] = Object.keys(recipesByItem).map(id => recipesByItem[+id]);
+                await db.populateRecipes(itemRecipes);
             }
         ));
     }

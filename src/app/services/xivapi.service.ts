@@ -3,8 +3,11 @@ import { HttpService } from './http.service';
 import { Observable, map } from 'rxjs';
 import { Papa } from 'ngx-papaparse';
 import { Item } from '../models/item.model';
+import { Recipe } from '../models/recipe.model';
+import { CrafterJobs } from '../constants';
 
 const ITEMS_URL = 'https://raw.githubusercontent.com/xivapi/ffxiv-datamining/master/csv/Item.csv';
+const RECIPE_URL = 'https://raw.githubusercontent.com/xivapi/ffxiv-datamining/master/csv/Recipe.csv';
 
 interface XivApiItem {
     id: number,
@@ -97,6 +100,56 @@ interface XivApiItem {
     IsGlamourous: false
 }
 
+interface XivApiRecipe {
+    id: number,
+    Number: number,
+    CraftType: string,
+    RecipeLevelTable: string,
+    Item_Result_: string,
+    Amount_Result_: number,
+    Item_Ingredient__0_: string,
+    Amount_Ingredient__0_: number,
+    Item_Ingredient__1_: string,
+    Amount_Ingredient__1_: number,
+    Item_Ingredient__2_: string,
+    Amount_Ingredient__2_: number,
+    Item_Ingredient__3_: string,
+    Amount_Ingredient__3_: number,
+    Item_Ingredient__4_: string,
+    Amount_Ingredient__4_: number,
+    Item_Ingredient__5_: string,
+    Amount_Ingredient__5_: number,
+    Item_Ingredient__6_: string,
+    Amount_Ingredient__6_: number,
+    Item_Ingredient__7_: string,
+    Amount_Ingredient__7_: number,
+    Item_Ingredient__8_: string,
+    Amount_Ingredient__8_: number,
+    Item_Ingredient__9_: string,
+    Amount_Ingredient__9_: number,
+    RecipeNotebookList: string,
+    IsSecondary: false,
+    MaterialQualityFactor: number,
+    DifficultyFactor: number,
+    QualityFactor: number,
+    DurabilityFactor: number,
+    RequiredQuality: number,
+    RequiredCraftsmanship: number,
+    RequiredControl: number,
+    QuickSynthCraftsmanship: number,
+    QuickSynthControl: number,
+    SecretRecipeBook: string,
+    Quest: string,
+    CanQuickSynth: true,
+    CanHq: true,
+    ExpRewarded: true,
+    Status_Required_: string,
+    Item_Required_: string,
+    IsSpecializationRequired: false,
+    IsExpert: false,
+    PatchNumber: number
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -115,6 +168,17 @@ export class XivApiService {
             const types = meta[2];
             return parsed.slice(3) // Skip the meta rows
                          .map((itemRaw: string[]) => parseItem(properties, types, itemRaw));
+        }));
+    }
+
+    public recipes(): Observable<Recipe[]> {
+        return this.httpService.getText(RECIPE_URL).pipe(map(x => {
+            const parsed = this.papa.parse(x).data;
+            const meta = parsed.slice(0, 3);
+            const properties = meta[1];
+            const types = meta[2];
+            return parsed.slice(3) // Skip the meta rows
+                         .map((recipeRaw: string[]) => parseRecipe(properties, types, recipeRaw));
         }));
     }
 }
@@ -144,7 +208,7 @@ const booleanTypes: string[] = [
     "bit&01",
 ]
 
-function parseItem(properties: string[], types: string[], values: string[]) {
+function parseItem(properties: string[], types: string[], values: string[]): Item {
     const merged = Array(properties.length);
     for (let i = 0; i < properties.length; i++) {
         const propertyname = properties[i] === '#' ? 'id' : properties[i].replace(/\W/gi, '_');
@@ -163,6 +227,39 @@ function parseItem(properties: string[], types: string[], values: string[]) {
         Price_Low_: obj.Price_Low_, // Shop sell price
     };
     return item;
+}
+
+function parseRecipe(properties: string[], types: string[], values: string[]): Recipe {
+    const merged = Array(properties.length);
+    for (let i = 0; i < properties.length; i++) {
+        const propertyname = properties[i] === '#' ? 'id' : properties[i].replace(/\W/gi, '_');
+        merged.push([propertyname, parse(types[i], values[i])]);
+    }
+
+    const obj = Object.fromEntries(merged.filter(x => x[0] !== '')) as XivApiRecipe;
+    const recipe: Recipe = {
+        id: obj.id,
+        CraftJobId: +obj.CraftType,
+        CraftJob: CrafterJobs[+obj.CraftType],
+        RecipeLevelTable: +obj.RecipeLevelTable,
+        ItemId: +obj.Item_Result_,
+        Amount: obj.Amount_Result_,
+        Ingredients: [
+            {itemId: +obj.Item_Ingredient__0_, amount: obj.Amount_Ingredient__0_},
+            {itemId: +obj.Item_Ingredient__1_, amount: obj.Amount_Ingredient__1_},
+            {itemId: +obj.Item_Ingredient__2_, amount: obj.Amount_Ingredient__2_},
+            {itemId: +obj.Item_Ingredient__3_, amount: obj.Amount_Ingredient__3_},
+            {itemId: +obj.Item_Ingredient__4_, amount: obj.Amount_Ingredient__4_},
+            {itemId: +obj.Item_Ingredient__5_, amount: obj.Amount_Ingredient__5_},
+            {itemId: +obj.Item_Ingredient__6_, amount: obj.Amount_Ingredient__6_},
+            {itemId: +obj.Item_Ingredient__7_, amount: obj.Amount_Ingredient__7_},
+        ].filter(x => x.amount),
+        Crystals: [
+            {itemId: +obj.Item_Ingredient__8_, amount: obj.Amount_Ingredient__8_},
+            {itemId: +obj.Item_Ingredient__9_, amount: obj.Amount_Ingredient__9_},
+        ].filter(x => x.amount),
+    };
+    return recipe;
 }
 
 function isIntegral(typeName: string): boolean {
