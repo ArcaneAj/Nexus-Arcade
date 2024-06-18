@@ -22,7 +22,7 @@ export class FilterPipe implements PipeTransform {
                 return true;
             }
             
-            const words = i[this.settings.getCurrentLanguage()].split(/\s+/);
+            const words = i.Name.split(/\s+/);
             for (const prefix of prefixes) {
                 if (!words.some(w => w.toLowerCase().startsWith(prefix.toLowerCase()))) {
                     return false;

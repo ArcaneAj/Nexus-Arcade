@@ -15,6 +15,6 @@ export class OrderPipe implements PipeTransform {
             return [];
         }
 
-        return [...items].sort((a, b) => (+b.selected) - (+a.selected) || a[this.settings.getCurrentLanguage()].localeCompare(b[this.settings.getCurrentLanguage()]))
+        return [...items].sort((a, b) => (+(!!b.selected)) - (+(!!a.selected)) || a.Name.localeCompare(b.Name))
     }
 }

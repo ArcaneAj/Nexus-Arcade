@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { db } from '../db';
 import { UniversalisService } from './universalis.service';
-import { TeamcraftService } from './teamcraft.service';
 import { forkJoin, Subscription } from 'rxjs';
 import { SettingsService } from './settings.service';
 import { liveQuery, Observable } from 'dexie';
@@ -9,6 +8,7 @@ import { DataCenter } from '../models/datacenter.model';
 import { World } from '../models/world.model';
 import { Item } from '../models/item.model';
 import { NamedObject } from '../models/named-object.model';
+import { XivApiService } from './xivapi.service';
 
 @Injectable({
     providedIn: 'root'
@@ -19,7 +19,7 @@ export class StorageService {
     
     constructor(
         private universalis: UniversalisService,
-        private teamcraft: TeamcraftService,
+        private xivApi: XivApiService,
         private settings: SettingsService
     ) {
     }
@@ -46,50 +46,33 @@ export class StorageService {
             this.settings.setCurrentWorld(currentWorld as World);
         }
     }
+
+    public purge() {
+        db.delete({disableAutoOpen: false}).then(() => this.populateCaches());
+    }
+
+    public populateCaches() {
+        this.subscription.add(this.Worlds().subscribe(x => {
+            if (x == null || x.length === 0) {
+                this.updateWorldCache();
+            }
+        }));
+        this.subscription.add(this.Items().subscribe(x => {
+            if (x == null || x.length === 0) {
+                this.updateItemNameCache();
+            }
+        }));
+    }
     
-    updateItemNameCache() {
+    private updateItemNameCache() {
         const observable = forkJoin({
-            names: this.teamcraft.names(),
+            items: this.xivApi.items(),
             marketable: this.universalis.marketable()
           });
         this.subscription.add(observable.subscribe(async response => {
-            const items: Item[] = [];
-            const lang = this.settings.getCurrentLanguage();
             const start = Date.now();
-            for (const key in response.names) {
-
-                const value = response.names[key];
-                if (value[lang] === null || value[lang] === '') {
-                    continue;
-                }
-
-                items.push({
-                    id: key,
-                    selected: false,
-                    en: value.en,
-                    de: value.de,
-                    ja: value.ja,
-                    fr: value.fr,
-                })
-            }
-
-            const marketableItems: Item[] = [];
-            for (const marketId of response.marketable) {
-                const value = response.names[marketId.toString()];
-                if (value[lang] === null || value[lang] === '') {
-                    continue;
-                }
-
-                marketableItems.push({
-                    id: marketId.toString(),
-                    selected: false,
-                    en: value.en,
-                    de: value.de,
-                    ja: value.ja,
-                    fr: value.fr,
-                })
-            }
-
+            const items: Item[] = response.items.filter(i => !!i.Name);
+            const marketableItems: Item[] = response.marketable.map(i => response.items[i]).filter(i => !!i.Name);
             console.log(Date.now() - start);
             
             await db.populateMarketableItemNames(marketableItems);
@@ -97,7 +80,7 @@ export class StorageService {
         }));
     }
     
-    updateWorldCache() {
+    private updateWorldCache() {
         const observable = forkJoin({
             worlds: this.universalis.worlds(),
             dataCenters: this.universalis.dataCenters()

@@ -49,4 +49,8 @@ export class HeaderComponent extends BaseComponent implements OnInit {
         this.subscription.add(this.storage.DataCenters().subscribe(x => this.dataCenters = x));
         this.subscription.add(this.storage.Worlds().subscribe(x => this.worlds = x));
     }
+
+    purge() {
+        this.storage.purge();
+    }
 }

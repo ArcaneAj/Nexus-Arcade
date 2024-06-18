@@ -118,7 +118,10 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
 
     calculate() {
         const itemIds = this.items.filter(x => x.selected).map(x => x.id);
-        console.log(itemIds);
-        this.subscription.add(this.universalis.history(itemIds.map(x => parseInt(x, 10)), this.settings.getCurrentWorld().dataCenter).subscribe(x => console.log(x)))
+        if (itemIds.length === 0) {
+            return;
+        }
+        
+        this.subscription.add(this.universalis.history(itemIds, this.settings.getCurrentWorld().dataCenter).subscribe(x => console.log(x)))
     }
 }
