@@ -17,6 +17,7 @@ import { BaseComponent } from '../base.component';
 import { StorageService } from '../services/storage.service';
 import { SettingsService } from '../services/settings.service';
 import { Item } from '../models/item.model';
+import { UniversalisService } from '../services/universalis.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -53,6 +54,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
         private filterPipe: FilterPipe,
         private orderPipe: OrderPipe,
         private storage: StorageService,
+        private universalis: UniversalisService,
         public settings: SettingsService,
     ) {
         super();
@@ -115,6 +117,8 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     calculate() {
-        console.log(this.items.filter(x => x.selected));
+        const itemIds = this.items.filter(x => x.selected).map(x => x.id);
+        console.log(itemIds);
+        this.subscription.add(this.universalis.history(itemIds.map(x => parseInt(x, 10)), this.settings.getCurrentWorld().dataCenter).subscribe(x => console.log(x)))
     }
 }

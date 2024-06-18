@@ -3,5 +3,5 @@ import { NamedObject } from "./named-object.model";
 
 export interface World extends NamedObject {
     id: number;
-    dataCenter?: DataCenter;
+    dataCenter: DataCenter;
 }
