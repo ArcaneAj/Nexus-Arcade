@@ -1,4 +1,5 @@
 import { CraftJob } from "./craft-job.type";
+import { Ingredient } from "./ingredient.model";
 
 export interface Recipe {
     id: number,
@@ -7,6 +8,6 @@ export interface Recipe {
     RecipeLevel: number,
     ItemId: number,
     Amount: number,
-    Ingredients: {itemId: number, amount: number}[],
-    Crystals: {itemId: number, amount: number}[],
+    Ingredients: Ingredient[],
+    Crystals: Ingredient[],
 }

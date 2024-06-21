@@ -8,6 +8,7 @@ import { CrafterJobs } from '../constants';
 
 const ITEMS_URL = 'https://raw.githubusercontent.com/xivapi/ffxiv-datamining/master/csv/Item.csv';
 const RECIPE_URL = 'https://raw.githubusercontent.com/xivapi/ffxiv-datamining/master/csv/Recipe.csv';
+const SHOP_URL = 'https://raw.githubusercontent.com/xivapi/ffxiv-datamining/master/csv/GilShopItem.csv'
 
 interface XivApiItem {
     id: number,
@@ -179,6 +180,16 @@ export class XivApiService {
             const types = meta[2];
             return parsed.slice(3) // Skip the meta rows
                          .map((recipeRaw: string[]) => parseRecipe(properties, types, recipeRaw));
+        }));
+    }
+
+    public gilShopItems(): Observable<number[]> {
+        return this.httpService.getText(SHOP_URL).pipe(map(x => {
+            const parsed: string[][] = this.papa.parse(x).data;
+            const itemIdIndex = parsed[1].findIndex((x: string) => x === 'Item')
+            return parsed.slice(3) // Skip the meta rows
+                         .map((rawData: string[]) => +rawData[itemIdIndex])
+                         .filter((value, index, array) => array.indexOf(value) === index); // Unique item ids
         }));
     }
 }

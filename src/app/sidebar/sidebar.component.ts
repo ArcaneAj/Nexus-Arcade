@@ -18,7 +18,14 @@ import { StorageService } from '../services/storage.service';
 import { SettingsService } from '../services/settings.service';
 import { Item } from '../models/item.model';
 import { UniversalisService } from '../services/universalis.service';
+import { ItemsHistoryResponse } from '../models/items-history-response.model';
+import { ItemRecipe } from '../models/item-recipe.model';
+import { ItemHistoryEntry } from '../models/item-history-entry.model';
+import { combineLatest } from 'rxjs';
 import { XivApiService } from '../services/xivapi.service';
+import { Ingredient } from '../models/ingredient.model';
+import { CalculationService } from '../services/calculation.service';
+import { getUnique } from '../../utils';
 
 @Component({
     selector: 'app-sidebar',
@@ -44,25 +51,25 @@ import { XivApiService } from '../services/xivapi.service';
 })
 export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy {
 
-    public searchFilter: string = '';
+    public searchFilter: string = 'dia arm';
     public changeFlag: boolean = false;
 
     public items: Item[] = [];
-
-    private items$ = this.storage.MarketableItems();
 
     constructor(
         private filterPipe: FilterPipe,
         private orderPipe: OrderPipe,
         private storage: StorageService,
+        private universalis: UniversalisService,
         private xivApi: XivApiService,
+        private calculationService: CalculationService,
         public settings: SettingsService,
     ) {
         super();
     }
 
     ngOnInit(): void {
-        this.subscription.add(this.items$.subscribe(items => {
+        this.subscription.add(this.storage.MarketableItems().subscribe(items => {
             this.setSelected(items, false);
         }));
     }
@@ -117,14 +124,58 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
         this.setSelected(this.items, false);
     }
 
-    calculate() {
+    calculate(): void {
         const itemIds = this.items.filter(x => x.selected).map(x => x.id);
         if (itemIds.length === 0) {
             return;
         }
 
+        this.discoverIngredientIds([itemIds], []);
+    }
+
+    private discoverIngredientIds(
+        itemIds: number[][],
+        recipeCache: ItemRecipe[][],
+        depth: number = 0
+    ): void {
         this.subscription.add(this.storage.Recipes().subscribe(recipes => {
-            console.log(recipes.filter(x => itemIds.includes(x.id)))
+            const tier0 = recipes.filter(x => itemIds[depth].includes(x.id));
+            if (tier0.length === 0) {
+                this.fetchPrices(
+                    itemIds[0],
+                    getUnique(itemIds.flat()),
+                    recipeCache.flat().toDict((item) => item.id));
+                return;
+            }
+
+            recipeCache[depth] = tier0;
+
+            const tier1ids = tier0.flatMap(x => {
+                const jobIds = Object.keys(x.recipes);
+                if (jobIds.length === 0) return [];
+                return jobIds.flatMap(id => x.recipes[+id].Ingredients.map(i => i.itemId).concat(x.recipes[+id].Crystals.map(i => i.itemId)))
+            }).filter((value, index, array) => array.indexOf(value) === index);
+
+            itemIds[depth + 1] = tier1ids;
+            this.discoverIngredientIds(itemIds, recipeCache, depth + 1)
+        }));
+    }
+
+    private fetchPrices(
+        rootIds: number[],
+        itemIds: number[],
+        recipeCache: { [id: number] : ItemRecipe; }
+    ): void {
+        const observable = combineLatest({
+            itemHistoryResponse: this.universalis.history(itemIds, this.settings.getCurrentWorld().dataCenter),
+            items: this.storage.Items(),
+            gilShopIds: this.xivApi.gilShopItems(),
+        })
+        console.log('Beginning market fetch.');
+        const start = Date.now();
+        this.subscription.add(observable.subscribe(x => {
+            console.log(`Finished market fetch in ${Date.now() - start}ms.`);
+            this.calculationService.calculatePrices(rootIds, recipeCache, x.itemHistoryResponse, x.items, x.gilShopIds);
         }));
     }
 }
