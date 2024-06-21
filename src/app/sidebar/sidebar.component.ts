@@ -18,14 +18,10 @@ import { StorageService } from '../services/storage.service';
 import { SettingsService } from '../services/settings.service';
 import { Item } from '../models/item.model';
 import { UniversalisService } from '../services/universalis.service';
-import { ItemsHistoryResponse } from '../models/items-history-response.model';
 import { ItemRecipe } from '../models/item-recipe.model';
-import { ItemHistoryEntry } from '../models/item-history-entry.model';
 import { combineLatest } from 'rxjs';
 import { XivApiService } from '../services/xivapi.service';
-import { Ingredient } from '../models/ingredient.model';
 import { CalculationService } from '../services/calculation.service';
-import { getUnique } from '../../utils';
 
 @Component({
     selector: 'app-sidebar',
@@ -143,7 +139,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
             if (tier0.length === 0) {
                 this.fetchPrices(
                     itemIds[0],
-                    getUnique(itemIds.flat()),
+                    itemIds.flat().unique(),
                     recipeCache.flat().toDict((item) => item.id));
                 return;
             }

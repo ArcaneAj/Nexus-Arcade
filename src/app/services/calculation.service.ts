@@ -7,7 +7,6 @@ import { CraftResult } from '../models/craft-result.model';
 import { Ingredient } from '../models/ingredient.model';
 import { ItemHistoryEntry } from '../models/item-history-entry.model';
 import { Observable, Subject } from 'rxjs';
-import { getUnique } from '../../utils';
 
 @Injectable({
     providedIn: 'root'
@@ -36,7 +35,7 @@ export class CalculationService {
         this.recipeCache = Object.assign({}, this.recipeCache, recipeCache);
         this.itemCache = items.toDict(x => x.id);
         this.itemHistoryResponse = itemHistoryResponse;
-        this.gilShopIds = getUnique(gilShopIds).sort();
+        this.gilShopIds = gilShopIds.unique().sort();
         this.priceResultsSubject.next(rootIds.map(x => this.getPriceForItem(x)));
     }
 
