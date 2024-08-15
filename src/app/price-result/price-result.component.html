@@ -1,5 +1,18 @@
 <div>
-    {{result().name}}
-</div><div>
-    {{result().marketPrice}}
+    {{name()}}
+</div>
+<div>
+    Market Price: {{marketPrice()}}
+</div>
+<div>
+    Shop Cost: {{shopPrice()}}
+</div>
+<div>
+    Crafted Cost: {{craftedPrice()?.price}}
+</div>
+<div>
+    Shop profit: {{shopProfit()}}
+</div>
+<div>
+    Craft profit: {{craftProfit()}}
 </div>
