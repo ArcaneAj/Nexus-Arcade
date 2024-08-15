@@ -25,6 +25,23 @@ export class CalculationService {
         this.priceResultCache = {};
     }
 
+    public getPriceSkeleton(
+        rootIds: number[],
+        items: Item[]
+    ): void {
+        const itemDict = items.toDict(x => x.id); 
+        this.priceResultsSubject.next(rootIds.map(id => {
+            const item = itemDict[id];
+            const priceResult: PriceResult = {
+                item: item,
+                name: item.Name,
+                requiredAmount: 1,
+                craftedPrices: [],
+            };
+            return priceResult;
+        }));
+    }
+
     public calculatePrices(
         rootIds: number[],
         recipeCache: { [id: number] : ItemRecipe; },

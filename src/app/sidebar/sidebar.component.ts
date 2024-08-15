@@ -47,7 +47,7 @@ import { CalculationService } from '../services/calculation.service';
 })
 export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy {
 
-    public searchFilter: string = 'dia arm';
+    public searchFilter: string = 'archeo arm';
     public changeFlag: boolean = false;
 
     public items: Item[] = [];
@@ -167,6 +167,10 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
             items: this.storage.Items(),
             gilShopIds: this.xivApi.gilShopItems(),
         })
+
+        this.subscription.add(this.storage.Items().subscribe(items => {
+            this.calculationService.getPriceSkeleton(rootIds, items);
+        }));
         console.log('Beginning market fetch.');
         const start = Date.now();
         this.subscription.add(observable.subscribe(x => {
