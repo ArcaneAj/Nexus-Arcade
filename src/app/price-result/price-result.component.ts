@@ -14,7 +14,7 @@ export class PriceResultComponent {
     public name = computed(() => this.result().name);
     public marketPrice = computed(() => this.result().marketPrice);
     public shopPrice = computed(() => this.result().shopPrice);
-    public craftedPrice = computed(() => this.getCheapestCraftResult(this.result().craftedPrices));
+    public craftedPrice = computed(() => this.result().craftedPrices.getMinByProperty<CraftResult>(x => x.price));
     public shopProfit = computed(() => this.getProfit(this.result().shopPrice, this.result().marketPrice));
     public craftProfit = computed(() => this.getProfit(this.craftedPrice()?.price, this.result().marketPrice));
 
@@ -28,14 +28,5 @@ export class PriceResultComponent {
         }
 
         return sellPrice! - buyPrice!;
-    }
-
-    
-    getCheapestCraftResult(craftResults: CraftResult[] | null): CraftResult | undefined {
-        if (craftResults === null || craftResults.length === 0) {
-            return undefined;
-        }
-
-        return craftResults.sort((a,b) => (a.price > b.price) ? 1 : ((b.price > a.price) ? -1 : 0))[0]
     }
 }
