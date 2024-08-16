@@ -8,4 +8,7 @@ export interface PriceResult {
     marketPrice?: number,
     shopPrice?: number,
     craftedPrices: CraftResult[],
+    cheapestCraft?: CraftResult,
+    shopProfit?: number,
+    craftProfit?: number,
 }

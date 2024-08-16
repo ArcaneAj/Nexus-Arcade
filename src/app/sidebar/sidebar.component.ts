@@ -47,7 +47,7 @@ import { CalculationService } from '../services/calculation.service';
 })
 export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy {
 
-    public searchFilter: string = 'archeo arm';
+    public searchFilter: string = 'archeo ';
     public changeFlag: boolean = false;
 
     public items: Item[] = [];
@@ -162,6 +162,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
         itemIds: number[],
         recipeCache: { [id: number] : ItemRecipe; }
     ): void {
+        console.log(itemIds);
         const observable = combineLatest({
             itemHistoryResponse: this.universalis.history(itemIds, this.settings.getCurrentWorld().dataCenter),
             items: this.storage.Items(),

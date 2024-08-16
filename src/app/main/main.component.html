@@ -1,3 +1,14 @@
+<div class="sort">
+    <mat-button-toggle-group
+        name="favoriteColor"
+        aria-label="Favorite Color"
+        [hideSingleSelectionIndicator]="true"
+        (change)="sortOrderChanged($event)"
+        >
+        <mat-button-toggle value="true" [checked]="sortAscending">Ascending</mat-button-toggle>
+        <mat-button-toggle value="false" [checked]="!sortAscending">Descending</mat-button-toggle>
+    </mat-button-toggle-group>
+</div>
 <div class="content">
     @for (result of results; track result.name) {
         <app-price-result
