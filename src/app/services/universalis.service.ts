@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from './http.service';
-import { Observable, map } from 'rxjs';
+import { Observable, forkJoin, map } from 'rxjs';
 import { DataCenter } from '../models/datacenter.model';
 import { World } from '../models/world.model';
 import { ItemsHistoryResponse } from '../models/items-history-response.model';
@@ -31,14 +31,44 @@ export class UniversalisService {
     }
 
     public history(itemIds: number[], dataCenter: DataCenter): Observable<ItemsHistoryResponse> {
-        const url = [HISTORY_URL, dataCenter.name, itemIds.join()].join('/')
         if (itemIds.length > 1) {
-            return this.httpService.get<ItemsHistoryResponse>(url);
+            const chunkedIds: number[][] = itemIds.reduce((resultArray: number[][], item, index) => { 
+                const chunkIndex = Math.floor(index/100)
+              
+                if(!resultArray[chunkIndex]) {
+                    resultArray[chunkIndex] = [] // start a new chunk
+                }
+              
+                resultArray[chunkIndex].push(item)
+              
+                return resultArray
+            }, []);
+
+            return forkJoin(chunkedIds.map(idChunk => {
+                const url = [HISTORY_URL, dataCenter.name, idChunk.join()].join('/')
+                return this.httpService.get<ItemsHistoryResponse>(url);
+            })).pipe(map(responses => {
+                const itemHistoryResponse: ItemsHistoryResponse = {
+                    itemIDs: [],
+                    dcName: dataCenter.name,
+                    unresolvedItems: [],
+                    items: {}
+                };
+
+                for (const response of responses) {
+                    itemHistoryResponse.itemIDs.push(...response.itemIDs);
+                    itemHistoryResponse.unresolvedItems.push(...response.unresolvedItems);
+                    itemHistoryResponse.items = {...response.items, ...itemHistoryResponse.items};
+                }
+
+                return itemHistoryResponse;
+            }));
         }
 
-        return this.httpService.get<ItemHistoryResponse>(url).pipe(map(x => {
+        const singleUrl = [HISTORY_URL, dataCenter.name, itemIds[0]].join('/')
+        return this.httpService.get<ItemHistoryResponse>(singleUrl).pipe(map(x => {
             const response: ItemsHistoryResponse = {
-                itemIds: itemIds,
+                itemIDs: itemIds,
                 dcName: dataCenter.name,
                 unresolvedItems: [],
                 items: {}
