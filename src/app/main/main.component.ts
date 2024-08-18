@@ -4,7 +4,7 @@ import { BaseComponent } from '../base.component';
 import { PriceResult } from '../models/price-result.model';
 import { CommonModule } from '@angular/common';
 import { PriceResultComponent } from "../price-result/price-result.component";
-import { CraftResult } from '../models/craft-result.model';
+import { CraftResult, getProfit } from '../models/craft-result.model';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 
@@ -34,8 +34,8 @@ export class MainComponent extends BaseComponent {
         this.subscription.add(this.calculationService.priceResults.subscribe(results => {
             results = results.map(x => {
                 x.cheapestCraft = x.craftedPrices.getMinByProperty<CraftResult>(x => x.price);
-                x.shopProfit = this.getProfit(x.shopPrice, x.marketPrice);
-                x.craftProfit = this.getProfit(x.cheapestCraft?.price, x.marketPrice);
+                x.shopProfit = getProfit(x.shopPrice, x.marketPrice);
+                x.craftProfit = getProfit(x.cheapestCraft?.price, x.marketPrice);
                 return x;
             });
             
@@ -85,17 +85,5 @@ export class MainComponent extends BaseComponent {
         } else {
             return results.sortByPropertyDescending(x => this.sortCrafted ? x.craftProfit ?? 0 : x.shopProfit ?? 0);
         }
-    }
-    
-    getProfit(buyPrice?: number, sellPrice?: number): number | undefined {
-        if (sellPrice == null || buyPrice == null) {
-            return undefined;
-        }
-
-        if (sellPrice! <= buyPrice!) {
-            return undefined;
-        }
-
-        return Math.round(sellPrice! - buyPrice!);
     }
 }

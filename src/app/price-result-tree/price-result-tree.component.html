@@ -1,0 +1,17 @@
+<div [ngStyle]="{'padding-left': (depth() * 20) + 'px'}" class="modal">
+    @if(depth() !== 0){
+        @if((result().cheapestCraft?.price ?? 999999) < (result().marketPrice ?? 999999)) {
+            <div>
+                <span class="craft-item">Craft:</span><span> {{ result().name }}</span>
+            </div>
+        } @else {
+            <div>
+                <span class="buy-item">Buy:</span><span> {{ result().name }}</span>
+            </div>
+        }
+    }
+
+    @for (item of result().cheapestCraft?.components; track item.name) {
+        <app-price-result-tree [result]="item" [depth]="depth() +1"></app-price-result-tree>
+    }
+</div>

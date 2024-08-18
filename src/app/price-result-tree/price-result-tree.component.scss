@@ -1,0 +1,18 @@
+.buy-item {
+    background-color: #ffabf3;
+    color: #5b005b;
+}
+
+.craft-item {
+    background-color: #ffb4ab;
+    color: #690005;
+}
+
+.modal {
+    background-color: var(--mat-app-background-color, transparent);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    color: var(--mat-app-text-color, inherit);
+}
