@@ -30,6 +30,12 @@
 .item {
     background-color: #ffabf3;
     color: #5b005b;
+    ::ng-deep div {
+        ::ng-deep .loader:after {
+            color: #5b005b;
+        }   
+    }
+    
     border: 15px solid var(--mat-app-background-color, transparent);;
     height: 33.3333333333333333333333333%;
     box-sizing: border-box;
@@ -41,4 +47,9 @@
 .item:nth-child(odd) {
     background-color: #ffb4ab;
     color: #690005;
+    ::ng-deep div {
+        ::ng-deep .loader:after {
+            color: #690005;
+        }   
+    }
 }

@@ -62,16 +62,20 @@ mat-list {
             color: #5b005b;
         }
     }
-    background-color: #ffabf3;
+    // background-color: #ffabf3;
+    background: rgb(255,171,243);
+    background: linear-gradient(90deg,rgba(255,171,243,1) 75%, rgba(0,0,0,0) 100%);
 }
 
 .item-selected:nth-child(odd) {
-    background-color: #ffb4ab;
+    // background-color: #ffb4ab;
     ::ng-deep .mdc-list-item__content {
         .mdc-list-item__primary-text {
             color: #690005;
         }
     }
+    background: rgb(255,180,171);
+    background: linear-gradient(90deg,rgba(255,180,171,1) 75%, rgba(0,0,0,0) 100%);
 }
 
 .item-selected:not(:first-of-type) {
