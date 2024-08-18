@@ -47,7 +47,7 @@ import { CalculationService } from '../services/calculation.service';
 })
 export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy {
 
-    public searchFilter: string = 'archeo ';
+    public searchFilter: string = '';
     public changeFlag: boolean = false;
 
     public items: Item[] = [];
