@@ -26,7 +26,7 @@ import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/
 export class MainComponent extends BaseComponent {
 
     public results: PriceResult[] = [this.mockResult()];
-    public sortAscending = true;
+    public sortAscending = false;
 
     constructor(private calculationService: CalculationService) {
         super();
