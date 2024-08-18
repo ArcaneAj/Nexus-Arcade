@@ -169,7 +169,6 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
         itemIds: number[],
         recipeCache: { [id: number] : ItemRecipe; }
     ): void {
-        console.log(itemIds);
         const observable = combineLatest({
             itemHistoryResponse: this.universalis.history(itemIds, this.settings.getCurrentWorld().dataCenter),
             items: this.storage.Items(),

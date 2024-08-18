@@ -27,7 +27,6 @@ export class PriceResultComponent {
     public marketPrice = computed(() => Math.round(this.result().marketPrice ?? 0));
     public shopPrice = computed(() => this.result().shopPrice);
     public cheapestCraft = computed(() => {
-        console.log(this.result());
         const cheapestCraft = this.result().cheapestCraft;
         if (cheapestCraft != null) {
             populateCheapestTree(cheapestCraft);

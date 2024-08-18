@@ -83,7 +83,6 @@ export class StorageService {
             const start = Date.now();
             const items: Item[] = response.items.filter(i => !!i.Name);
             const marketableItems: Item[] = response.marketable.map(i => response.items[i]).filter(i => !!i.Name);
-            console.log(Date.now() - start);
             
             await db.populateMarketableItemNames(marketableItems);
             await db.populateItemNames(items);
