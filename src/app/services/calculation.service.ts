@@ -48,7 +48,8 @@ export class CalculationService {
                 craftedPrices: [
                     {
                         price: Number.MAX_SAFE_INTEGER,
-                        components: []
+                        components: [],
+                        amount: 1
                     }
                 ],
                 shopPrice: Number.MAX_SAFE_INTEGER
@@ -110,7 +111,8 @@ export class CalculationService {
             const jobIds = Object.keys(itemRecipes);
             const craftResults: CraftResult[] = [];
             for (const jobId of jobIds) {
-                const componentItems: Ingredient[] = itemRecipes[+jobId].Ingredients.concat(itemRecipes[+jobId].Crystals);
+                const jobRecipe = itemRecipes[+jobId];
+                const componentItems: Ingredient[] = jobRecipe.Ingredients.concat(jobRecipe.Crystals);
                 const components: PriceResult[] = componentItems.map(x =>  {
                     const priceResult = {...this.getPriceForItem(x.itemId)};
                     priceResult.requiredAmount = x.amount;
@@ -119,7 +121,8 @@ export class CalculationService {
                 craftResults.push({
                     price: components.map(x => getLowestPrice(x) * x.requiredAmount).reduce((partialSum, a) => partialSum + a, 0),
                     components: components.map(x => x),
-                })
+                    amount: jobRecipe.Amount
+                });
             }
 
             return craftResults;
@@ -151,5 +154,5 @@ function getMarketPrice(entries: ItemHistoryEntry[]): number {
 }
 
 function getLowestPrice(result: PriceResult): number {
-    return Math.min(...result.craftedPrices.map(x => x.price), result.marketPrice ?? Number.MAX_SAFE_INTEGER, result.shopPrice ?? Number.MAX_SAFE_INTEGER);
+    return Math.min(...result.craftedPrices.map(x => x.price / x.amount), result.marketPrice ?? Number.MAX_SAFE_INTEGER, result.shopPrice ?? Number.MAX_SAFE_INTEGER);
 }

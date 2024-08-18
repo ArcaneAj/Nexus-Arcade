@@ -47,7 +47,7 @@ import { CalculationService } from '../services/calculation.service';
 })
 export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy {
 
-    public searchFilter: string = '';
+    public searchFilter: string = 'grade 2 gemdraught';
     public changeFlag: boolean = false;
 
     public items: Item[] = [];

@@ -34,7 +34,7 @@ export class MainComponent extends BaseComponent {
             results = results.map(x => {
                 x.cheapestCraft = x.craftedPrices.getMinByProperty<CraftResult>(x => x.price);
                 x.shopProfit = getProfit(x.shopPrice, x.marketPrice);
-                x.craftProfit = getProfit(x.cheapestCraft?.price, x.marketPrice);
+                x.craftProfit = (x.cheapestCraft == null || x.marketPrice == null) ? 0 : getProfit(x.cheapestCraft.price, x.marketPrice * x.cheapestCraft.amount);
                 return x;
             });
             
