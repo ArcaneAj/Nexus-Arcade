@@ -123,6 +123,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     calculate(): void {
         const itemIds = this.items.filter(x => x.selected).map(x => x.id);
         if (itemIds.length === 0) {
+            this.setSelected([], false);
             return;
         }
 
