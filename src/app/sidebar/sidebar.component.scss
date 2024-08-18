@@ -44,5 +44,25 @@ mat-list {
 }
 
 .item-selected {
-    background-color: red;
+    box-sizing: border-box;
+    border: 5px solid var(--mat-app-background-color, transparent);
+    ::ng-deep .mdc-list-item__content {
+        .mdc-list-item__primary-text {
+            color: #5b005b;
+        }
+    }
+    background-color: #ffabf3;
 }
+.item-selected:nth-child(odd) {
+    background-color: #ffb4ab;
+    ::ng-deep .mdc-list-item__content {
+        .mdc-list-item__primary-text {
+            color: #690005;
+        }
+    }
+}
+
+.item-selected:not(:first-of-type) {
+    border-top: 0px;
+}
+
