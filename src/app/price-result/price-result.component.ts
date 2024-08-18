@@ -1,9 +1,10 @@
-import { Component, computed, ElementRef, input, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, input, output, ViewChild } from '@angular/core';
 import { PriceResult } from '../models/price-result.model';
 import { CommonModule } from '@angular/common';
 import { CraftResult, getProfit } from '../models/craft-result.model';
 import { PriceResultTreeComponent } from '../price-result-tree/price-result-tree.component';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'app-price-result',
@@ -12,12 +13,14 @@ import { MatButtonModule } from '@angular/material/button';
         CommonModule,
         PriceResultTreeComponent,
         MatButtonModule,
+        MatIconModule,
     ],
     templateUrl: './price-result.component.html',
     styleUrl: './price-result.component.scss'
 })
 export class PriceResultComponent {
     Number = Number;
+    public clear = output<boolean>();
     public sortCrafted = input.required<boolean>();
     public result = input.required<PriceResult>();
     public name = computed(() => this.result().name);
@@ -49,6 +52,11 @@ export class PriceResultComponent {
         if (this.dialog) {
             this.dialog.nativeElement.close();
         }
+    }
+
+    onRightClick(event: MouseEvent) {
+        event.preventDefault();
+        this.clear.emit(true);
     }
 }
 

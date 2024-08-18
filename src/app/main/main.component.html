@@ -23,6 +23,7 @@
         @for (result of results; track result.name) {
             <app-price-result
                 class="item"
+                (clear)="clearResult(result)"
                 [sortCrafted]="sortCrafted"
                 [result]="result">
             </app-price-result>

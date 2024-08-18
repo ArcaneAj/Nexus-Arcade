@@ -68,6 +68,12 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
         this.subscription.add(this.storage.MarketableItems().subscribe(items => {
             this.setSelected(items, false);
         }));
+
+        this.subscription.add(this.calculationService.deselect.subscribe(x => {
+            if (x.item != null) {
+                this.onSelect(x.item);
+            }
+        }))
     }
 
     private setSelected(items: Item[], selected: boolean): void {

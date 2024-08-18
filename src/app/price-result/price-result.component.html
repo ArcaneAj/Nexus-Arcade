@@ -1,4 +1,4 @@
-<div class="grid" (click)="openModal()">
+<div class="grid" (click)="openModal()" (contextmenu)="onRightClick($event)">
     <div class="title double-wide">
         {{name()}}
     </div>

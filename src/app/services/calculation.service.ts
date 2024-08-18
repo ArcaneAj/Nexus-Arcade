@@ -14,6 +14,8 @@ import { Observable, Subject } from 'rxjs';
 export class CalculationService {
     private priceResultsSubject: Subject<PriceResult[]> = new Subject<PriceResult[]>();
     public priceResults: Observable<PriceResult[]> = this.priceResultsSubject.asObservable();
+    private deselectSubject: Subject<PriceResult> = new Subject<PriceResult>();
+    public deselect: Observable<PriceResult> = this.deselectSubject.asObservable();
 
     private priceResultCache: { [id: number] : PriceResult; };
     private recipeCache: { [id: number] : ItemRecipe; } = {};
@@ -23,6 +25,10 @@ export class CalculationService {
 
     constructor() {
         this.priceResultCache = {};
+    }
+
+    public deselectItem(result: PriceResult) {
+        this.deselectSubject.next(result);
     }
 
     public getPriceSkeleton(

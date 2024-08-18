@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, output } from '@angular/core';
 import { CalculationService } from '../services/calculation.service';
 import { BaseComponent } from '../base.component';
 import { PriceResult } from '../models/price-result.model';
@@ -24,7 +24,6 @@ import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/
     styleUrl: './main.component.scss'
 })
 export class MainComponent extends BaseComponent {
-
     public results: PriceResult[] = [];
     public sortAscending = false;
     public sortCrafted = true;
@@ -85,5 +84,10 @@ export class MainComponent extends BaseComponent {
         } else {
             return results.sortByPropertyDescending(x => this.sortCrafted ? x.craftProfit ?? 0 : x.shopProfit ?? 0);
         }
+    }
+
+    clearResult(result: PriceResult) {
+        this.results.splice(this.results.indexOf(result), 1);
+        this.calculationService.deselectItem(result);
     }
 }

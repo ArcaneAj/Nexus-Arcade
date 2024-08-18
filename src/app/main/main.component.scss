@@ -28,12 +28,13 @@
 }
 
 .item {
+    position: relative;
     background-color: #ffabf3;
     color: #5b005b;
     ::ng-deep div {
         ::ng-deep .loader:after {
             color: #5b005b;
-        }   
+        }
     }
 
     border: 15px solid var(--mat-app-background-color, transparent);;
@@ -50,7 +51,7 @@
     ::ng-deep div {
         ::ng-deep .loader:after {
             color: #690005;
-        }   
+        }
     }
 }
 
