@@ -1,18 +1,20 @@
-<div>
-    {{name()}}
-</div>
-<div>
-    Market Price: {{marketPrice()}}
-</div>
-<div>
-    Shop Cost: {{shopPrice()}}
-</div>
-<div>
-    Crafted Cost: {{cheapestCraft()?.price}}
-</div>
-<div>
-    Shop profit: {{shopProfit()}}
-</div>
-<div>
-    Craft profit: {{craftProfit()}}
+<div class="grid">
+    <div class="title">
+        {{name()}}
+    </div>
+    <div class="market-price">
+        Market Price: {{marketPrice()}}
+    </div>
+    <div class="shop-cost">
+        Shop Cost: {{shopPrice() === Number.MAX_SAFE_INTEGER ? "Not Sold" : shopPrice()}}
+    </div>
+    <div class="craft-cost">
+        Crafted Cost: {{cheapestCraftPrice()}}
+    </div>
+    <div class="shop-profit">
+        Shop profit: {{shopProfit()}}
+    </div>
+    <div class="craft-profit">
+        Craft profit: {{craftProfit()}}
+    </div>
 </div>

@@ -1,0 +1,56 @@
+.grid {
+    margin: 10px;
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(11, minmax(0, 1fr))
+}
+
+.title {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 3;
+    background-color: blue;
+}
+
+.market-price {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 4;
+    grid-row-end: 6;
+    background-color: red;
+}
+
+.shop-cost {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 7;
+    grid-row-end: 8;
+    background-color: blue;
+}
+
+.craft-cost {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 7;
+    grid-row-end: 9;
+    background-color: green;
+}
+
+.shop-profit {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 10;
+    grid-row-end: 12;
+    background-color: blue;
+}
+
+.craft-profit {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 10;
+    grid-row-end: 12;
+    background-color: green;
+}

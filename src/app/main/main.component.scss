@@ -1,6 +1,6 @@
 .content {
     width: 100%;
-    height: calc(100vh - 96px);
+    height: calc(100vh - 98px);
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -11,8 +11,11 @@
 
 .sort {
     width: 100%;
-    height: 40px;
-    background-color: white;
+    height: 42px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background-color: var(--mat-app-background-color, transparent);
 }
 
 .item {

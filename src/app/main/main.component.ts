@@ -65,6 +65,6 @@ export class MainComponent extends BaseComponent {
             return 0;
         }
 
-        return sellPrice! - buyPrice!;
+        return Math.round(sellPrice! - buyPrice!);
     }
 }

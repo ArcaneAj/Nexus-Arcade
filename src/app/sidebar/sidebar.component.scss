@@ -13,7 +13,7 @@
 }
 
 .buttons {
-    height: 40px;
+    height: 42px;
     width: 100%;
 }
 
@@ -34,13 +34,13 @@
 
 mat-list {
     padding: 0px;
-    height: 100%;
+    height: calc(100% - 2px);
 }
 
 .half-button {
     border-radius: 0px;
     width: 50%;
-    height: 40px;
+    height: 42px;
 }
 
 .item-selected {
