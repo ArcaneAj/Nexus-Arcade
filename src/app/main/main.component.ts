@@ -31,7 +31,6 @@ export class MainComponent extends BaseComponent {
     constructor(private calculationService: CalculationService) {
         super();
         this.subscription.add(this.calculationService.priceResults.subscribe(results => {
-            console.log(results);
             results = results.map(x => {
                 x.cheapestCraft = x.craftedPrices.getMinByProperty<CraftResult>(x => x.price);
                 x.shopProfit = this.getProfit(x.shopPrice, x.marketPrice);
@@ -76,9 +75,9 @@ export class MainComponent extends BaseComponent {
 
     sortResults(results: PriceResult[]): PriceResult[] {
         if (this.sortAscending) {
-            return results.sortByPropertyAscending(x => x.craftProfit ?? 0);
+            return results.sortByPropertyAscending(x => Math.min(x.craftProfit ?? Number.MAX_SAFE_INTEGER, x.shopProfit ?? Number.MAX_SAFE_INTEGER));
         } else {
-            return results.sortByPropertyDescending(x => x.craftProfit ?? 0);
+            return results.sortByPropertyDescending(x => Math.max(x.craftProfit ?? 0, x.shopProfit ?? 0));
         }
     }
     
