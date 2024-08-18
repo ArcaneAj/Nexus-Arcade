@@ -66,7 +66,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
 
     ngOnInit(): void {
         this.subscription.add(this.storage.MarketableItems().subscribe(items => {
-            this.setSelected(items, false);
+            this.setSelected([], false);
         }));
     }
 
