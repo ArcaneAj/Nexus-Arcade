@@ -7,6 +7,7 @@ import { CraftResult } from '../models/craft-result.model';
 import { Ingredient } from '../models/ingredient.model';
 import { ItemHistoryEntry } from '../models/item-history-entry.model';
 import { Observable, Subject } from 'rxjs';
+import { SettingsService } from './settings.service';
 
 @Injectable({
     providedIn: 'root'
@@ -17,13 +18,15 @@ export class CalculationService {
     private deselectSubject: Subject<PriceResult> = new Subject<PriceResult>();
     public deselect: Observable<PriceResult> = this.deselectSubject.asObservable();
 
-    private priceResultCache: { [id: number] : PriceResult; };
+    private priceResultCache: { [dataCenter: string] : { [id: number] : PriceResult; }; };
     private recipeCache: { [id: number] : ItemRecipe; } = {};
     private itemCache: { [id: number] : Item; } = {};
     private itemHistoryResponse!: ItemsHistoryResponse;
     private gilShopIds: number[] = [];
 
-    constructor() {
+    constructor(
+        private settings: SettingsService
+    ) {
         this.priceResultCache = {};
     }
 
@@ -65,14 +68,16 @@ export class CalculationService {
         this.itemCache = items.toDict(x => x.id);
         this.itemHistoryResponse = itemHistoryResponse;
         this.gilShopIds = gilShopIds.unique().sort();
+        this.priceResultCache = {};
         this.priceResultsSubject.next(rootIds.map(x => this.getPriceForItem(x)));
     }
 
     private getPriceForItem(
         id: number
     ): PriceResult {
+        const currentDc = this.settings.getCurrentWorld().dataCenter.name;
         if (id in this.priceResultCache) {
-            return this.priceResultCache[id];
+            return this.priceResultCache[currentDc][id];
         }
 
         const item = this.itemCache[id];
@@ -90,7 +95,11 @@ export class CalculationService {
             shopPrice
         };
 
-        this.priceResultCache[id] = priceResult;
+        if (this.priceResultCache[currentDc] == null) {
+            this.priceResultCache[currentDc] = {};
+        }
+
+        this.priceResultCache[currentDc][id] = priceResult;
         
         return priceResult;
     }

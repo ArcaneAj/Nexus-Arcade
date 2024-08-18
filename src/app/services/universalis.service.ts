@@ -45,7 +45,7 @@ export class UniversalisService {
             }, []);
 
             return forkJoin(chunkedIds.map(idChunk => {
-                const url = [HISTORY_URL, dataCenter.name, idChunk.join()].join('/')
+                const url = [HISTORY_URL, dataCenter.name, idChunk.join()].join('/');
                 return this.httpService.get<ItemsHistoryResponse>(url);
             })).pipe(map(responses => {
                 const itemHistoryResponse: ItemsHistoryResponse = {
@@ -65,7 +65,7 @@ export class UniversalisService {
             }));
         }
 
-        const singleUrl = [HISTORY_URL, dataCenter.name, itemIds[0]].join('/')
+        const singleUrl = [HISTORY_URL, dataCenter.name, itemIds[0]].join('/');
         return this.httpService.get<ItemHistoryResponse>(singleUrl).pipe(map(x => {
             const response: ItemsHistoryResponse = {
                 itemIDs: itemIds,
