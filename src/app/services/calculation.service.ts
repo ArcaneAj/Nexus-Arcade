@@ -36,7 +36,13 @@ export class CalculationService {
                 item: item,
                 name: item.Name,
                 requiredAmount: 1,
-                craftedPrices: [],
+                craftedPrices: [
+                    {
+                        price: Number.MAX_SAFE_INTEGER,
+                        components: []
+                    }
+                ],
+                shopPrice: Number.MAX_SAFE_INTEGER
             };
             return priceResult;
         }));

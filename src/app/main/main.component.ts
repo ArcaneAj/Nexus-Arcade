@@ -27,6 +27,7 @@ export class MainComponent extends BaseComponent {
 
     public results: PriceResult[] = [this.mockResult()];
     public sortAscending = false;
+    public sortCrafted = true;
 
     constructor(private calculationService: CalculationService) {
         super();
@@ -73,21 +74,26 @@ export class MainComponent extends BaseComponent {
         this.results = this.sortResults(this.results);
     }
 
+    sortPropertyChanged(event: MatButtonToggleChange) {
+        this.sortCrafted = event.value === "true";
+        this.results = this.sortResults(this.results);
+    }
+
     sortResults(results: PriceResult[]): PriceResult[] {
         if (this.sortAscending) {
-            return results.sortByPropertyAscending(x => Math.min(x.craftProfit ?? Number.MAX_SAFE_INTEGER, x.shopProfit ?? Number.MAX_SAFE_INTEGER));
+            return results.sortByPropertyAscending(x => this.sortCrafted ? x.craftProfit ?? Number.MAX_SAFE_INTEGER : x.shopProfit ?? Number.MAX_SAFE_INTEGER);
         } else {
-            return results.sortByPropertyDescending(x => Math.max(x.craftProfit ?? 0, x.shopProfit ?? 0));
+            return results.sortByPropertyDescending(x => this.sortCrafted ? x.craftProfit ?? 0 : x.shopProfit ?? 0);
         }
     }
     
-    getProfit(buyPrice?: number, sellPrice?: number): number {
+    getProfit(buyPrice?: number, sellPrice?: number): number | undefined {
         if (sellPrice == null || buyPrice == null) {
-            return 0;
+            return undefined;
         }
 
         if (sellPrice! <= buyPrice!) {
-            return 0;
+            return undefined;
         }
 
         return Math.round(sellPrice! - buyPrice!);

@@ -1,20 +1,40 @@
 <div class="grid">
-    <div class="title">
+    <div class="title double-wide">
         {{name()}}
     </div>
-    <div class="market-price">
-        Market Price: {{marketPrice()}}
-    </div>
-    <div class="shop-cost">
-        Shop Cost: {{shopPrice() === Number.MAX_SAFE_INTEGER ? "Not Sold" : shopPrice()}}
-    </div>
-    <div class="craft-cost">
-        Crafted Cost: {{cheapestCraftPrice()}}
-    </div>
-    <div class="shop-profit">
-        Shop profit: {{shopProfit()}}
-    </div>
-    <div class="craft-profit">
-        Craft profit: {{craftProfit()}}
-    </div>
+    
+    @if (marketPrice() !== 0) {
+        <div class="market-price double-wide">
+            Market Price: {{marketPrice()}}
+        </div>
+        
+        @if (sortCrafted()) {
+            @if (cheapestCraftPrice() < 999999) {
+                <div class="cost">
+                    Crafted Cost: {{cheapestCraftPrice()}}
+                </div>
+                <div class="profit">
+                    Craft profit: {{craftProfit()}}
+                </div>
+            } @else {
+                <div class="invalid">
+                    Item not craftable
+                </div>
+            }
+        }
+        @if (!sortCrafted()) {
+            @if ((shopPrice() ?? 1000000) < 999999) {
+                <div class="cost">
+                    Shop Cost: {{shopPrice()}}
+                </div>
+                <div class="profit">
+                    Shop profit: {{shopProfit()}}
+                </div>
+            } @else {
+                <div class="invalid">
+                    Item not purchasable
+                </div>
+            }
+        }
+    }
 </div>

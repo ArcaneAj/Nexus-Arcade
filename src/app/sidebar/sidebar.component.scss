@@ -64,6 +64,7 @@ mat-list {
     }
     background-color: #ffabf3;
 }
+
 .item-selected:nth-child(odd) {
     background-color: #ffb4ab;
     ::ng-deep .mdc-list-item__content {

@@ -1,18 +1,28 @@
 <div class="sort">
     <mat-button-toggle-group
-        name="favoriteColor"
-        aria-label="Favorite Color"
+        name="sortOrder"
+        aria-label="Sort Order"
         [hideSingleSelectionIndicator]="true"
         (change)="sortOrderChanged($event)"
         >
         <mat-button-toggle value="true" [checked]="sortAscending">Ascending</mat-button-toggle>
         <mat-button-toggle value="false" [checked]="!sortAscending">Descending</mat-button-toggle>
     </mat-button-toggle-group>
+    <mat-button-toggle-group
+        name="sortProperty"
+        aria-label="Sort Property"
+        [hideSingleSelectionIndicator]="true"
+        (change)="sortPropertyChanged($event)"
+        >
+        <mat-button-toggle value="false" [checked]="!sortCrafted">Shop</mat-button-toggle>
+        <mat-button-toggle value="true" [checked]="sortCrafted">Crafted</mat-button-toggle>
+    </mat-button-toggle-group>
 </div>
 <div class="content">
     @for (result of results; track result.name) {
         <app-price-result
             class="item"
+            [sortCrafted]="sortCrafted"
             [result]="result">
         </app-price-result>
     }

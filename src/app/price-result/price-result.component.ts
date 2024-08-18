@@ -1,14 +1,18 @@
 import { Component, computed, input } from '@angular/core';
 import { PriceResult } from '../models/price-result.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-price-result',
     standalone: true,
-    imports: [],
+    imports: [
+        CommonModule
+    ],
     templateUrl: './price-result.component.html',
     styleUrl: './price-result.component.scss'
 })
 export class PriceResultComponent {
+    public sortCrafted = input.required<boolean>();
     public result = input.required<PriceResult>();
     public name = computed(() => this.result().name);
     public marketPrice = computed(() => Math.round(this.result().marketPrice ?? 0));

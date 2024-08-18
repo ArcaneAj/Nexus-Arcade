@@ -28,11 +28,17 @@
 }
 
 .item {
-    background-color: var(--mat-app-background-color, transparent);
-    border: 1px dashed green;
+    background-color: #ffabf3;
+    color: #5b005b;
+    border: 15px solid var(--mat-app-background-color, transparent);;
     height: 33.3333333333333333333333333%;
     box-sizing: border-box;
     flex-basis: 33.3333333333333333333333333%;
     overflow-x: hidden;
     overflow-y: auto;
+}
+
+.item:nth-child(odd) {
+    background-color: #ffb4ab;
+    color: #690005;
 }
