@@ -19,11 +19,15 @@
     </mat-button-toggle-group>
 </div>
 <div class="content">
-    @for (result of results; track result.name) {
-        <app-price-result
-            class="item"
-            [sortCrafted]="sortCrafted"
-            [result]="result">
-        </app-price-result>
+    @if (results.length !== 0) {
+        @for (result of results; track result.name) {
+            <app-price-result
+                class="item"
+                [sortCrafted]="sortCrafted"
+                [result]="result">
+            </app-price-result>
+        }
+    } @else {
+        <div class="empty">Please select at least 1 item and click "Calculate" to see results</div>
     }
 </div>
