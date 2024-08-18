@@ -7,3 +7,7 @@
     align-items: center;
     background-color: var(--mat-app-background-color, transparent);
 }
+
+.content > * {
+    flex: 1;
+}

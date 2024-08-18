@@ -13,8 +13,8 @@
         }
     </mat-form-field>
     <div class="buttons">
-        <button mat-flat-button color="warn" class="half-button" (mousedown)="clearSelection()">Reset</button>
-        <button mat-flat-button color="primary" class="half-button" (mousedown)="calculate()">Calculate</button>
+        <button mat-flat-button color="warn" class="half-button reset-button" (mousedown)="clearSelection()">Reset</button>
+        <button mat-flat-button color="primary" class="half-button calculate-button" (mousedown)="calculate()">Calculate</button>
     </div>
     <mat-list>
         <cdk-virtual-scroll-viewport [itemSize]="50" class="virtual-viewport">

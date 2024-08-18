@@ -7,11 +7,12 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { SettingsDialogComponent } from './settings-dialog/settings-dialog.component';
 import { SettingsService } from '../services/settings.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-header',
     standalone: true,
-    imports: [MatButtonModule, MatDialogModule],
+    imports: [MatButtonModule, MatDialogModule, MatTooltipModule],
     templateUrl: './header.component.html',
     styleUrl: './header.component.scss'
 })

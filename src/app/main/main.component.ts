@@ -25,7 +25,7 @@ import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/
 })
 export class MainComponent extends BaseComponent {
 
-    public results: PriceResult[] = [];
+    public results: PriceResult[] = [this.mockResult()];
     public sortAscending = true;
 
     constructor(private calculationService: CalculationService) {
@@ -41,6 +41,32 @@ export class MainComponent extends BaseComponent {
             
             this.results = this.sortResults(results);
         }));
+    }
+
+    mockResult(): PriceResult {
+        return {
+            item: {
+                id: 1,
+                selected: false,
+                Singular: "Mocked Item",
+                Plural: "Mocked Items",
+                Description: "Item mocked for testing",
+                Name: "Mocked Item",
+                Icon: "Mocked.png",
+                StackSize: 999,
+                Price_Mid_: 500, // Shop purchase price
+                Price_Low_: 1, // Shop sell price
+            },
+            
+            name: "Mocked Item",
+            requiredAmount: 1,
+            marketPrice: 5000,
+            shopPrice: 500,
+            craftedPrices: [],
+            cheapestCraft: undefined,
+            shopProfit: 4500,
+            craftProfit: undefined,
+        }
     }
 
     sortOrderChanged(event: MatButtonToggleChange) {
