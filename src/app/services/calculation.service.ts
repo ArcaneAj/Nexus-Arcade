@@ -68,7 +68,6 @@ export class CalculationService {
         this.recipeCache = Object.assign({}, this.recipeCache, recipeCache);
         this.itemCache = items.toDict(x => x.id);
         this.itemHistoryResponse = itemHistoryResponse;
-        console.log(itemHistoryResponse);
         this.gilShopIds = gilShopIds.unique().sort();
         this.priceResultCache = {};
         this.priceResultsSubject.next(rootIds.map(x => this.getPriceForItem(x)));
