@@ -236,6 +236,7 @@ function parseItem(properties: string[], types: string[], values: string[]): Ite
         StackSize: obj.StackSize,
         Price_Mid_: obj.Price_Mid_, // Shop purchase price
         Price_Low_: obj.Price_Low_, // Shop sell price
+        craftable: false,
     };
     return item;
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { db } from '../db';
 import { UniversalisService } from './universalis.service';
-import { forkJoin, Subscription } from 'rxjs';
+import { combineLatest, forkJoin, Subscription } from 'rxjs';
 import { SettingsService } from './settings.service';
 import { liveQuery, Observable } from 'dexie';
 import { DataCenter } from '../models/datacenter.model';
@@ -75,12 +75,16 @@ export class StorageService {
     }
     
     private updateItemCache() {
-        const observable = forkJoin({
+        const observable = combineLatest({
             items: this.xivApi.items(),
-            marketable: this.universalis.marketable()
+            marketable: this.universalis.marketable(),
+            recipes: this.Recipes(),
           });
         this.subscription.add(observable.subscribe(async response => {
-            const start = Date.now();
+            for (const recipe of response.recipes) {
+                response.items[recipe.id].craftable = true;
+            }
+
             const items: Item[] = response.items.filter(i => !!i.Name);
             const marketableItems: Item[] = response.marketable.map(i => response.items[i]).filter(i => !!i.Name);
             

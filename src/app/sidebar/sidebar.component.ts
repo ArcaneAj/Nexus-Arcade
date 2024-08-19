@@ -22,6 +22,7 @@ import { ItemRecipe } from '../models/item-recipe.model';
 import { combineLatest } from 'rxjs';
 import { XivApiService } from '../services/xivapi.service';
 import { CalculationService } from '../services/calculation.service';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
     selector: 'app-sidebar',
@@ -37,6 +38,7 @@ import { CalculationService } from '../services/calculation.service';
         MatIconModule,
         MatListModule,
         ScrollingModule,
+        MatCheckboxModule,
         // Custom components
         FilterPipe,
         OrderPipe,
@@ -49,6 +51,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
 
     public searchFilter: string = '';
     public changeFlag: boolean = false;
+    public onlyCrafted: boolean = false;
 
     public items: Item[] = [];
 
@@ -91,7 +94,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     selectFirst(): void {
-        const orderedItems = this.orderPipe.transform(this.filterPipe.transform(this.items, this.searchFilter), false);
+        const orderedItems = this.orderPipe.transform(this.filterPipe.transform(this.items, this.searchFilter, this.onlyCrafted), false);
         for (const item of orderedItems) {
             if (!item.selected) {
                 item.selected = true;
@@ -102,7 +105,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     deselectLast(): void {
-        const orderedItems = this.orderPipe.transform(this.filterPipe.transform(this.items, this.searchFilter), false);
+        const orderedItems = this.orderPipe.transform(this.filterPipe.transform(this.items, this.searchFilter, this.onlyCrafted), false);
         let previousItem = null;
         for (const item of orderedItems) {
             if (!item.selected) {

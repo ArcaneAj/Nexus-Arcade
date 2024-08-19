@@ -9,4 +9,5 @@ export interface Item {
     StackSize: number,
     Price_Mid_: number, // Shop purchase price
     Price_Low_: number, // Shop sell price
+    craftable: boolean,
 }

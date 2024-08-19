@@ -17,16 +17,25 @@
         <button mat-flat-button color="primary" class="half-button calculate-button" (mousedown)="calculate()">Calculate</button>
     </div>
     @if (items && items.length > 0) {
-        <mat-list>
-            <cdk-virtual-scroll-viewport [itemSize]="50" class="virtual-viewport">
-                <mat-list-item
-                    *cdkVirtualFor="let item of (items | filter: searchFilter | order: changeFlag)"
-                    (mousedown)="onSelect(item)"
-                    [ngClass]="{'item-selected': item.selected}">
-                    {{item.Name}}
-                </mat-list-item>
-            </cdk-virtual-scroll-viewport>
-        </mat-list>
+        <div class="item-select">
+            <div class="feature-toggles">
+                <mat-checkbox
+                class="feature-toggle"
+                [(ngModel)]="onlyCrafted">
+                    Only Crafted
+                </mat-checkbox>
+            </div>
+            <mat-list>
+                <cdk-virtual-scroll-viewport [itemSize]="50" class="virtual-viewport">
+                    <mat-list-item
+                        *cdkVirtualFor="let item of (items | filter: searchFilter:onlyCrafted | order: changeFlag)"
+                        (mousedown)="onSelect(item)"
+                        [ngClass]="{'item-selected': item.selected}">
+                        {{item.Name}}
+                    </mat-list-item>
+                </cdk-virtual-scroll-viewport>
+            </mat-list>
+        </div>
     } @else {
         <div class="loader-wrapper">
             <span class="loader"></span>

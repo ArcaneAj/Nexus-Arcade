@@ -55,6 +55,7 @@ export class MainComponent extends BaseComponent {
                 StackSize: 999,
                 Price_Mid_: 500, // Shop purchase price
                 Price_Low_: 1, // Shop sell price
+                craftable: false
             },
             
             name: "Mocked Item",

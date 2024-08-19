@@ -10,7 +10,7 @@ export class FilterPipe implements PipeTransform {
 
     constructor(public settings: SettingsService) {}
 
-    transform(value: Item[] | null, filter: string): Item[] {
+    transform(value: Item[] | null, filter: string, onlyCrafted: boolean): Item[] {
         if (value === null) {
             return [];
         }
@@ -18,6 +18,10 @@ export class FilterPipe implements PipeTransform {
         const prefixes = filter.split(/\s+/)
 
         const filtered = value.filter(i => {
+            if (onlyCrafted && !i.craftable) {
+                return false;
+            }
+
             if (i.selected) {
                 return true;
             }
