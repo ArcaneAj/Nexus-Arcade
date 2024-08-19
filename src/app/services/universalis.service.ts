@@ -138,6 +138,10 @@ export class UniversalisService {
 
         return undefined;
     }
+
+    public purgeCache() {
+        this.cache = {};
+    }
 }
 
 function addMinutes(date: Date, minutes: number) {

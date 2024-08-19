@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SettingsDialogComponent } from './settings-dialog/settings-dialog.component';
 import { SettingsService } from '../services/settings.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { UniversalisService } from '../services/universalis.service';
 
 @Component({
     selector: 'app-header',
@@ -42,6 +43,7 @@ export class HeaderComponent extends BaseComponent implements OnInit {
     constructor(
         private storage: StorageService,
         private settings: SettingsService,
+        private universalis: UniversalisService,
     ) {
         super();
     }
@@ -53,5 +55,6 @@ export class HeaderComponent extends BaseComponent implements OnInit {
 
     purge() {
         this.storage.purge();
+        this.universalis.purgeCache();
     }
 }
