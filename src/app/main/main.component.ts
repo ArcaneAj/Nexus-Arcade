@@ -7,6 +7,7 @@ import { PriceResultComponent } from "../price-result/price-result.component";
 import { CraftResult, getProfit } from '../models/craft-result.model';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'app-main',
@@ -17,6 +18,7 @@ import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/
     // Angular material
     ScrollingModule,
     MatButtonToggleModule,
+    MatIconModule,
     // Custom components
     PriceResultComponent
 ],
