@@ -22,11 +22,7 @@ export class FilterPipe implements PipeTransform {
                 return false;
             }
 
-            if (i.recipeLevel == null) {
-                return false;
-            }
-
-            if (minLevel > i.recipeLevel || maxLevel < i.recipeLevel) {
+            if (minLevel > (i.recipeLevel ?? 0) || maxLevel < (i.recipeLevel ?? 0)) {
                 return false;
             }
 
