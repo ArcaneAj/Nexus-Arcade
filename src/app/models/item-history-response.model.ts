@@ -11,4 +11,5 @@ export interface ItemHistoryResponse {
     nqSaleVelocity: number;
     hqSaleVelocity: number;
     entries: ItemHistoryEntry[];
+    expiry: any;
 }

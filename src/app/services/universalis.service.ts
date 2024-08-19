@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from './http.service';
-import { Observable, forkJoin, map } from 'rxjs';
+import { Observable, forkJoin, map, of } from 'rxjs';
 import { DataCenter } from '../models/datacenter.model';
 import { World } from '../models/world.model';
 import { ItemsHistoryResponse } from '../models/items-history-response.model';
@@ -16,7 +16,10 @@ const HISTORY_URL = 'https://universalis.app/api/v2/history'
 })
 export class UniversalisService {
 
-    constructor(private httpService: HttpService) { }
+    private cache: { [dataCenter: string] : { [id: string] : ItemHistoryResponse; }; };
+    constructor(private httpService: HttpService) {
+        this.cache = {};
+    }
 
     public marketable(): Observable<number[]> {
         return this.httpService.get<number[]>(MARKETABLE_URL)
@@ -31,6 +34,36 @@ export class UniversalisService {
     }
 
     public history(itemIds: number[], dataCenter: DataCenter): Observable<ItemsHistoryResponse> {
+
+        const cachedHistoryResponse: ItemsHistoryResponse = {
+            itemIDs: [],
+            dcName: dataCenter.name,
+            unresolvedItems: [],
+            items: {}
+        };
+        
+        const indicesToRemove: number[] = [];
+        for (const id of itemIds) {
+            var item = this.getFromCache(dataCenter.name, id.toString())
+            if (item != null) {
+                cachedHistoryResponse.items[id.toString()] = item;
+                cachedHistoryResponse.itemIDs.push(id);
+                const index = itemIds.indexOf(id, 0);
+                if (index > -1) {
+                    indicesToRemove.push(index);
+                }
+            }
+        }
+
+        for (const index of [...indicesToRemove].reverse()) {
+            itemIds.splice(index, 1);
+        }
+
+
+        if (itemIds.length === 0) {
+            return of(cachedHistoryResponse);
+        }
+        
         if (itemIds.length > 1) {
             const chunkedIds: number[][] = itemIds.reduce((resultArray: number[][], item, index) => { 
                 const chunkIndex = Math.floor(index/100)
@@ -60,6 +93,12 @@ export class UniversalisService {
                     itemHistoryResponse.unresolvedItems.push(...response.unresolvedItems);
                     itemHistoryResponse.items = {...response.items, ...itemHistoryResponse.items};
                 }
+                for (const key in itemHistoryResponse.items) {
+                    this.addToCache(itemHistoryResponse.items[key], dataCenter.name, key);
+                }
+
+                itemHistoryResponse.itemIDs.push(...cachedHistoryResponse.itemIDs);
+                itemHistoryResponse.items = {...cachedHistoryResponse.items, ...itemHistoryResponse.items};
 
                 return itemHistoryResponse;
             }));
@@ -73,8 +112,35 @@ export class UniversalisService {
                 unresolvedItems: [],
                 items: {}
             }
+
             response.items[itemIds[0].toString()] = x
+            response.itemIDs.push(...cachedHistoryResponse.itemIDs);
+            response.items = {...cachedHistoryResponse.items, ...response.items};
             return response;
         }));
     }
+
+    addToCache(item: ItemHistoryResponse, dataCentre: string, key: string) {
+        item.expiry = addMinutes(new Date(), 30);
+        if (!(dataCentre in this.cache)) {
+            this.cache[dataCentre] = {};
+        }
+        this.cache[dataCentre][key] = item;
+    }
+
+    getFromCache(dataCentre: string, key: string): ItemHistoryResponse | undefined {
+        if (dataCentre in this.cache && key in this.cache[dataCentre]) {
+            const item = this.cache[dataCentre][key];
+            if (item.expiry > new Date()) {
+                return item;
+            }
+        }
+
+        return undefined;
+    }
+}
+
+function addMinutes(date: Date, minutes: number) {
+    date.setMinutes(date.getMinutes() + minutes);
+    return date;
 }
