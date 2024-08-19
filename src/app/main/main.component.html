@@ -37,14 +37,18 @@
             </div>
             <div class="kofi">
                 Or support the hosting of Arcade Nexus
-                <img (click)="openModal()" height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi4.png?v=3' alt='Buy Me a Coffee at ko-fi.com' />
+                @if (disableModal) {
+                    <a href="https://ko-fi.com/arcaneaj" target="_blank" rel="noopener noreferrer"><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi4.png?v=3' alt='Buy Me a Coffee at ko-fi.com' /></a>
+                } @else {
+                    <img (click)="openModal()" height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi4.png?v=3' alt='Buy Me a Coffee at ko-fi.com' />
+                }
             </div>
         </div>
     }
 </div>
 
 <!-- Modal -->
-<dialog #dialog>
+<dialog #dialog class="modal" (click)="closeModal()">
     <iframe id='kofiframe' src='https://ko-fi.com/arcaneaj/?hidefeed=true&widget=true&embed=true&preview=true' style='border:none;width:100%;padding:0px;background:#f9f9f9;' height='712' title='arcaneaj'></iframe>
-    <button mat-flat-button color="primary" class="close-button" (click)="closeModal()">Close</button>
+    <button mat-flat-button color="primary" class="close-button">Close</button>
 </dialog>

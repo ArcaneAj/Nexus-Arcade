@@ -27,6 +27,7 @@ export class MainComponent extends BaseComponent {
     public results: PriceResult[] = [];
     public sortAscending = false;
     public sortCrafted = true;
+    public disableModal = false;
 
     constructor(private calculationService: CalculationService) {
         super();
