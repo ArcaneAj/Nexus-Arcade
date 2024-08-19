@@ -84,6 +84,13 @@
     color: #fff;
 }
 
+.none-sold {
+    grid-row-start: 6;
+    grid-row-end: 8;
+    justify-self: center;
+    align-self: center;
+}
+
 .loader:before,
 .loader:after {
     content: '';

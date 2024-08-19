@@ -3,7 +3,7 @@
         {{name()}}
     </div>
     
-    @if (marketPrice() !== 0) {
+    @if (marketPrice() > 0) {
         <div class="market-price double-wide">
             Market Price: {{marketPrice()}}
         </div>
@@ -36,6 +36,8 @@
                 </div>
             }
         }
+    } @else if (marketPrice() < 0) {
+        <span class="none-sold">None sold in last week</span>
     } @else {
         <span class="loader"></span>
     }
