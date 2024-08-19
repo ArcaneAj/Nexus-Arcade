@@ -83,6 +83,13 @@ export class StorageService {
         this.subscription.add(observable.subscribe(async response => {
             for (const recipe of response.recipes) {
                 response.items[recipe.id].craftable = true;
+                for (const key in recipe.recipes) {
+                    const jobRecipe = recipe.recipes[key];
+                    const currentRecipeLevel = response.items[recipe.id].recipeLevel;
+                    if (currentRecipeLevel == null || currentRecipeLevel > jobRecipe.RecipeLevel) {
+                        response.items[recipe.id].recipeLevel = jobRecipe.RecipeLevel;
+                    }
+                }
             }
 
             const items: Item[] = response.items.filter(i => !!i.Name);

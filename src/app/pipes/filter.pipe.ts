@@ -10,7 +10,7 @@ export class FilterPipe implements PipeTransform {
 
     constructor(public settings: SettingsService) {}
 
-    transform(value: Item[] | null, filter: string, onlyCrafted: boolean): Item[] {
+    transform(value: Item[] | null, filter: string, onlyCrafted: boolean, minLevel: number, maxLevel: number): Item[] {
         if (value === null) {
             return [];
         }
@@ -19,6 +19,14 @@ export class FilterPipe implements PipeTransform {
 
         const filtered = value.filter(i => {
             if (onlyCrafted && !i.craftable) {
+                return false;
+            }
+
+            if (i.recipeLevel == null) {
+                return false;
+            }
+
+            if (minLevel > i.recipeLevel || maxLevel < i.recipeLevel) {
                 return false;
             }
 

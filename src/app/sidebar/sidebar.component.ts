@@ -52,6 +52,8 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     public searchFilter: string = '';
     public changeFlag: boolean = false;
     public onlyCrafted: boolean = false;
+    public minLevel: number = 0;
+    public maxLevel: number = 999;
 
     public items: Item[] = [];
 
@@ -94,7 +96,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     selectFirst(): void {
-        const orderedItems = this.orderPipe.transform(this.filterPipe.transform(this.items, this.searchFilter, this.onlyCrafted), false);
+        const orderedItems = this.orderPipe.transform(this.filterPipe.transform(this.items, this.searchFilter, this.onlyCrafted, this.minLevel, this.maxLevel), false);
         for (const item of orderedItems) {
             if (!item.selected) {
                 item.selected = true;
@@ -105,7 +107,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     deselectLast(): void {
-        const orderedItems = this.orderPipe.transform(this.filterPipe.transform(this.items, this.searchFilter, this.onlyCrafted), false);
+        const orderedItems = this.orderPipe.transform(this.filterPipe.transform(this.items, this.searchFilter, this.onlyCrafted, this.minLevel, this.maxLevel), false);
         let previousItem = null;
         for (const item of orderedItems) {
             if (!item.selected) {

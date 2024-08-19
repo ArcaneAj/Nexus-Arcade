@@ -226,6 +226,10 @@ function parseItem(properties: string[], types: string[], values: string[]): Ite
         merged.push([propertyname, parse(types[i], values[i])]);
     }
     const obj = Object.fromEntries(merged.filter(x => x[0] !== '')) as XivApiItem;
+    if (obj.id === 39630) {
+        console.log(obj);
+    }
+    
     const item: Item = {
         id: obj.id,
         Singular: obj.Singular,
@@ -237,6 +241,8 @@ function parseItem(properties: string[], types: string[], values: string[]): Ite
         Price_Mid_: obj.Price_Mid_, // Shop purchase price
         Price_Low_: obj.Price_Low_, // Shop sell price
         craftable: false,
+        itemLevel: obj.Level_Equip_,
+        equipLevel: obj.Level_Item_,
     };
     return item;
 }
