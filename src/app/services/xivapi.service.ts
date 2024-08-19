@@ -227,7 +227,7 @@ function parseItem(properties: string[], types: string[], values: string[]): Ite
     }
     const obj = Object.fromEntries(merged.filter(x => x[0] !== '')) as XivApiItem;
     if (obj.id === 39630) {
-        console.log(obj);
+        // console.log(obj);
     }
     
     const item: Item = {
