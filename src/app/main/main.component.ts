@@ -1,4 +1,4 @@
-import { Component, output } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CalculationService } from '../services/calculation.service';
 import { BaseComponent } from '../base.component';
 import { PriceResult } from '../models/price-result.model';
@@ -92,5 +92,19 @@ export class MainComponent extends BaseComponent {
     clearResult(result: PriceResult) {
         this.results.splice(this.results.indexOf(result), 1);
         this.calculationService.deselectItem(result);
+    }
+    
+    @ViewChild('dialog', { static: false }) dialog: ElementRef | undefined;
+    
+    openModal() {
+        if (this.dialog) {
+            this.dialog.nativeElement.showModal();
+        }
+    }
+
+    closeModal() {
+        if (this.dialog) {
+            this.dialog.nativeElement.close();
+        }
     }
 }

@@ -19,6 +19,35 @@
     align-items: center;
 }
 
+.kofi {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.close-button {
+    background: rgb(255,176,207);
+    background: linear-gradient(90deg, rgba(255,176,207,1) 0%, rgba(255,171,243,1) 100%);
+    border-radius: 0px;
+    width: 100%;
+    height: 42px;
+    overflow: hidden;
+}
+
+.kofi-modal {
+    padding:0px;
+    background:#f9f9f9;
+    border:none;
+    width:100%;
+}
+
+dialog:-internal-dialog-in-top-layer::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
 .sort {
     width: 100%;
     height: 42px;
