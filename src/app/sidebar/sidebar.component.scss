@@ -5,6 +5,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
+    background-color: var(--mat-app-background-color, transparent);
 }
 
 .search-form-field {

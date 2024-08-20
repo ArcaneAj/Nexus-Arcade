@@ -59,7 +59,7 @@ dialog:-internal-dialog-in-top-layer::backdrop {
     height: 42px;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     background: rgb(255,171,243);
     background: linear-gradient(90deg, rgba(255,171,243,1) 0%, rgba(30,26,29,1) 100%);
     box-sizing: border-box;
@@ -108,4 +108,26 @@ dialog:-internal-dialog-in-top-layer::backdrop {
     text-align: center;
     font-size: 2rem;
     line-height: 2rem;
+}
+
+.back-button {
+    visibility: hidden;
+    border: none;
+    width: 42px;
+    height: 42px;
+    background: none;
+}
+
+
+@media (max-width: 700px) {
+    .back-button {
+        visibility: visible;
+    }
+    
+    .item {
+        height: 100vw;
+        width: 100vw;
+        flex-basis: 100%;
+        overflow-x: clip;
+    }
 }

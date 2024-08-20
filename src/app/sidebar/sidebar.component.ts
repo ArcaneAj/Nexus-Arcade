@@ -78,7 +78,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
             if (x.item != null) {
                 this.onSelect(x.item);
             }
-        }))
+        }));
     }
 
     private setSelected(items: Item[], selected: boolean): void {

@@ -4,10 +4,10 @@
 
         </app-header>
     </header>
-    <main>
-        <app-main></app-main>
+    <main [ngClass]="{'hidden-mobile': !hasResults}">
+        <app-main (resultsLength)="resultsChanged($event)"></app-main>
     </main>
-    <app-sidebar>
+    <app-sidebar [ngClass]="{'hidden-mobile': hasResults}">
 
     </app-sidebar>
 </div>

@@ -5,6 +5,7 @@ import { HeaderComponent } from "./header/header.component";
 import { MainComponent } from "./main/main.component";
 import { StorageService } from './services/storage.service';
 import { BaseComponent } from './base.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-root',
@@ -12,6 +13,7 @@ import { BaseComponent } from './base.component';
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
     imports: [
+        CommonModule,
         // Custom components
         SidebarComponent,
         HeaderComponent,
@@ -19,6 +21,7 @@ import { BaseComponent } from './base.component';
     ]
 })
 export class AppComponent extends BaseComponent {
+    public hasResults = false;
     constructor(
         private storage: StorageService,
     ) {
@@ -28,5 +31,10 @@ export class AppComponent extends BaseComponent {
     ngOnInit(): void {
         this.storage.populateCaches();
         this.storage.FetchSettings();
+    }
+    resultsChanged(resultsLength: number) {
+        if (this.hasResults != resultsLength > 0) {
+            this.hasResults = resultsLength > 0;
+        }
     }
 }

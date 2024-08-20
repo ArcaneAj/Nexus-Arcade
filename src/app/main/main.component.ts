@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, output, ViewChild } from '@angular/core';
 import { CalculationService } from '../services/calculation.service';
 import { BaseComponent } from '../base.component';
 import { PriceResult } from '../models/price-result.model';
@@ -26,6 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
     styleUrl: './main.component.scss'
 })
 export class MainComponent extends BaseComponent {
+    public resultsLength = output<number>();
     public results: PriceResult[] = [];
     public sortAscending = false;
     public sortCrafted = true;
@@ -33,6 +34,7 @@ export class MainComponent extends BaseComponent {
 
     constructor(private calculationService: CalculationService) {
         super();
+        this.resultsLength.emit(this.results.length);
         this.subscription.add(this.calculationService.priceResults.subscribe(results => {
             results = results.map(x => {
                 x.cheapestCraft = x.craftedPrices.getMinByProperty<CraftResult>(x => x.price);
@@ -42,6 +44,7 @@ export class MainComponent extends BaseComponent {
             });
             
             this.results = this.sortResults(results);
+            this.resultsLength.emit(this.results.length);
         }));
     }
 
@@ -82,6 +85,7 @@ export class MainComponent extends BaseComponent {
     sortPropertyChanged(event: MatButtonToggleChange) {
         this.sortCrafted = event.value === "true";
         this.results = this.sortResults(this.results);
+        this.resultsLength.emit(this.results.length);
     }
 
     sortResults(results: PriceResult[]): PriceResult[] {
@@ -94,7 +98,13 @@ export class MainComponent extends BaseComponent {
 
     clearResult(result: PriceResult) {
         this.results.splice(this.results.indexOf(result), 1);
+        this.resultsLength.emit(this.results.length);
         this.calculationService.deselectItem(result);
+    }
+
+    clearResults() {
+        this.results = [];
+        this.resultsLength.emit(this.results.length);
     }
     
     @ViewChild('dialog', { static: false }) dialog: ElementRef | undefined;
