@@ -22,8 +22,106 @@
     flex: 1;
 }
 
+.links {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.kofi-link {
+    visibility: hidden;
+    position: absolute;
+}
+
+.discord-link {
+    visibility: hidden;
+    position: absolute;
+    margin: 8px;
+    margin-right: 16px;
+    height: 32px;
+    width: 32px;
+}
+
+.fadein img {
+    position:absolute;
+    top:12px;
+    -webkit-animation-name: fade;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-duration: 20s;
+    animation-name: fade;
+    animation-iteration-count: infinite;
+    animation-duration: 20s;
+}
+
+@-webkit-keyframes fade {
+    0% {opacity: 0;}
+    25% {opacity: 1;}
+    50% {opacity: 1;}
+    75% {opacity: 0;}
+    100% {opacity: 0;}
+}
+@keyframes fade {
+    0% {opacity: 0;}
+    25% {opacity: 1;}
+    50% {opacity: 1;}
+    75% {opacity: 0;}
+    100% {opacity: 0;}
+}
+
+#f1 {
+    -webkit-animation-delay: 0s;
+}
+#f2 {
+    -webkit-animation-delay: -10s;
+}
+
+
+//// Three colour pattern
+// @-webkit-keyframes fade {
+//     0% {opacity: 0;}
+//     20% {opacity: 1;}
+//     33% {opacity: 1;}
+//     53% {opacity: 0;}
+//     100% {opacity: 0;}
+// }
+// @keyframes fade {
+//     0% {opacity: 0;}
+//     20% {opacity: 1;}
+//     33% {opacity: 1;}
+//     53% {opacity: 0;}
+//     100% {opacity: 0;}
+// }
+
+// #f1 {
+//     background-color: lightblue;
+// }
+// #f2 {
+//     -webkit-animation-delay: -4s;
+//     background-color: yellow;
+// }
+// #f3 {
+//     -webkit-animation-delay: -2s;
+//     background-color: lightgreen;
+// }
+
 
 @media (max-width: 700px) {
+
+    .kofi-link {
+        visibility: visible;
+        position: inherit;
+    }
+    
+    .discord-link {
+        visibility: visible;
+        position: inherit;
+    }
+
+    .links {
+        justify-content: space-between;
+    }
+
     .logo {
         font-size: 1rem;
     }
