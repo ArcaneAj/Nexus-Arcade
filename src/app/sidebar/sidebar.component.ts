@@ -22,7 +22,10 @@ import { ItemRecipe } from '../models/item-recipe.model';
 import { combineLatest } from 'rxjs';
 import { XivApiService } from '../services/xivapi.service';
 import { CalculationService } from '../services/calculation.service';
-import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { AnimateModule } from 'primeng/animate';
 
 @Component({
     selector: 'app-sidebar',
@@ -39,11 +42,14 @@ import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox
         MatListModule,
         ScrollingModule,
         MatCheckboxModule,
+        // PrimeNG
+        ToastModule,
+        AnimateModule,
         // Custom components
         FilterPipe,
         OrderPipe,
     ],
-    providers: [FilterPipe, OrderPipe],
+    providers: [FilterPipe, OrderPipe, MessageService],
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.scss'
 })
@@ -65,6 +71,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
         private xivApi: XivApiService,
         private calculationService: CalculationService,
         public settings: SettingsService,
+        private messageService: MessageService,
     ) {
         super();
     }
@@ -93,6 +100,13 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     onSelect(item: Item): void {
         item.selected = !item.selected;
         this.changeFlag = !this.changeFlag;
+
+        this.messageService.clear();
+        if (item.selected) {
+            this.messageService.add({ severity: 'success', summary: 'Added ' + item.Name });
+        } else {
+            this.messageService.add({ severity: 'warn', summary: 'Removed ' + item.Name });
+        }
     }
 
     selectFirst(): void {

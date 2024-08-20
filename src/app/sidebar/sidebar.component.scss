@@ -88,6 +88,26 @@ mat-list {
     background: linear-gradient(90deg, rgba(255,176,207,1) 0%, rgba(255,171,243,1) 100%);
 }
 
+::ng-deep .p-toast-message {
+    margin: 0px;
+}
+
+.toast-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.toast-content {
+    margin: 10px;
+    min-height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align : center;
+}
+
 
 .item-selected {
     box-sizing: border-box;

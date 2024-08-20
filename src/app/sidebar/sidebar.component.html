@@ -49,6 +49,21 @@
                 </cdk-virtual-scroll-viewport>
             </mat-list>
         </div>
+        <p-toast
+            position="bottom-left"
+            [showTransformOptions]="'translateY(0%)'" 
+            [showTransitionOptions]="'100ms'" 
+            [hideTransitionOptions]="'0ms'" 
+            [hideTransformOptions]="'translateY(0%)'"
+            [breakpoints]="{ '700px': { width: 'calc(100% - 48px)', right: '24px', left: '24px', bottom: '24px' } }">
+            <ng-template let-message pTemplate="headless">
+                <section class="toast-container">
+                    <div class="toast-content">
+                        {{ message.summary }}
+                    </div>
+                </section>
+            </ng-template>
+        </p-toast>
     } @else {
         <div class="loader-wrapper">
             <span class="loader"></span>
