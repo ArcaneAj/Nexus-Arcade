@@ -21,13 +21,15 @@
 </div>
 <div class="content">
     @if (results.length !== 0) {
-        @for (result of results; track result.name) {
-            <app-price-result
-                class="item"
-                (clear)="clearResult(result)"
-                [sortCrafted]="sortCrafted"
-                [result]="result">
-            </app-price-result>
+        @defer {
+            @for (result of results; track result.name) {
+                <app-price-result
+                    class="item"
+                    (clear)="clearResult(result)"
+                    [sortCrafted]="sortCrafted"
+                    [result]="result">
+                </app-price-result>
+            }
         }
     } @else {
         <div class="empty">
