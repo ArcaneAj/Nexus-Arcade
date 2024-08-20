@@ -1,6 +1,11 @@
 mat-dialog-content {
     min-width: 25vw;
     max-width: 40vw;
+    height: 100%;
+}
+
+mat-tab-group, ::ng-deep.mat-mdc-tab-body-wrapper {
+    height: 100%;
 }
 
 

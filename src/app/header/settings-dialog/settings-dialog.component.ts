@@ -9,6 +9,10 @@ import { SettingsService } from '../../services/settings.service';
 import { CommonModule } from '@angular/common';
 import { SelectionTreeComponent } from '../../selection-tree/selection-tree.component';
 import { TreeNode } from '../../selection-tree/tree-node.model';
+import { StorageService } from '../../services/storage.service';
+import { UniversalisService } from '../../services/universalis.service';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
   
 @Component({
     selector: 'app-settings-dialog',
@@ -19,6 +23,8 @@ import { TreeNode } from '../../selection-tree/tree-node.model';
         MatDialogModule,
         MatButtonModule,
         MatIconModule,
+        MatTabsModule,
+        MatTooltipModule,
         SelectionTreeComponent,
     ],
     templateUrl: './settings-dialog.component.html',
@@ -35,7 +41,9 @@ export class SettingsDialogComponent {
         worlds: World[],
         dataCenters: DataCenter[]
         },
-        private settings: SettingsService
+        private storage: StorageService,
+        private settings: SettingsService,
+        private universalis: UniversalisService,
     ) {
         this.currentWorld = this.data.worlds.find(x => x.name === this.settings.getCurrentWorld().name)!;
         this.newWorld = this.currentWorld;
@@ -45,7 +53,7 @@ export class SettingsDialogComponent {
     private GenerateWorldTree() {
         const worldDict: { [id: number]: World; } = Object.fromEntries(this.data.worlds.map(item => [item.id, item]));
         const root: TreeNode = {
-            name: 'World Select',
+            name: '',
             children: []
         }
 
@@ -84,6 +92,11 @@ export class SettingsDialogComponent {
         if (newWorld != null) {
             this.newWorld = newWorld;
         }
+    }
+
+    purge() {
+        this.storage.purge();
+        this.universalis.purgeCache();
     }
 }
 

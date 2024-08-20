@@ -1,6 +1,17 @@
 <h2 mat-dialog-title>Settings</h2>
 <mat-dialog-content>
-    <app-selection-tree [tree]="tree" [expanded]="expanded" [index]="0" (selectionChange)="selectionChange($event)"></app-selection-tree>
+    <mat-tab-group>
+        <mat-tab label="World-Select">
+            <app-selection-tree [tree]="tree" [expanded]="expanded" [index]="0" (selectionChange)="selectionChange($event)"></app-selection-tree>
+        </mat-tab>
+        <mat-tab label="Utils">
+            <button mat-button
+                (click)="purge()" 
+                matTooltip="Do this whenever new items are released and added to universalis etc">
+                Purge cache
+            </button>
+        </mat-tab>
+    </mat-tab-group>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <button mat-button
