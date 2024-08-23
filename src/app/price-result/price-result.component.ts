@@ -1,10 +1,12 @@
-import { Component, computed, ElementRef, input, output, ViewChild } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { PriceResult } from '../models/price-result.model';
 import { CommonModule } from '@angular/common';
 import { CraftResult, getProfit } from '../models/craft-result.model';
 import { PriceResultTreeComponent } from '../price-result-tree/price-result-tree.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import { PriceResultDialogComponent } from './price-result-dialog/price-result-dialog.component';
 
 @Component({
     selector: 'app-price-result',
@@ -40,20 +42,33 @@ export class PriceResultComponent {
     public shopProfit = computed(() => this.result().shopProfit);
     public craftProfit = computed(() => this.result().craftProfit);
 
-    @ViewChild('dialog', { static: false }) dialog: ElementRef | undefined;
+
+    readonly dialog = inject(MatDialog);
+
+    openDialog() {
+        
+        if (this.marketPriceDc() === 0 || !this.sortCrafted() || this.cheapestCraftPrice() > 999999) {
+            return;
+        }
+        
+        const dialogRef = this.dialog.open(PriceResultDialogComponent, {
+            data: {
+                result: this.result(),
+            },
+            height: "80vh"
+          });
+    
+        dialogRef.afterClosed().subscribe((result: any) => {
+            if (result !== undefined) {
+                console.log(result);
+            }
+        });
+    }
     
     openModal() {
-        if (this.marketPriceDc() !== 0 && this.sortCrafted() && this.cheapestCraftPrice() < 999999) {
-            if (this.dialog) {
-                this.dialog.nativeElement.showModal();
-            }
-        }
     }
 
     closeModal() {
-        if (this.dialog) {
-            this.dialog.nativeElement.close();
-        }
     }
 
     onRightClick(event: MouseEvent) {

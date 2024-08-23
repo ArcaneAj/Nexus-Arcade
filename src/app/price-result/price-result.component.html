@@ -1,4 +1,4 @@
-<div class="grid" (click)="openModal()" (contextmenu)="onRightClick($event)">
+<div class="grid" (click)="openDialog()" (contextmenu)="onRightClick($event)">
     <div class="title">
         {{name()}}
     </div>
@@ -54,8 +54,3 @@
         <span class="loader"></span>
     }
 </div>
-
-<dialog #dialog class="modal">
-    <app-price-result-tree [result]="result()" [depth]="0"></app-price-result-tree>
-    <button mat-flat-button color="primary" class="close-button" (click)="closeModal()">Close</button>
-</dialog>

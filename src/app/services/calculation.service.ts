@@ -61,6 +61,20 @@ export class CalculationService {
                 marketThroughputWorld: 0,
                 dc: "",
                 world: "",
+                history: {
+                    itemId: item.id,
+                    dcName: "",
+                    lastUploadTime: -1,
+                    stackSizeHistogram: {},
+                    stackSizeHistogramHQ: {},
+                    stackSizeHistogramNQ: {},
+                    regularSaleVelocity: 0,
+                    nqSaleVelocity: 0,
+                    hqSaleVelocity: 0,
+                    expiry: new Date(),
+                    entries: [],
+
+                }
             };
             return priceResult;
         }));
@@ -113,7 +127,8 @@ export class CalculationService {
             world: currentWorld,
             shopPrice,
             nqSaleVelocity: itemHistory.nqSaleVelocity,
-            hqSaleVelocity: itemHistory.hqSaleVelocity
+            hqSaleVelocity: itemHistory.hqSaleVelocity,
+            history: itemHistory,
         };
 
         if (this.priceResultCache[currentDc] == null) {

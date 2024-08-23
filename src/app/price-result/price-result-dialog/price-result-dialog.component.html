@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Settings</h2>
+<mat-dialog-content>
+    <mat-tab-group>
+        <mat-tab label="Purchase Priority">
+            <app-price-result-tree [result]="data.result" [depth]="0"></app-price-result-tree>
+        </mat-tab>
+        <mat-tab label="Statistics (Coming soon)">
+        </mat-tab>
+    </mat-tab-group>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button
+    [mat-dialog-close]="undefined"
+        cdkFocusInitial>
+        Cancel
+    </button>
+    <button mat-button
+        [mat-dialog-close]="{}"
+        [disabled]="false">
+        Save
+    </button>
+</mat-dialog-actions>

@@ -83,7 +83,21 @@ export class MainComponent extends BaseComponent {
             shopProfit: 4500,
             craftProfit: undefined,
             nqSaleVelocity: 0,
-            hqSaleVelocity: 0
+            hqSaleVelocity: 0,
+            history: {
+                itemId: 1,
+                dcName: "",
+                lastUploadTime: -1,
+                stackSizeHistogram: {},
+                stackSizeHistogramHQ: {},
+                stackSizeHistogramNQ: {},
+                regularSaleVelocity: 0,
+                nqSaleVelocity: 0,
+                hqSaleVelocity: 0,
+                expiry: new Date(),
+                entries: [],
+
+            }
         }
     }
 

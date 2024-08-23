@@ -1,4 +1,5 @@
 import { CraftResult } from "./craft-result.model";
+import { ItemHistoryResponse } from "./item-history-response.model";
 import { Item } from "./item.model";
 
 export interface PriceResult {
@@ -18,4 +19,5 @@ export interface PriceResult {
     craftProfit?: number,
     nqSaleVelocity: number,
     hqSaleVelocity: number,
+    history: ItemHistoryResponse,
 }
