@@ -9,15 +9,28 @@
         <mat-button-toggle value="true" [checked]="sortAscending">Ascending</mat-button-toggle>
         <mat-button-toggle value="false" [checked]="!sortAscending">Descending</mat-button-toggle>
     </mat-button-toggle-group>
+    
     <mat-button-toggle-group
-        name="sortProperty"
-        aria-label="Sort Property"
+        name="sortCriteria"
+        aria-label="Sort Criteria"
         [hideSingleSelectionIndicator]="true"
-        (change)="sortPropertyChanged($event)"
-        >
-        <mat-button-toggle value="false" [checked]="!sortCrafted">Shop</mat-button-toggle>
-        <mat-button-toggle value="true" [checked]="sortCrafted">Crafted</mat-button-toggle>
+        (change)="sortCriteriaChanged($event)"
+    >
+    <mat-button-toggle value="profit" [checked]="sortCriteria === 'profit'">Profit</mat-button-toggle>
+    <mat-button-toggle value="throughput" [checked]="sortCriteria === 'throughput'">G/wk</mat-button-toggle>
+    <mat-button-toggle value="units"[checked]="sortCriteria === 'units'">S/wk</mat-button-toggle>
     </mat-button-toggle-group>
+    @if (sortCriteria === 'profit') {
+        <mat-button-toggle-group
+            name="sortProperty"
+            aria-label="Sort Property"
+            [hideSingleSelectionIndicator]="true"
+            (change)="sortPropertyChanged($event)"
+            >
+            <mat-button-toggle value="false" [checked]="!sortCrafted">Shop</mat-button-toggle>
+            <mat-button-toggle value="true" [checked]="sortCrafted">Crafted</mat-button-toggle>
+        </mat-button-toggle-group>
+    }
 </div>
 <div class="content">
     @if (results.length !== 0) {

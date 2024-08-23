@@ -29,6 +29,7 @@ export class MainComponent extends BaseComponent {
     public resultsLength = output<number>();
     public results: PriceResult[] = [];
     public sortAscending = false;
+    public sortCriteria = 'profit';
     public sortCrafted = true;
     public disableModal = false;
     private useDcPrices = false;
@@ -91,6 +92,11 @@ export class MainComponent extends BaseComponent {
         this.results = this.sortResults(this.results);
     }
 
+    sortCriteriaChanged(event: MatButtonToggleChange) {
+        this.sortCriteria = event.value;
+        this.results = this.sortResults(this.results);
+    }
+
     sortPropertyChanged(event: MatButtonToggleChange) {
         this.sortCrafted = event.value === "true";
         this.results = this.sortResults(this.results);
@@ -98,10 +104,23 @@ export class MainComponent extends BaseComponent {
     }
 
     sortResults(results: PriceResult[]): PriceResult[] {
+        var selector = (x: PriceResult) => x.hqSaleVelocity + x.nqSaleVelocity;
+        if (this.sortCriteria === 'profit') {
+            selector = (x: PriceResult) => {
+                if (this.sortCrafted) {
+                    return x.craftProfit ?? Number.MAX_SAFE_INTEGER;
+                } else {
+                    return x.shopProfit ?? Number.MAX_SAFE_INTEGER;
+                }
+            };
+        } else if (this.sortCriteria === 'throughput') {
+            selector = (x: PriceResult) => this.useDcPrices ? x.marketThroughputDc : x.marketThroughputWorld;
+        }
+
         if (this.sortAscending) {
-            return results.sortByPropertyAscending(x => this.sortCrafted ? x.craftProfit ?? Number.MAX_SAFE_INTEGER : x.shopProfit ?? Number.MAX_SAFE_INTEGER);
+            return results.sortByPropertyAscending(selector);
         } else {
-            return results.sortByPropertyDescending(x => this.sortCrafted ? x.craftProfit ?? 0 : x.shopProfit ?? 0);
+            return results.sortByPropertyDescending(selector);
         }
     }
 
