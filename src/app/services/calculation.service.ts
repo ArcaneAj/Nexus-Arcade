@@ -55,8 +55,10 @@ export class CalculationService {
                 shopPrice: Number.MAX_SAFE_INTEGER,
                 nqSaleVelocity: 0,
                 hqSaleVelocity: 0,
-                marketPriceDc: -1,
-                marketPriceWorld: -1,
+                marketPriceDc: 0,
+                marketPriceWorld: 0,
+                marketThroughputDc: 0,
+                marketThroughputWorld: 0,
                 dc: "",
                 world: "",
             };
@@ -94,6 +96,8 @@ export class CalculationService {
         const shopPrice = getShopPrice(item, this.gilShopIds);
         const marketPriceDc = getDcPrice(itemHistory.entries);
         const marketPriceWorld = getWorldPrice(itemHistory.entries, currentWorld);
+        const marketThroughputDc = getDcThroughput(itemHistory.entries);
+        const marketThroughputWorld = getWorldThroughput(itemHistory.entries, currentWorld);
         let craftedPrices: CraftResult[] = this.getCraftedPrices(id);
 
         const priceResult: PriceResult = {
@@ -103,6 +107,8 @@ export class CalculationService {
             craftedPrices,
             marketPriceDc,
             marketPriceWorld,
+            marketThroughputDc,
+            marketThroughputWorld,
             dc: currentDc,
             world: currentWorld,
             shopPrice,
@@ -150,6 +156,18 @@ function getShopPrice(
     gilShopIds: number[]
 ): number {
     return gilShopIds.includes(item.id) ? item.Price_Mid_ : Number.MAX_SAFE_INTEGER;
+}
+
+function getWorldThroughput(entries: ItemHistoryEntry[], worldName: string): number {
+    return getMarketThroughput(entries.filter(x => x.worldName == worldName));
+}
+
+function getDcThroughput(entries: ItemHistoryEntry[]): number {
+    return getMarketThroughput(entries);
+}
+
+function getMarketThroughput(entries: ItemHistoryEntry[]): number {
+    return entries.reduce((sum, entry) => sum + (entry.quantity * entry.pricePerUnit), 0);
 }
 
 function getWorldPrice(entries: ItemHistoryEntry[], worldName: string): number {

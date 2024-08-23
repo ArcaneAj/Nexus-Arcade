@@ -34,11 +34,35 @@
     align-self: center;
 }
 
+.dc-gil {
+    grid-row-start: 6;
+    grid-row-end: 7;
+    font-size: 1rem;
+    justify-self: center;
+    align-self: center;
+}
+
+.world-gil {
+    grid-row-start: 7;
+    grid-row-end: 8;
+    font-size: 1rem;
+    justify-self: center;
+    align-self: center;
+}
+
+.units {
+    grid-row-start: 8;
+    grid-row-end: 9;
+    font-size: 1rem;
+    justify-self: center;
+    align-self: center;
+}
+
 .cost {
     grid-column-start: 1;
     grid-column-end: 2;
-    grid-row-start: 7;
-    grid-row-end: 9;
+    grid-row-start: 9;
+    grid-row-end: 11;
     justify-self: center;
     align-self: center;
 }
@@ -55,7 +79,7 @@
 .invalid {
     grid-column-start: 1;
     grid-column-end: 2;
-    grid-row-start: 6;
+    grid-row-start: 9;
     grid-row-end: 12;
     display: flex;
     justify-content: center;

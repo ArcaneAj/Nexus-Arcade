@@ -7,6 +7,8 @@ export interface PriceResult {
     requiredAmount: number,
     marketPriceDc: number,
     marketPriceWorld: number,
+    marketThroughputDc: number,
+    marketThroughputWorld: number,
     dc: string,
     world: string,
     shopPrice?: number,

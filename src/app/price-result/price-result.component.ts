@@ -26,6 +26,8 @@ export class PriceResultComponent {
     public name = computed(() => this.result().name);
     public marketPriceDc = computed(() => Math.round(this.result().marketPriceDc));
     public marketPriceWorld = computed(() => Math.round(this.result().marketPriceWorld));
+    public marketThroughputDc = computed(() => Math.round(this.result().marketThroughputDc));
+    public marketThroughputWorld = computed(() => Math.round(this.result().marketThroughputWorld));
     public shopPrice = computed(() => this.result().shopPrice);
     public cheapestCraft = computed(() => {
         const cheapestCraft = this.result().cheapestCraft;

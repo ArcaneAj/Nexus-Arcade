@@ -1,23 +1,32 @@
 <div class="grid" (click)="openModal()" (contextmenu)="onRightClick($event)">
-    <div class="title double-wide">
+    <div class="title">
         {{name()}}
     </div>
     
     @if (marketPriceDc() > 0) {
-        <div class="dc-price double-wide">
-            {{result().dc}} Price: {{marketPriceDc()}}
+        <div class="dc-price">
+            {{result().dc}} Price: {{marketPriceDc() | number : '1.0-2'}}
         </div>
-        <div class="world-price double-wide">
-            {{result().world}} Price: {{marketPriceWorld()}}
+        <div class="world-price">
+            {{result().world}} Price: {{marketPriceWorld() | number : '1.0-2'}}
+        </div>
+        <div class="dc-gil">
+            {{result().dc}}: {{marketThroughputDc() | number : '1.0-2'}} G/wk
+        </div>
+        <div class="world-gil">
+            {{result().world}}: {{marketThroughputWorld() | number : '1.0-2'}} G/wk
+        </div>
+        <div class="units">
+            {{result().hqSaleVelocity | number : '1.0-2'}}HQ {{result().nqSaleVelocity | number : '1.0-2'}}NQ S/wk
         </div>
         
         @if (sortCrafted()) {
             @if (cheapestCraftPrice() < 999999) {
                 <div class="cost">
-                    Crafted Cost: {{cheapestCraftPrice()}}
+                    Crafted Cost: {{cheapestCraftPrice() | number : '1.0-2'}}
                 </div>
                 <div class="profit">
-                    Craft profit: {{craftProfit()}}
+                    Craft profit: {{craftProfit() | number : '1.0-2'}}
                 </div>
             } @else {
                 <div class="invalid">
@@ -28,10 +37,10 @@
         @if (!sortCrafted()) {
             @if ((shopPrice() ?? 1000000) < 999999) {
                 <div class="cost">
-                    Shop Cost: {{shopPrice()}}
+                    Shop Cost: {{shopPrice() | number : '1.0-2'}}
                 </div>
                 <div class="profit">
-                    Shop profit: {{shopProfit()}}
+                    Shop profit: {{shopProfit() | number : '1.0-2'}}
                 </div>
             } @else {
                 <div class="invalid">

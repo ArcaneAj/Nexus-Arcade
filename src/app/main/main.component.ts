@@ -72,6 +72,8 @@ export class MainComponent extends BaseComponent {
             requiredAmount: 1,
             marketPriceDc: 5000,
             marketPriceWorld: 5000,
+            marketThroughputDc: 0,
+            marketThroughputWorld: 0,
             shopPrice: 500,
             dc: "MockedDC",
             world: "MockedWorld",
