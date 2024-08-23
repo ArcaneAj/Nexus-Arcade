@@ -1,6 +1,6 @@
 <div [ngStyle]="{'padding-left': ((depth() - 1) * 20) + 'px'}" class="modal">
     @if(depth() !== 0){
-        @if((result().cheapestCraft?.price ?? 999999) < (result().marketPrice ?? 999999)) {
+        @if(result().marketPriceDc < 0 || (result().cheapestCraft?.price ?? 999999) < result().marketPriceDc) {
             <div>
                 <span class="craft-item">Craft:</span><span> {{ result().name }}</span>
             </div>

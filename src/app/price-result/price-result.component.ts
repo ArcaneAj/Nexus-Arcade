@@ -24,7 +24,8 @@ export class PriceResultComponent {
     public sortCrafted = input.required<boolean>();
     public result = input.required<PriceResult>();
     public name = computed(() => this.result().name);
-    public marketPrice = computed(() => Math.round(this.result().marketPrice ?? 0));
+    public marketPriceDc = computed(() => Math.round(this.result().marketPriceDc));
+    public marketPriceWorld = computed(() => Math.round(this.result().marketPriceWorld));
     public shopPrice = computed(() => this.result().shopPrice);
     public cheapestCraft = computed(() => {
         const cheapestCraft = this.result().cheapestCraft;
@@ -40,7 +41,7 @@ export class PriceResultComponent {
     @ViewChild('dialog', { static: false }) dialog: ElementRef | undefined;
     
     openModal() {
-        if (this.marketPrice() !== 0 && this.sortCrafted() && this.cheapestCraftPrice() < 999999) {
+        if (this.marketPriceDc() !== 0 && this.sortCrafted() && this.cheapestCraftPrice() < 999999) {
             if (this.dialog) {
                 this.dialog.nativeElement.showModal();
             }
@@ -64,14 +65,14 @@ function populateCheapestTree(cheapestCraft: CraftResult) {
     const buyComponents = [];
     for (const component of cheapestCraft.components) {
         component.cheapestCraft = component.craftedPrices.getMinByProperty<CraftResult>(x => x.price);
-        component.shopProfit = getProfit(component.shopPrice, component.marketPrice);
-        component.craftProfit = getProfit(component.cheapestCraft?.price, component.marketPrice);
+        component.shopProfit = getProfit(component.shopPrice, component.marketPriceDc);
+        component.craftProfit = getProfit(component.cheapestCraft?.price, component.marketPriceDc);
         if (component.cheapestCraft != null) {
             populateCheapestTree(component.cheapestCraft);
         }
 
         // Split the components up by whether they should be crafted or bought to be grouped for display
-        const shouldCraft = (component.cheapestCraft?.price ?? 999999) < (component.marketPrice ?? 999999);
+        const shouldCraft = (component.cheapestCraft?.price ?? 999999) < (component.marketPriceDc ?? 999999);
         if (shouldCraft) {
             craftComponents.push(component)
         } else {

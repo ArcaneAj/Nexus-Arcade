@@ -18,8 +18,16 @@
     text-align: center;
 }
 
-.market-price {
+.dc-price {
     grid-row-start: 4;
+    grid-row-end: 5;
+    font-size: 1.25rem;
+    justify-self: center;
+    align-self: center;
+}
+
+.world-price {
+    grid-row-start: 5;
     grid-row-end: 6;
     font-size: 1.25rem;
     justify-self: center;

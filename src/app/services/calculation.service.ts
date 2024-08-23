@@ -52,7 +52,13 @@ export class CalculationService {
                         amount: 1
                     }
                 ],
-                shopPrice: Number.MAX_SAFE_INTEGER
+                shopPrice: Number.MAX_SAFE_INTEGER,
+                nqSaleVelocity: 0,
+                hqSaleVelocity: 0,
+                marketPriceDc: -1,
+                marketPriceWorld: -1,
+                dc: "",
+                world: "",
             };
             return priceResult;
         }));
@@ -77,23 +83,31 @@ export class CalculationService {
         id: number
     ): PriceResult {
         const currentDc = this.settings.getCurrentWorld().dataCenter.name;
+        const currentWorld = this.settings.getCurrentWorld().name;
         if (id in this.priceResultCache) {
             return this.priceResultCache[currentDc][id];
         }
 
         const item = this.itemCache[id];
+        const itemHistory = this.itemHistoryResponse.items[id];
 
         const shopPrice = getShopPrice(item, this.gilShopIds);
-        const marketPrice = getMarketPrice(this.itemHistoryResponse.items[id].entries);
+        const marketPriceDc = getDcPrice(itemHistory.entries);
+        const marketPriceWorld = getWorldPrice(itemHistory.entries, currentWorld);
         let craftedPrices: CraftResult[] = this.getCraftedPrices(id);
 
         const priceResult: PriceResult = {
-            item: item,
+            item,
             name: item.Name,
             requiredAmount: 1,
             craftedPrices,
-            marketPrice,
-            shopPrice
+            marketPriceDc,
+            marketPriceWorld,
+            dc: currentDc,
+            world: currentWorld,
+            shopPrice,
+            nqSaleVelocity: itemHistory.nqSaleVelocity,
+            hqSaleVelocity: itemHistory.hqSaleVelocity
         };
 
         if (this.priceResultCache[currentDc] == null) {
@@ -138,6 +152,14 @@ function getShopPrice(
     return gilShopIds.includes(item.id) ? item.Price_Mid_ : Number.MAX_SAFE_INTEGER;
 }
 
+function getWorldPrice(entries: ItemHistoryEntry[], worldName: string): number {
+    return getMarketPrice(entries.filter(x => x.worldName == worldName));
+}
+
+function getDcPrice(entries: ItemHistoryEntry[]): number {
+    return getMarketPrice(entries);
+}
+
 function getMarketPrice(entries: ItemHistoryEntry[]): number {
     if (entries.length === 0) {
         return -1;
@@ -154,5 +176,5 @@ function getMarketPrice(entries: ItemHistoryEntry[]): number {
 }
 
 function getLowestPrice(result: PriceResult): number {
-    return Math.min(...result.craftedPrices.map(x => x.price / x.amount), result.marketPrice ?? Number.MAX_SAFE_INTEGER, result.shopPrice ?? Number.MAX_SAFE_INTEGER);
+    return Math.min(...result.craftedPrices.map(x => x.price / x.amount), result.marketPriceDc ?? Number.MAX_SAFE_INTEGER, result.shopPrice ?? Number.MAX_SAFE_INTEGER);
 }

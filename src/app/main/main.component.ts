@@ -31,15 +31,17 @@ export class MainComponent extends BaseComponent {
     public sortAscending = false;
     public sortCrafted = true;
     public disableModal = false;
+    private useDcPrices = false;
 
     constructor(private calculationService: CalculationService) {
         super();
         this.resultsLength.emit(this.results.length);
         this.subscription.add(this.calculationService.priceResults.subscribe(results => {
             results = results.map(x => {
+                const marketPrice = this.useDcPrices ? x.marketPriceDc : x.marketPriceWorld;
                 x.cheapestCraft = x.craftedPrices.getMinByProperty<CraftResult>(x => x.price);
-                x.shopProfit = getProfit(x.shopPrice, x.marketPrice);
-                x.craftProfit = (x.cheapestCraft == null || x.marketPrice == null) ? 0 : getProfit(x.cheapestCraft.price, x.marketPrice * x.cheapestCraft.amount);
+                x.shopProfit = getProfit(x.shopPrice, marketPrice);
+                x.craftProfit = (x.cheapestCraft == null) ? 0 : getProfit(x.cheapestCraft.price, marketPrice * x.cheapestCraft.amount);
                 return x;
             });
             
@@ -68,12 +70,17 @@ export class MainComponent extends BaseComponent {
             
             name: "Mocked Item",
             requiredAmount: 1,
-            marketPrice: 5000,
+            marketPriceDc: 5000,
+            marketPriceWorld: 5000,
             shopPrice: 500,
+            dc: "MockedDC",
+            world: "MockedWorld",
             craftedPrices: [],
             cheapestCraft: undefined,
             shopProfit: 4500,
             craftProfit: undefined,
+            nqSaleVelocity: 0,
+            hqSaleVelocity: 0
         }
     }
 

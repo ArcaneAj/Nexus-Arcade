@@ -226,9 +226,9 @@ function parseItem(properties: string[], types: string[], values: string[]): Ite
         merged.push([propertyname, parse(types[i], values[i])]);
     }
     const obj = Object.fromEntries(merged.filter(x => x[0] !== '')) as XivApiItem;
-    if (obj.id === 39630) {
-        // console.log(obj);
-    }
+    // if (obj.id === 39630) {
+    //     console.log(obj);
+    // }
     
     const item: Item = {
         id: obj.id,

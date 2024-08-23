@@ -81,7 +81,7 @@ export class UniversalisService {
                 const url = [HISTORY_URL, dataCenter.name, idChunk.join()].join('/');
                 return this.httpService.get<ItemsHistoryResponse>(url);
             })).pipe(map(responses => {
-                const itemHistoryResponse: ItemsHistoryResponse = {
+                const itemsHistoryResponse: ItemsHistoryResponse = {
                     itemIDs: [],
                     dcName: dataCenter.name,
                     unresolvedItems: [],
@@ -89,18 +89,18 @@ export class UniversalisService {
                 };
 
                 for (const response of responses) {
-                    itemHistoryResponse.itemIDs.push(...response.itemIDs);
-                    itemHistoryResponse.unresolvedItems.push(...response.unresolvedItems);
-                    itemHistoryResponse.items = {...response.items, ...itemHistoryResponse.items};
+                    itemsHistoryResponse.itemIDs.push(...response.itemIDs);
+                    itemsHistoryResponse.unresolvedItems.push(...response.unresolvedItems);
+                    itemsHistoryResponse.items = {...response.items, ...itemsHistoryResponse.items};
                 }
-                for (const key in itemHistoryResponse.items) {
-                    this.addToCache(itemHistoryResponse.items[key], dataCenter.name, key);
+                for (const key in itemsHistoryResponse.items) {
+                    this.addToCache(itemsHistoryResponse.items[key], dataCenter.name, key);
                 }
 
-                itemHistoryResponse.itemIDs.push(...cachedHistoryResponse.itemIDs);
-                itemHistoryResponse.items = {...cachedHistoryResponse.items, ...itemHistoryResponse.items};
+                itemsHistoryResponse.itemIDs.push(...cachedHistoryResponse.itemIDs);
+                itemsHistoryResponse.items = {...cachedHistoryResponse.items, ...itemsHistoryResponse.items};
 
-                return itemHistoryResponse;
+                return itemsHistoryResponse;
             }));
         }
 
