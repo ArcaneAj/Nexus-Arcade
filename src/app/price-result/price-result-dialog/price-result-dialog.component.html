@@ -4,7 +4,8 @@
         <mat-tab label="Purchase Priority">
             <app-price-result-tree [result]="data.result" [depth]="0"></app-price-result-tree>
         </mat-tab>
-        <mat-tab label="Statistics (Coming soon)">
+        <mat-tab label="Price History Statistics">
+            <p-chart type="scatter" [data]="basicData" [options]="basicOptions" width='80vw' height="55vh" />
         </mat-tab>
     </mat-tab-group>
 </mat-dialog-content>
