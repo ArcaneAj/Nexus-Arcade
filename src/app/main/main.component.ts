@@ -31,7 +31,7 @@ export class MainComponent extends BaseComponent {
     public sortAscending = false;
     public sortCriteria = 'profit';
     public sortCrafted = true;
-    public disableModal = false;
+    public disableModal = true;
     private useDcPrices = false;
 
     constructor(private calculationService: CalculationService) {
