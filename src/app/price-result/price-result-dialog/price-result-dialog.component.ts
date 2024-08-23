@@ -28,6 +28,6 @@ export class PriceResultDialogComponent {
         result: PriceResult,
         },
     ) {
-        console.log(data.result);
+        console.log(data.result.history);
     }
 }
