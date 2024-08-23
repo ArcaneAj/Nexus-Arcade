@@ -11,7 +11,9 @@
         }
     }
 
-    @for (item of result().cheapestCraft?.components; track item.name) {
-        <app-price-result-tree [result]="item" [depth]="depth() +1"></app-price-result-tree>
+    @if(result().marketPriceDc < 0 || (result().cheapestCraft?.price ?? 999999) < result().marketPriceDc) {
+        @for (item of result().cheapestCraft?.components; track item.name) {
+            <app-price-result-tree [result]="item" [depth]="depth() +1"></app-price-result-tree>
+        }
     }
 </div>
