@@ -55,7 +55,7 @@ import { AnimateModule } from 'primeng/animate';
 })
 export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy {
 
-    public searchFilter: string = '';
+    public searchFilter: string = 'archeo king';
     public changeFlag: boolean = false;
     public onlyCrafted: boolean = false;
     public minLevel: number = 0;
@@ -80,6 +80,8 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
         this.subscription.add(this.storage.MarketableItems().subscribe(items => {
             this.setSelected(items, false);
             this.items = items;
+            this.selectFirst();
+            this.calculate();
         }));
 
         this.subscription.add(this.settings.worldChanged.subscribe(x => this.calculate()));

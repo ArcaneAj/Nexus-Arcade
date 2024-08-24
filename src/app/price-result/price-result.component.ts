@@ -60,7 +60,6 @@ export class PriceResultComponent {
     
         dialogRef.afterClosed().subscribe((result: any) => {
             if (result !== undefined) {
-                console.log(result);
             }
         });
     }

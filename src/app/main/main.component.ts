@@ -8,6 +8,7 @@ import { CraftResult, getProfit } from '../models/craft-result.model';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-main',
@@ -19,6 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
     ScrollingModule,
     MatButtonToggleModule,
     MatIconModule,
+    MatTooltipModule,
     // Custom components
     PriceResultComponent
 ],

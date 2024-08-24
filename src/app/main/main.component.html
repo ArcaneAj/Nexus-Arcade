@@ -6,8 +6,8 @@
         [hideSingleSelectionIndicator]="true"
         (change)="sortOrderChanged($event)"
         >
-        <mat-button-toggle value="true" [checked]="sortAscending">Asc</mat-button-toggle>
-        <mat-button-toggle value="false" [checked]="!sortAscending">Desc</mat-button-toggle>
+        <mat-button-toggle value="true" [checked]="sortAscending" matTooltip="Ascending"><mat-icon>keyboard_arrow_upward</mat-icon></mat-button-toggle>
+        <mat-button-toggle value="false" [checked]="!sortAscending" matTooltip="Descending"><mat-icon>keyboard_arrow_down</mat-icon></mat-button-toggle>
     </mat-button-toggle-group>
     
     <mat-button-toggle-group
@@ -27,8 +27,8 @@
             [hideSingleSelectionIndicator]="true"
             (change)="sortPropertyChanged($event)"
             >
-            <mat-button-toggle value="false" [checked]="!sortCrafted">Shop</mat-button-toggle>
-            <mat-button-toggle value="true" [checked]="sortCrafted">Crafted</mat-button-toggle>
+            <mat-button-toggle value="false" [checked]="!sortCrafted" matTooltip="NPC shops"><mat-icon>shopping_cart</mat-icon></mat-button-toggle>
+            <mat-button-toggle value="true" [checked]="sortCrafted" matTooltip="Crafted"><mat-icon>construction</mat-icon></mat-button-toggle>
         </mat-button-toggle-group>
     }
 </div>
