@@ -34,7 +34,6 @@ export class PriceResultDialogComponent {
         result: PriceResult,
         },
     ) {
-        console.log(data.result.history);
         this.configureGraph();
     }
     configureGraph() {
