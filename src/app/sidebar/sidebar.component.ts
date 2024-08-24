@@ -82,6 +82,8 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
             this.items = items;
         }));
 
+        this.subscription.add(this.settings.worldChanged.subscribe(x => this.calculate()));
+
         this.subscription.add(this.calculationService.deselect.subscribe(x => {
             if (x.item != null) {
                 this.onSelect(x.item);
@@ -90,8 +92,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     private setSelected(items: Item[], selected: boolean): void {
-        const initialisedItems = [...items];
-        for (const item of initialisedItems) {
+        for (const item of items) {
             item.selected = selected;
         }
     }
@@ -147,7 +148,6 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     calculate(): void {
         const itemIds = this.items.filter(x => x.selected).map(x => x.id);
         if (itemIds.length === 0) {
-            this.setSelected([], false);
             return;
         }
 
