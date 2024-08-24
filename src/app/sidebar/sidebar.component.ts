@@ -79,6 +79,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     ngOnInit(): void {
         this.subscription.add(this.storage.MarketableItems().subscribe(items => {
             this.setSelected(items, false);
+            this.items = items;
         }));
 
         this.subscription.add(this.calculationService.deselect.subscribe(x => {
@@ -93,8 +94,6 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
         for (const item of initialisedItems) {
             item.selected = selected;
         }
-
-        this.items = initialisedItems;
     }
 
     onSelect(item: Item): void {
@@ -142,7 +141,7 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     clearSelection(): void {
-        this.setSelected(this.items, false);
+        this.setSelected(this.items.filter(x => x.selected), false);
     }
 
     calculate(): void {
