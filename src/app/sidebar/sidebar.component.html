@@ -6,6 +6,7 @@
             (keydown.enter)="selectFirst()"
             (keydown.escape)="deselectLast()"
             [(ngModel)]="searchFilter">
+            <mat-icon matPrefix>search</mat-icon>
         @if (searchFilter) {
             <button matSuffix mat-icon-button aria-label="Clear" (click)="searchFilter=''">
                 <mat-icon>close</mat-icon>
