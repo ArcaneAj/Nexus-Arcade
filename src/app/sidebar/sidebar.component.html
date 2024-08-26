@@ -34,18 +34,22 @@
                 </div>
                 <div class="craft-level">
                     iLevel:
-                    <mat-form-field
+                    <app-input-number
                         class="craft-level-input"
-                        appearance="outline"
+                        [height]="56"
+                        [min]="0"
+                        [max]="999"
+                        [(content)]="minLevel"
                     >
-                        <input matInput type="number" [(ngModel)]="minLevel" />
-                    </mat-form-field>
-                    <mat-form-field
+                    </app-input-number>
+                    <app-input-number
                         class="craft-level-input"
-                        appearance="outline"
+                        [height]="56"
+                        [min]="0"
+                        [max]="999"
+                        [(content)]="maxLevel"
                     >
-                        <input matInput type="number" [(ngModel)]="maxLevel" />
-                    </mat-form-field>
+                    </app-input-number>
                 </div>
             </div>
             <mat-list>

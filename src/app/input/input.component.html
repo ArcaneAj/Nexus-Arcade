@@ -1,5 +1,7 @@
-<div class="prefix-wrapper" 
-    [ngStyle]="{ 'height': height() == undefined ? '100%' : height() + 'px' }">
+<div
+    class="prefix-wrapper"
+    [ngStyle]="{ height: height() == undefined ? '100%' : height() + 'px' }"
+>
     <mat-icon>search</mat-icon>
 </div>
 
@@ -13,9 +15,11 @@
 />
 
 @if (content()) {
-    <div class="suffix-wrapper"
-        [ngStyle]="{ 'height': height() == undefined ? '100%' : height() + 'px' }"
-        (mousedown)="clear()">
+    <div
+        class="suffix-wrapper"
+        [ngStyle]="{ height: height() == undefined ? '100%' : height() + 'px' }"
+        (mousedown)="clear()"
+    >
         <mat-icon>close</mat-icon>
     </div>
 }

@@ -27,6 +27,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { AnimateModule } from 'primeng/animate';
 import { InputComponent } from '../input/input.component';
+import { InputNumberComponent } from '../input-number/input-number.component';
 
 @Component({
     selector: 'app-sidebar',
@@ -50,6 +51,7 @@ import { InputComponent } from '../input/input.component';
         FilterPipe,
         OrderPipe,
         InputComponent,
+        InputNumberComponent,
     ],
     providers: [FilterPipe, OrderPipe, MessageService],
     templateUrl: './sidebar.component.html',
