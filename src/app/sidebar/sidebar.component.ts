@@ -26,6 +26,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { AnimateModule } from 'primeng/animate';
+import { InputComponent } from '../input/input.component';
 
 @Component({
     selector: 'app-sidebar',
@@ -48,13 +49,16 @@ import { AnimateModule } from 'primeng/animate';
         // Custom components
         FilterPipe,
         OrderPipe,
+        InputComponent,
     ],
     providers: [FilterPipe, OrderPipe, MessageService],
     templateUrl: './sidebar.component.html',
-    styleUrl: './sidebar.component.scss'
+    styleUrl: './sidebar.component.scss',
 })
-export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy {
-
+export class SidebarComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     public searchFilter: string = '';
     public changeFlag: boolean = false;
     public onlyCrafted: boolean = false;
@@ -77,20 +81,26 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     ngOnInit(): void {
-        this.subscription.add(this.storage.MarketableItems().subscribe(items => {
-            this.setSelected(items, false);
-            this.items = items;
-            // this.selectFirst();
-            // this.calculate();
-        }));
+        this.subscription.add(
+            this.storage.MarketableItems().subscribe((items) => {
+                this.setSelected(items, false);
+                this.items = items;
+                // this.selectFirst();
+                // this.calculate();
+            }),
+        );
 
-        this.subscription.add(this.settings.worldChanged.subscribe(x => this.calculate()));
+        this.subscription.add(
+            this.settings.worldChanged.subscribe((x) => this.calculate()),
+        );
 
-        this.subscription.add(this.calculationService.deselect.subscribe(x => {
-            if (x.item != null) {
-                this.onSelect(x.item);
-            }
-        }));
+        this.subscription.add(
+            this.calculationService.deselect.subscribe((x) => {
+                if (x.item != null) {
+                    this.onSelect(x.item);
+                }
+            }),
+        );
     }
 
     private setSelected(items: Item[], selected: boolean): void {
@@ -105,14 +115,29 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
 
         this.messageService.clear();
         if (item.selected) {
-            this.messageService.add({ severity: 'success', summary: 'Added ' + item.Name });
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Added ' + item.Name,
+            });
         } else {
-            this.messageService.add({ severity: 'warn', summary: 'Removed ' + item.Name });
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Removed ' + item.Name,
+            });
         }
     }
 
     selectFirst(): void {
-        const orderedItems = this.orderPipe.transform(this.filterPipe.transform(this.items, this.searchFilter, this.onlyCrafted, this.minLevel, this.maxLevel), false);
+        const orderedItems = this.orderPipe.transform(
+            this.filterPipe.transform(
+                this.items,
+                this.searchFilter,
+                this.onlyCrafted,
+                this.minLevel,
+                this.maxLevel,
+            ),
+            false,
+        );
         for (const item of orderedItems) {
             if (!item.selected) {
                 item.selected = true;
@@ -123,7 +148,16 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     deselectLast(): void {
-        const orderedItems = this.orderPipe.transform(this.filterPipe.transform(this.items, this.searchFilter, this.onlyCrafted, this.minLevel, this.maxLevel), false);
+        const orderedItems = this.orderPipe.transform(
+            this.filterPipe.transform(
+                this.items,
+                this.searchFilter,
+                this.onlyCrafted,
+                this.minLevel,
+                this.maxLevel,
+            ),
+            false,
+        );
         let previousItem = null;
         for (const item of orderedItems) {
             if (!item.selected) {
@@ -144,11 +178,14 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     clearSelection(): void {
-        this.setSelected(this.items.filter(x => x.selected), false);
+        this.setSelected(
+            this.items.filter((x) => x.selected),
+            false,
+        );
     }
 
     calculate(): void {
-        const itemIds = this.items.filter(x => x.selected).map(x => x.id);
+        const itemIds = this.items.filter((x) => x.selected).map((x) => x.id);
         if (itemIds.length === 0) {
             return;
         }
@@ -159,50 +196,80 @@ export class SidebarComponent extends BaseComponent implements OnInit, OnDestroy
     private discoverIngredientIds(
         itemIds: number[][],
         recipeCache: ItemRecipe[][],
-        depth: number = 0
+        depth: number = 0,
     ): void {
-        this.subscription.add(this.storage.Recipes().subscribe(recipes => {
-            const tier0 = recipes.filter(x => itemIds[depth].includes(x.id));
-            if (tier0.length === 0) {
-                this.fetchPrices(
-                    itemIds[0],
-                    itemIds.flat().unique(),
-                    recipeCache.flat().toDict((item) => item.id));
-                return;
-            }
+        this.subscription.add(
+            this.storage.Recipes().subscribe((recipes) => {
+                const tier0 = recipes.filter((x) =>
+                    itemIds[depth].includes(x.id),
+                );
+                if (tier0.length === 0) {
+                    this.fetchPrices(
+                        itemIds[0],
+                        itemIds.flat().unique(),
+                        recipeCache.flat().toDict((item) => item.id),
+                    );
+                    return;
+                }
 
-            recipeCache[depth] = tier0;
+                recipeCache[depth] = tier0;
 
-            const tier1ids = tier0.flatMap(x => {
-                const jobIds = Object.keys(x.recipes);
-                if (jobIds.length === 0) return [];
-                return jobIds.flatMap(id => x.recipes[+id].Ingredients.map(i => i.itemId).concat(x.recipes[+id].Crystals.map(i => i.itemId)))
-            }).filter((value, index, array) => array.indexOf(value) === index);
+                const tier1ids = tier0
+                    .flatMap((x) => {
+                        const jobIds = Object.keys(x.recipes);
+                        if (jobIds.length === 0) return [];
+                        return jobIds.flatMap((id) =>
+                            x.recipes[+id].Ingredients.map(
+                                (i) => i.itemId,
+                            ).concat(
+                                x.recipes[+id].Crystals.map((i) => i.itemId),
+                            ),
+                        );
+                    })
+                    .filter(
+                        (value, index, array) => array.indexOf(value) === index,
+                    );
 
-            itemIds[depth + 1] = tier1ids;
-            this.discoverIngredientIds(itemIds, recipeCache, depth + 1)
-        }));
+                itemIds[depth + 1] = tier1ids;
+                this.discoverIngredientIds(itemIds, recipeCache, depth + 1);
+            }),
+        );
     }
 
     private fetchPrices(
         rootIds: number[],
         itemIds: number[],
-        recipeCache: { [id: number] : ItemRecipe; }
+        recipeCache: { [id: number]: ItemRecipe },
     ): void {
         const observable = combineLatest({
-            itemHistoryResponse: this.universalis.history(itemIds, this.settings.getCurrentWorld().dataCenter),
+            itemHistoryResponse: this.universalis.history(
+                itemIds,
+                this.settings.getCurrentWorld().dataCenter,
+            ),
             items: this.storage.Items(),
             gilShopIds: this.xivApi.gilShopItems(),
-        })
+        });
 
-        this.subscription.add(this.storage.Items().subscribe(items => {
-            this.calculationService.getPriceSkeleton(rootIds, items);
-        }));
+        this.subscription.add(
+            this.storage.Items().subscribe((items) => {
+                this.calculationService.getPriceSkeleton(rootIds, items);
+            }),
+        );
         console.log('Beginning market fetch.');
         const start = Date.now();
-        this.subscription.add(observable.subscribe(x => {
-            console.log(`Finished market fetch in ${Date.now() - start}ms.`);
-            this.calculationService.calculatePrices(rootIds, recipeCache, x.itemHistoryResponse, x.items, x.gilShopIds);
-        }));
+        this.subscription.add(
+            observable.subscribe((x) => {
+                console.log(
+                    `Finished market fetch in ${Date.now() - start}ms.`,
+                );
+                this.calculationService.calculatePrices(
+                    rootIds,
+                    recipeCache,
+                    x.itemHistoryResponse,
+                    x.items,
+                    x.gilShopIds,
+                );
+            }),
+        );
     }
 }
