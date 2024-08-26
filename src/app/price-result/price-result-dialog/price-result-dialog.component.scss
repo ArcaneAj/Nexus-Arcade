@@ -3,7 +3,8 @@ mat-dialog-content {
     height: 100%;
 }
 
-mat-tab-group, ::ng-deep.mat-mdc-tab-body-wrapper {
+mat-tab-group,
+::ng-deep.mat-mdc-tab-body-wrapper {
     height: 100%;
 }
 
@@ -15,7 +16,7 @@ mat-tab-group, ::ng-deep.mat-mdc-tab-body-wrapper {
     mat-dialog-content {
         max-width: 80vw;
     }
-    
+
     .graph {
         width: 100%;
     }

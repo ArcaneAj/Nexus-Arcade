@@ -1,34 +1,64 @@
 <div class="sort">
-    <button mat-mini-fab class="back-button" (mousedown)="clearResults()"><mat-icon>arrow_back_ios</mat-icon></button>
+    <button mat-mini-fab class="back-button" (mousedown)="clearResults()">
+        <mat-icon>arrow_back_ios</mat-icon>
+    </button>
     <mat-button-toggle-group
         name="sortOrder"
         aria-label="Sort Order"
         [hideSingleSelectionIndicator]="true"
         (change)="sortOrderChanged($event)"
+    >
+        <mat-button-toggle
+            value="true"
+            [checked]="sortAscending"
+            matTooltip="Ascending"
+            ><mat-icon>keyboard_arrow_upward</mat-icon></mat-button-toggle
         >
-        <mat-button-toggle value="true" [checked]="sortAscending" matTooltip="Ascending"><mat-icon>keyboard_arrow_upward</mat-icon></mat-button-toggle>
-        <mat-button-toggle value="false" [checked]="!sortAscending" matTooltip="Descending"><mat-icon>keyboard_arrow_down</mat-icon></mat-button-toggle>
+        <mat-button-toggle
+            value="false"
+            [checked]="!sortAscending"
+            matTooltip="Descending"
+            ><mat-icon>keyboard_arrow_down</mat-icon></mat-button-toggle
+        >
     </mat-button-toggle-group>
-    
+
     <mat-button-toggle-group
         name="sortCriteria"
         aria-label="Sort Criteria"
         [hideSingleSelectionIndicator]="true"
         (change)="sortCriteriaChanged($event)"
     >
-    <mat-button-toggle value="profit" [checked]="sortCriteria === 'profit'">Profit</mat-button-toggle>
-    <mat-button-toggle value="throughput" [checked]="sortCriteria === 'throughput'">G/wk</mat-button-toggle>
-    <mat-button-toggle value="units"[checked]="sortCriteria === 'units'">S/wk</mat-button-toggle>
+        <mat-button-toggle value="profit" [checked]="sortCriteria === 'profit'"
+            >Profit</mat-button-toggle
+        >
+        <mat-button-toggle
+            value="throughput"
+            [checked]="sortCriteria === 'throughput'"
+            >G/wk</mat-button-toggle
+        >
+        <mat-button-toggle value="units" [checked]="sortCriteria === 'units'"
+            >S/wk</mat-button-toggle
+        >
     </mat-button-toggle-group>
-    @if (sortCriteria === 'profit') {
+    @if (sortCriteria === "profit") {
         <mat-button-toggle-group
             name="sortProperty"
             aria-label="Sort Property"
             [hideSingleSelectionIndicator]="true"
             (change)="sortPropertyChanged($event)"
+        >
+            <mat-button-toggle
+                value="false"
+                [checked]="!sortCrafted"
+                matTooltip="NPC shops"
+                ><mat-icon>shopping_cart</mat-icon></mat-button-toggle
             >
-            <mat-button-toggle value="false" [checked]="!sortCrafted" matTooltip="NPC shops"><mat-icon>shopping_cart</mat-icon></mat-button-toggle>
-            <mat-button-toggle value="true" [checked]="sortCrafted" matTooltip="Crafted"><mat-icon>construction</mat-icon></mat-button-toggle>
+            <mat-button-toggle
+                value="true"
+                [checked]="sortCrafted"
+                matTooltip="Crafted"
+                ><mat-icon>construction</mat-icon></mat-button-toggle
+            >
         </mat-button-toggle-group>
     }
 </div>
@@ -40,27 +70,71 @@
                     class="item"
                     (clear)="clearResult(result)"
                     [sortCrafted]="sortCrafted"
-                    [result]="result">
+                    [result]="result"
+                >
                 </app-price-result>
             }
         }
     } @else {
         <div class="empty">
-            <span><mat-icon>arrow_back</mat-icon> Please select at least 1 item and click "Calculate" to see results</span>
+            <span
+                ><mat-icon>arrow_back</mat-icon> Please select at least 1 item
+                and click "Calculate" to see results</span
+            >
             <div class="discord">
                 Join discord for support
-                <iframe style="border-radius: 15px;" src="https://discordapp.com/widget?id=1275047205006479410&theme=dark" width="350" height="350" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+                <iframe
+                    style="border-radius: 15px"
+                    src="https://discordapp.com/widget?id=1275047205006479410&theme=dark"
+                    width="350"
+                    height="350"
+                    allowtransparency="true"
+                    frameborder="0"
+                    sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+                ></iframe>
             </div>
             <div class="kofi">
                 Or support Arcade Nexus
                 @if (disableModal) {
-                    <a href="https://ko-fi.com/arcaneaj" target="_blank" rel="noopener noreferrer"><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi4.png?v=3' alt='Buy Me a Coffee at ko-fi.com' /></a>
+                    <a
+                        href="https://ko-fi.com/arcaneaj"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        ><img
+                            height="36"
+                            style="border: 0px; height: 36px"
+                            src="https://storage.ko-fi.com/cdn/kofi4.png?v=3"
+                            alt="Buy Me a Coffee at ko-fi.com"
+                    /></a>
                 } @else {
                     <dialog #dialog class="modal" (click)="closeModal()">
-                        <iframe id='kofiframe' src='https://ko-fi.com/arcaneaj/?hidefeed=true&widget=true&embed=true&preview=true' style='border:none;width:100%;padding:0px;background:#f9f9f9;' height='712' title='arcaneaj'></iframe>
-                        <button mat-flat-button color="primary" class="close-button">Close</button>
+                        <iframe
+                            id="kofiframe"
+                            src="https://ko-fi.com/arcaneaj/?hidefeed=true&widget=true&embed=true&preview=true"
+                            style="
+                                border: none;
+                                width: 100%;
+                                padding: 0px;
+                                background: #f9f9f9;
+                            "
+                            height="712"
+                            title="arcaneaj"
+                        ></iframe>
+                        <button
+                            mat-flat-button
+                            color="primary"
+                            class="close-button"
+                        >
+                            Close
+                        </button>
                     </dialog>
-                    <img (click)="openModal()" height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi4.png?v=3' alt='Buy Me a Coffee at ko-fi.com' />
+                    <img
+                        (click)="openModal()"
+                        height="36"
+                        style="border: 0px; height: 36px"
+                        src="https://storage.ko-fi.com/cdn/kofi4.png?v=3"
+                        alt="Buy Me a Coffee at ko-fi.com"
+                    />
                 }
             </div>
         </div>

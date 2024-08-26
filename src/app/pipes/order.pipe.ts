@@ -4,10 +4,9 @@ import { Item } from '../models/item.model';
 
 @Pipe({
     name: 'order',
-    standalone: true
+    standalone: true,
 })
 export class OrderPipe implements PipeTransform {
-    
     constructor(public settings: SettingsService) {}
 
     transform(items: Item[] | null, change: boolean): Item[] {
@@ -15,6 +14,9 @@ export class OrderPipe implements PipeTransform {
             return [];
         }
 
-        return [...items].sort((a, b) => (+(!!b.selected)) - (+(!!a.selected)) || a.Name.localeCompare(b.Name))
+        return [...items].sort(
+            (a, b) =>
+                +!!b.selected - +!!a.selected || a.Name.localeCompare(b.Name),
+        );
     }
 }

@@ -12,18 +12,16 @@ import { XivApiService } from './xivapi.service';
 import { ItemRecipe } from '../models/item-recipe.model';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class StorageService {
-
     private subscription: Subscription = new Subscription();
-    
+
     constructor(
         private universalis: UniversalisService,
         private xivApi: XivApiService,
-        private settings: SettingsService
-    ) {
-    }
+        private settings: SettingsService,
+    ) {}
 
     public Items(): Observable<Item[]> {
         return liveQuery(() => db.items.toArray());
@@ -46,70 +44,88 @@ export class StorageService {
     }
 
     public async FetchSettings(): Promise<void> {
-        const currentWorld: NamedObject | undefined = await db.settings.get('currentWorld');
+        const currentWorld: NamedObject | undefined =
+            await db.settings.get('currentWorld');
         if (currentWorld != null) {
             this.settings.setCurrentWorld(currentWorld as World);
         }
     }
 
     public purge() {
-        db.delete({disableAutoOpen: false}).then(() => this.populateCaches());
+        db.delete({ disableAutoOpen: false }).then(() => this.populateCaches());
     }
 
     public populateCaches() {
-        this.subscription.add(this.Worlds().subscribe(x => {
-            if (x == null || x.length === 0) {
-                this.updateWorldCache();
-            }
-        }));
-        this.subscription.add(this.Items().subscribe(x => {
-            if (x == null || x.length === 0) {
-                this.updateItemCache();
-            }
-        }));
-        this.subscription.add(this.Recipes().subscribe(x => {
-            if (x == null || x.length === 0) {
-                this.updateRecipeCache();
-            }
-        }));
+        this.subscription.add(
+            this.Worlds().subscribe((x) => {
+                if (x == null || x.length === 0) {
+                    this.updateWorldCache();
+                }
+            }),
+        );
+        this.subscription.add(
+            this.Items().subscribe((x) => {
+                if (x == null || x.length === 0) {
+                    this.updateItemCache();
+                }
+            }),
+        );
+        this.subscription.add(
+            this.Recipes().subscribe((x) => {
+                if (x == null || x.length === 0) {
+                    this.updateRecipeCache();
+                }
+            }),
+        );
     }
-    
+
     private updateItemCache() {
         const observable = combineLatest({
             items: this.xivApi.items(),
             marketable: this.universalis.marketable(),
             recipes: this.Recipes(),
-          });
-        this.subscription.add(observable.subscribe(async response => {
-            for (const recipe of response.recipes) {
-                response.items[recipe.id].craftable = true;
-                for (const key in recipe.recipes) {
-                    const jobRecipe = recipe.recipes[key];
-                    const currentRecipeLevel = response.items[recipe.id].recipeLevel;
-                    if (currentRecipeLevel == null || currentRecipeLevel > jobRecipe.RecipeLevel) {
-                        response.items[recipe.id].recipeLevel = jobRecipe.RecipeLevel;
+        });
+        this.subscription.add(
+            observable.subscribe(async (response) => {
+                for (const recipe of response.recipes) {
+                    response.items[recipe.id].craftable = true;
+                    for (const key in recipe.recipes) {
+                        const jobRecipe = recipe.recipes[key];
+                        const currentRecipeLevel =
+                            response.items[recipe.id].recipeLevel;
+                        if (
+                            currentRecipeLevel == null ||
+                            currentRecipeLevel > jobRecipe.RecipeLevel
+                        ) {
+                            response.items[recipe.id].recipeLevel =
+                                jobRecipe.RecipeLevel;
+                        }
                     }
                 }
-            }
 
-            const items: Item[] = response.items.filter(i => !!i.Name);
-            const marketableItems: Item[] = response.marketable.map(i => response.items[i]).filter(i => !!i.Name);
-            
-            await db.populateMarketableItemNames(marketableItems);
-            await db.populateItemNames(items);
-        }));
+                const items: Item[] = response.items.filter((i) => !!i.Name);
+                const marketableItems: Item[] = response.marketable
+                    .map((i) => response.items[i])
+                    .filter((i) => !!i.Name);
+
+                await db.populateMarketableItemNames(marketableItems);
+                await db.populateItemNames(items);
+            }),
+        );
     }
-    
+
     private updateWorldCache() {
         const observable = forkJoin({
             worlds: this.universalis.worlds(),
-            dataCenters: this.universalis.dataCenters()
+            dataCenters: this.universalis.dataCenters(),
         });
-        this.subscription.add(observable.subscribe(async response =>
-            {
+        this.subscription.add(
+            observable.subscribe(async (response) => {
                 for (const datacenter of response.dataCenters) {
                     for (const worldId of datacenter.worlds) {
-                        const world = response.worlds.find(x => x.id === worldId);
+                        const world = response.worlds.find(
+                            (x) => x.id === worldId,
+                        );
                         if (world == null) {
                             continue;
                         }
@@ -120,14 +136,14 @@ export class StorageService {
 
                 await db.populateWorlds(response.worlds);
                 await db.populateDataCenters(response.dataCenters);
-            }
-        ));
+            }),
+        );
     }
-    
+
     private updateRecipeCache() {
-        this.subscription.add(this.xivApi.recipes().subscribe(async recipes =>
-            {
-                const recipesByItem: { [id: number] : ItemRecipe; } = {};
+        this.subscription.add(
+            this.xivApi.recipes().subscribe(async (recipes) => {
+                const recipesByItem: { [id: number]: ItemRecipe } = {};
                 for (const recipe of recipes) {
                     const itemId = recipe.ItemId;
                     if (!itemId) {
@@ -138,17 +154,19 @@ export class StorageService {
                     if (entry == null) {
                         entry = {
                             id: itemId,
-                            recipes: {}
+                            recipes: {},
                         };
                         recipesByItem[itemId] = entry;
                     }
 
-                    entry.recipes[recipe.CraftJobId] = recipe
+                    entry.recipes[recipe.CraftJobId] = recipe;
                 }
 
-                const itemRecipes: ItemRecipe[] = Object.keys(recipesByItem).map(id => recipesByItem[+id]);
+                const itemRecipes: ItemRecipe[] = Object.keys(
+                    recipesByItem,
+                ).map((id) => recipesByItem[+id]);
                 await db.populateRecipes(itemRecipes);
-            }
-        ));
+            }),
+        );
     }
 }

@@ -1,6 +1,6 @@
-import { Recipe } from "./recipe.model";
+import { Recipe } from './recipe.model';
 
 export interface ItemRecipe {
-    id: number,
-    recipes: { [id: number] : Recipe; }
+    id: number;
+    recipes: { [id: number]: Recipe };
 }

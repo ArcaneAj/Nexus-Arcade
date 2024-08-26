@@ -6,45 +6,48 @@ import { World } from '../models/world.model';
 import { ItemsHistoryResponse } from '../models/items-history-response.model';
 import { ItemHistoryResponse } from '../models/item-history-response.model';
 
-const MARKETABLE_URL = 'https://universalis.app/api/v2/marketable'
-const DC_URL = 'https://universalis.app/api/v2/data-centers'
-const WORLD_URL = 'https://universalis.app/api/v2/worlds'
-const HISTORY_URL = 'https://universalis.app/api/v2/history'
+const MARKETABLE_URL = 'https://universalis.app/api/v2/marketable';
+const DC_URL = 'https://universalis.app/api/v2/data-centers';
+const WORLD_URL = 'https://universalis.app/api/v2/worlds';
+const HISTORY_URL = 'https://universalis.app/api/v2/history';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class UniversalisService {
-
-    private cache: { [dataCenter: string] : { [id: string] : ItemHistoryResponse; }; };
+    private cache: {
+        [dataCenter: string]: { [id: string]: ItemHistoryResponse };
+    };
     constructor(private httpService: HttpService) {
         this.cache = {};
     }
 
     public marketable(): Observable<number[]> {
-        return this.httpService.get<number[]>(MARKETABLE_URL)
+        return this.httpService.get<number[]>(MARKETABLE_URL);
     }
 
     public dataCenters(): Observable<DataCenter[]> {
-        return this.httpService.get<DataCenter[]>(DC_URL)
+        return this.httpService.get<DataCenter[]>(DC_URL);
     }
 
     public worlds(): Observable<World[]> {
-        return this.httpService.get<World[]>(WORLD_URL)
+        return this.httpService.get<World[]>(WORLD_URL);
     }
 
-    public history(itemIds: number[], dataCenter: DataCenter): Observable<ItemsHistoryResponse> {
-
+    public history(
+        itemIds: number[],
+        dataCenter: DataCenter,
+    ): Observable<ItemsHistoryResponse> {
         const cachedHistoryResponse: ItemsHistoryResponse = {
             itemIDs: [],
             dcName: dataCenter.name,
             unresolvedItems: [],
-            items: {}
+            items: {},
         };
-        
+
         const indicesToRemove: number[] = [];
         for (const id of itemIds) {
-            var item = this.getFromCache(dataCenter.name, id.toString())
+            var item = this.getFromCache(dataCenter.name, id.toString());
             if (item != null) {
                 cachedHistoryResponse.items[id.toString()] = item;
                 cachedHistoryResponse.itemIDs.push(id);
@@ -59,65 +62,94 @@ export class UniversalisService {
             itemIds.splice(index, 1);
         }
 
-
         if (itemIds.length === 0) {
             return of(cachedHistoryResponse);
         }
-        
+
         if (itemIds.length > 1) {
-            const chunkedIds: number[][] = itemIds.reduce((resultArray: number[][], item, index) => { 
-                const chunkIndex = Math.floor(index/100)
-              
-                if(!resultArray[chunkIndex]) {
-                    resultArray[chunkIndex] = [] // start a new chunk
-                }
-              
-                resultArray[chunkIndex].push(item)
-              
-                return resultArray
-            }, []);
+            const chunkedIds: number[][] = itemIds.reduce(
+                (resultArray: number[][], item, index) => {
+                    const chunkIndex = Math.floor(index / 100);
 
-            return forkJoin(chunkedIds.map(idChunk => {
-                const url = [HISTORY_URL, dataCenter.name, idChunk.join()].join('/');
-                return this.httpService.get<ItemsHistoryResponse>(url);
-            })).pipe(map(responses => {
-                const itemsHistoryResponse: ItemsHistoryResponse = {
-                    itemIDs: [],
-                    dcName: dataCenter.name,
-                    unresolvedItems: [],
-                    items: {}
-                };
+                    if (!resultArray[chunkIndex]) {
+                        resultArray[chunkIndex] = []; // start a new chunk
+                    }
 
-                for (const response of responses) {
-                    itemsHistoryResponse.itemIDs.push(...response.itemIDs);
-                    itemsHistoryResponse.unresolvedItems.push(...response.unresolvedItems);
-                    itemsHistoryResponse.items = {...response.items, ...itemsHistoryResponse.items};
-                }
-                for (const key in itemsHistoryResponse.items) {
-                    this.addToCache(itemsHistoryResponse.items[key], dataCenter.name, key);
-                }
+                    resultArray[chunkIndex].push(item);
 
-                itemsHistoryResponse.itemIDs.push(...cachedHistoryResponse.itemIDs);
-                itemsHistoryResponse.items = {...cachedHistoryResponse.items, ...itemsHistoryResponse.items};
+                    return resultArray;
+                },
+                [],
+            );
 
-                return itemsHistoryResponse;
-            }));
+            return forkJoin(
+                chunkedIds.map((idChunk) => {
+                    const url = [
+                        HISTORY_URL,
+                        dataCenter.name,
+                        idChunk.join(),
+                    ].join('/');
+                    return this.httpService.get<ItemsHistoryResponse>(url);
+                }),
+            ).pipe(
+                map((responses) => {
+                    const itemsHistoryResponse: ItemsHistoryResponse = {
+                        itemIDs: [],
+                        dcName: dataCenter.name,
+                        unresolvedItems: [],
+                        items: {},
+                    };
+
+                    for (const response of responses) {
+                        itemsHistoryResponse.itemIDs.push(...response.itemIDs);
+                        itemsHistoryResponse.unresolvedItems.push(
+                            ...response.unresolvedItems,
+                        );
+                        itemsHistoryResponse.items = {
+                            ...response.items,
+                            ...itemsHistoryResponse.items,
+                        };
+                    }
+                    for (const key in itemsHistoryResponse.items) {
+                        this.addToCache(
+                            itemsHistoryResponse.items[key],
+                            dataCenter.name,
+                            key,
+                        );
+                    }
+
+                    itemsHistoryResponse.itemIDs.push(
+                        ...cachedHistoryResponse.itemIDs,
+                    );
+                    itemsHistoryResponse.items = {
+                        ...cachedHistoryResponse.items,
+                        ...itemsHistoryResponse.items,
+                    };
+
+                    return itemsHistoryResponse;
+                }),
+            );
         }
 
         const singleUrl = [HISTORY_URL, dataCenter.name, itemIds[0]].join('/');
-        return this.httpService.get<ItemHistoryResponse>(singleUrl).pipe(map(x => {
-            const response: ItemsHistoryResponse = {
-                itemIDs: itemIds,
-                dcName: dataCenter.name,
-                unresolvedItems: [],
-                items: {}
-            }
+        return this.httpService.get<ItemHistoryResponse>(singleUrl).pipe(
+            map((x) => {
+                const response: ItemsHistoryResponse = {
+                    itemIDs: itemIds,
+                    dcName: dataCenter.name,
+                    unresolvedItems: [],
+                    items: {},
+                };
 
-            response.items[itemIds[0].toString()] = x
-            response.itemIDs.push(...cachedHistoryResponse.itemIDs);
-            response.items = {...cachedHistoryResponse.items, ...response.items};
-            return response;
-        }));
+                response.items[itemIds[0].toString()] = x;
+                response.itemIDs.push(...cachedHistoryResponse.itemIDs);
+                response.items = {
+                    ...cachedHistoryResponse.items,
+                    ...response.items,
+                };
+                return response;
+            }),
+        );
     }
 
     addToCache(item: ItemHistoryResponse, dataCentre: string, key: string) {
@@ -128,7 +160,10 @@ export class UniversalisService {
         this.cache[dataCentre][key] = item;
     }
 
-    getFromCache(dataCentre: string, key: string): ItemHistoryResponse | undefined {
+    getFromCache(
+        dataCentre: string,
+        key: string,
+    ): ItemHistoryResponse | undefined {
         if (dataCentre in this.cache && key in this.cache[dataCentre]) {
             const item = this.cache[dataCentre][key];
             if (item.expiry > new Date()) {

@@ -1,13 +1,9 @@
 <div class="grid">
     <header>
-        <app-header>
-
-        </app-header>
+        <app-header> </app-header>
     </header>
-    <main [ngClass]="{'hidden-mobile': !hasResults}">
+    <main [ngClass]="{ 'hidden-mobile': !hasResults }">
         <app-main (resultsLength)="resultsChanged($event)"></app-main>
     </main>
-    <app-sidebar [ngClass]="{'hidden-mobile': hasResults}">
-
-    </app-sidebar>
+    <app-sidebar [ngClass]="{ 'hidden-mobile': hasResults }"> </app-sidebar>
 </div>

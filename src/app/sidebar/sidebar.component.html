@@ -1,21 +1,28 @@
 <div class="content hidden-mobile">
-    <mat-form-field class="search-form-field" appearance="outline">
-        <mat-label>Item Search</mat-label>
-        <input matInput
-            type="text" 
-            (keydown.enter)="selectFirst()"
-            (keydown.escape)="deselectLast()"
-            [(ngModel)]="searchFilter">
-            <mat-icon matPrefix>search</mat-icon>
-        @if (searchFilter) {
-            <button matSuffix mat-icon-button aria-label="Clear" (click)="searchFilter=''">
-                <mat-icon>close</mat-icon>
-            </button>
-        }
-    </mat-form-field>
+    <app-input
+        class="search-form-field"
+        [height]="56"
+        (keydownEnter)="selectFirst()"
+        (keydownEscape)="deselectLast()"
+        [(content)]="searchFilter"
+    ></app-input>
     <div class="buttons">
-        <button mat-flat-button color="warn" class="half-button reset-button" (mousedown)="clearSelection()">Reset</button>
-        <button mat-flat-button color="primary" class="half-button calculate-button" (mousedown)="calculate()">Calculate</button>
+        <button
+            mat-flat-button
+            color="warn"
+            class="half-button reset-button"
+            (mousedown)="clearSelection()"
+        >
+            Reset
+        </button>
+        <button
+            mat-flat-button
+            color="primary"
+            class="half-button calculate-button"
+            (mousedown)="calculate()"
+        >
+            Calculate
+        </button>
     </div>
     @if (items && items.length > 0) {
         <div class="item-select">
@@ -27,36 +34,58 @@
                 </div>
                 <div class="craft-level">
                     iLevel:
-                    <mat-form-field class="craft-level-input" appearance="outline">
-                        <input matInput
-                            type="number" 
-                            [(ngModel)]="minLevel">
+                    <mat-form-field
+                        class="craft-level-input"
+                        appearance="outline"
+                    >
+                        <input matInput type="number" [(ngModel)]="minLevel" />
                     </mat-form-field>
-                    <mat-form-field class="craft-level-input" appearance="outline">
-                        <input matInput
-                            type="number" 
-                            [(ngModel)]="maxLevel">
+                    <mat-form-field
+                        class="craft-level-input"
+                        appearance="outline"
+                    >
+                        <input matInput type="number" [(ngModel)]="maxLevel" />
                     </mat-form-field>
                 </div>
             </div>
             <mat-list>
-                <cdk-virtual-scroll-viewport [itemSize]="50" class="virtual-viewport">
+                <cdk-virtual-scroll-viewport
+                    [itemSize]="50"
+                    class="virtual-viewport"
+                >
                     <mat-list-item
-                        *cdkVirtualFor="let item of (items | filter: searchFilter:onlyCrafted:minLevel:maxLevel | order: changeFlag)"
+                        *cdkVirtualFor="
+                            let item of items
+                                | filter
+                                    : searchFilter
+                                    : onlyCrafted
+                                    : minLevel
+                                    : maxLevel
+                                | order: changeFlag
+                        "
                         (mousedown)="onSelect(item)"
-                        [ngClass]="{'item-selected': item.selected}">
-                        {{item.Name}}
+                        [ngClass]="{ 'item-selected': item.selected }"
+                    >
+                        {{ item.Name }}
                     </mat-list-item>
                 </cdk-virtual-scroll-viewport>
             </mat-list>
         </div>
         <p-toast
             position="bottom-left"
-            [showTransformOptions]="'translateY(0%)'" 
-            [showTransitionOptions]="'100ms'" 
-            [hideTransitionOptions]="'0ms'" 
+            [showTransformOptions]="'translateY(0%)'"
+            [showTransitionOptions]="'100ms'"
+            [hideTransitionOptions]="'0ms'"
             [hideTransformOptions]="'translateY(0%)'"
-            [breakpoints]="{ '700px': { width: 'calc(100% - 48px)', right: '24px', left: '24px', bottom: '24px' } }">
+            [breakpoints]="{
+                '700px': {
+                    width: 'calc(100% - 48px)',
+                    right: '24px',
+                    left: '24px',
+                    bottom: '24px',
+                },
+            }"
+        >
             <ng-template let-message pTemplate="headless">
                 <section class="toast-container">
                     <div class="toast-content">

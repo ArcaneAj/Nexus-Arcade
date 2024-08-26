@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
     standalone: true,
     imports: [CommonModule],
     templateUrl: './price-result-tree.component.html',
-    styleUrl: './price-result-tree.component.scss'
+    styleUrl: './price-result-tree.component.scss',
 })
 export class PriceResultTreeComponent {
     public result = input.required<PriceResult>();

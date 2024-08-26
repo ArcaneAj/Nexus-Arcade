@@ -1,0 +1,21 @@
+<div class="prefix-wrapper" 
+    [ngStyle]="{ 'height': height() == undefined ? '100%' : height() + 'px' }">
+    <mat-icon>search</mat-icon>
+</div>
+
+<input
+    id="input"
+    type="text"
+    [placeholder]="placeHolder"
+    (keydown.enter)="emitEnter()"
+    (keydown.escape)="emitEscape()"
+    [(ngModel)]="content"
+/>
+
+@if (content()) {
+    <div class="suffix-wrapper"
+        [ngStyle]="{ 'height': height() == undefined ? '100%' : height() + 'px' }"
+        (mousedown)="clear()">
+        <mat-icon>close</mat-icon>
+    </div>
+}

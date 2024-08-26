@@ -10,23 +10,27 @@ import { Observable, Subject } from 'rxjs';
 import { SettingsService } from './settings.service';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class CalculationService {
-    private priceResultsSubject: Subject<PriceResult[]> = new Subject<PriceResult[]>();
-    public priceResults: Observable<PriceResult[]> = this.priceResultsSubject.asObservable();
+    private priceResultsSubject: Subject<PriceResult[]> = new Subject<
+        PriceResult[]
+    >();
+    public priceResults: Observable<PriceResult[]> =
+        this.priceResultsSubject.asObservable();
     private deselectSubject: Subject<PriceResult> = new Subject<PriceResult>();
-    public deselect: Observable<PriceResult> = this.deselectSubject.asObservable();
+    public deselect: Observable<PriceResult> =
+        this.deselectSubject.asObservable();
 
-    private priceResultCache: { [dataCenter: string] : { [id: number] : PriceResult; }; };
-    private recipeCache: { [id: number] : ItemRecipe; } = {};
-    private itemCache: { [id: number] : Item; } = {};
+    private priceResultCache: {
+        [dataCenter: string]: { [id: number]: PriceResult };
+    };
+    private recipeCache: { [id: number]: ItemRecipe } = {};
+    private itemCache: { [id: number]: Item } = {};
     private itemHistoryResponse!: ItemsHistoryResponse;
     private gilShopIds: number[] = [];
 
-    constructor(
-        private settings: SettingsService
-    ) {
+    constructor(private settings: SettingsService) {
         this.priceResultCache = {};
     }
 
@@ -34,70 +38,68 @@ export class CalculationService {
         this.deselectSubject.next(result);
     }
 
-    public getPriceSkeleton(
-        rootIds: number[],
-        items: Item[]
-    ): void {
-        const itemDict = items.toDict(x => x.id); 
-        this.priceResultsSubject.next(rootIds.map(id => {
-            const item = itemDict[id];
-            const priceResult: PriceResult = {
-                item: item,
-                name: item.Name,
-                requiredAmount: 1,
-                craftedPrices: [
-                    {
-                        price: Number.MAX_SAFE_INTEGER,
-                        components: [],
-                        amount: 1
-                    }
-                ],
-                shopPrice: Number.MAX_SAFE_INTEGER,
-                nqSaleVelocity: 0,
-                hqSaleVelocity: 0,
-                marketPriceDc: 0,
-                marketPriceWorld: 0,
-                marketThroughputDc: 0,
-                marketThroughputWorld: 0,
-                dc: "",
-                world: "",
-                history: {
-                    itemId: item.id,
-                    dcName: "",
-                    lastUploadTime: -1,
-                    stackSizeHistogram: {},
-                    stackSizeHistogramHQ: {},
-                    stackSizeHistogramNQ: {},
-                    regularSaleVelocity: 0,
+    public getPriceSkeleton(rootIds: number[], items: Item[]): void {
+        const itemDict = items.toDict((x) => x.id);
+        this.priceResultsSubject.next(
+            rootIds.map((id) => {
+                const item = itemDict[id];
+                const priceResult: PriceResult = {
+                    item: item,
+                    name: item.Name,
+                    requiredAmount: 1,
+                    craftedPrices: [
+                        {
+                            price: Number.MAX_SAFE_INTEGER,
+                            components: [],
+                            amount: 1,
+                        },
+                    ],
+                    shopPrice: Number.MAX_SAFE_INTEGER,
                     nqSaleVelocity: 0,
                     hqSaleVelocity: 0,
-                    expiry: new Date(),
-                    entries: [],
-
-                }
-            };
-            return priceResult;
-        }));
+                    marketPriceDc: 0,
+                    marketPriceWorld: 0,
+                    marketThroughputDc: 0,
+                    marketThroughputWorld: 0,
+                    dc: '',
+                    world: '',
+                    history: {
+                        itemId: item.id,
+                        dcName: '',
+                        lastUploadTime: -1,
+                        stackSizeHistogram: {},
+                        stackSizeHistogramHQ: {},
+                        stackSizeHistogramNQ: {},
+                        regularSaleVelocity: 0,
+                        nqSaleVelocity: 0,
+                        hqSaleVelocity: 0,
+                        expiry: new Date(),
+                        entries: [],
+                    },
+                };
+                return priceResult;
+            }),
+        );
     }
 
     public calculatePrices(
         rootIds: number[],
-        recipeCache: { [id: number] : ItemRecipe; },
+        recipeCache: { [id: number]: ItemRecipe },
         itemHistoryResponse: ItemsHistoryResponse,
         items: Item[],
         gilShopIds: number[],
     ): void {
         this.recipeCache = Object.assign({}, this.recipeCache, recipeCache);
-        this.itemCache = items.toDict(x => x.id);
+        this.itemCache = items.toDict((x) => x.id);
         this.itemHistoryResponse = itemHistoryResponse;
         this.gilShopIds = gilShopIds.unique().sort();
         this.priceResultCache = {};
-        this.priceResultsSubject.next(rootIds.map(x => this.getPriceForItem(x)));
+        this.priceResultsSubject.next(
+            rootIds.map((x) => this.getPriceForItem(x)),
+        );
     }
 
-    private getPriceForItem(
-        id: number
-    ): PriceResult {
+    private getPriceForItem(id: number): PriceResult {
         const currentDc = this.settings.getCurrentWorld().dataCenter.name;
         const currentWorld = this.settings.getCurrentWorld().name;
         if (id in this.priceResultCache) {
@@ -109,9 +111,15 @@ export class CalculationService {
 
         const shopPrice = getShopPrice(item, this.gilShopIds);
         const marketPriceDc = getDcPrice(itemHistory.entries);
-        const marketPriceWorld = getWorldPrice(itemHistory.entries, currentWorld);
+        const marketPriceWorld = getWorldPrice(
+            itemHistory.entries,
+            currentWorld,
+        );
         const marketThroughputDc = getDcThroughput(itemHistory.entries);
-        const marketThroughputWorld = getWorldThroughput(itemHistory.entries, currentWorld);
+        const marketThroughputWorld = getWorldThroughput(
+            itemHistory.entries,
+            currentWorld,
+        );
         let craftedPrices: CraftResult[] = this.getCraftedPrices(id);
 
         const priceResult: PriceResult = {
@@ -136,27 +144,30 @@ export class CalculationService {
         }
 
         this.priceResultCache[currentDc][id] = priceResult;
-        
+
         return priceResult;
     }
 
-    private getCraftedPrices(id: number,): CraftResult[] {
+    private getCraftedPrices(id: number): CraftResult[] {
         if (id in this.recipeCache) {
             const itemRecipes = this.recipeCache[id].recipes;
             const jobIds = Object.keys(itemRecipes);
             const craftResults: CraftResult[] = [];
             for (const jobId of jobIds) {
                 const jobRecipe = itemRecipes[+jobId];
-                const componentItems: Ingredient[] = jobRecipe.Ingredients.concat(jobRecipe.Crystals);
-                const components: PriceResult[] = componentItems.map(x =>  {
-                    const priceResult = {...this.getPriceForItem(x.itemId)};
+                const componentItems: Ingredient[] =
+                    jobRecipe.Ingredients.concat(jobRecipe.Crystals);
+                const components: PriceResult[] = componentItems.map((x) => {
+                    const priceResult = { ...this.getPriceForItem(x.itemId) };
                     priceResult.requiredAmount = x.amount;
                     return priceResult;
                 });
                 craftResults.push({
-                    price: components.map(x => getLowestPrice(x) * x.requiredAmount).reduce((partialSum, a) => partialSum + a, 0),
-                    components: components.map(x => x),
-                    amount: jobRecipe.Amount
+                    price: components
+                        .map((x) => getLowestPrice(x) * x.requiredAmount)
+                        .reduce((partialSum, a) => partialSum + a, 0),
+                    components: components.map((x) => x),
+                    amount: jobRecipe.Amount,
                 });
             }
 
@@ -166,15 +177,17 @@ export class CalculationService {
     }
 }
 
-function getShopPrice(
-    item: Item,
-    gilShopIds: number[]
-): number {
-    return gilShopIds.includes(item.id) ? item.Price_Mid_ : Number.MAX_SAFE_INTEGER;
+function getShopPrice(item: Item, gilShopIds: number[]): number {
+    return gilShopIds.includes(item.id)
+        ? item.Price_Mid_
+        : Number.MAX_SAFE_INTEGER;
 }
 
-function getWorldThroughput(entries: ItemHistoryEntry[], worldName: string): number {
-    return getMarketThroughput(entries.filter(x => x.worldName == worldName));
+function getWorldThroughput(
+    entries: ItemHistoryEntry[],
+    worldName: string,
+): number {
+    return getMarketThroughput(entries.filter((x) => x.worldName == worldName));
 }
 
 function getDcThroughput(entries: ItemHistoryEntry[]): number {
@@ -182,11 +195,14 @@ function getDcThroughput(entries: ItemHistoryEntry[]): number {
 }
 
 function getMarketThroughput(entries: ItemHistoryEntry[]): number {
-    return entries.reduce((sum, entry) => sum + (entry.quantity * entry.pricePerUnit), 0);
+    return entries.reduce(
+        (sum, entry) => sum + entry.quantity * entry.pricePerUnit,
+        0,
+    );
 }
 
 function getWorldPrice(entries: ItemHistoryEntry[], worldName: string): number {
-    return getMarketPrice(entries.filter(x => x.worldName == worldName));
+    return getMarketPrice(entries.filter((x) => x.worldName == worldName));
 }
 
 function getDcPrice(entries: ItemHistoryEntry[]): number {
@@ -209,5 +225,9 @@ function getMarketPrice(entries: ItemHistoryEntry[]): number {
 }
 
 function getLowestPrice(result: PriceResult): number {
-    return Math.min(...result.craftedPrices.map(x => x.price / x.amount), result.marketPriceDc ?? Number.MAX_SAFE_INTEGER, result.shopPrice ?? Number.MAX_SAFE_INTEGER);
+    return Math.min(
+        ...result.craftedPrices.map((x) => x.price / x.amount),
+        result.marketPriceDc ?? Number.MAX_SAFE_INTEGER,
+        result.shopPrice ?? Number.MAX_SAFE_INTEGER,
+    );
 }

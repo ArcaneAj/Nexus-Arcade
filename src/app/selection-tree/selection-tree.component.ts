@@ -7,21 +7,25 @@ import { CommonModule } from '@angular/common';
     standalone: true,
     imports: [CommonModule],
     templateUrl: './selection-tree.component.html',
-    styleUrl: './selection-tree.component.scss'
+    styleUrl: './selection-tree.component.scss',
 })
 export class SelectionTreeComponent {
     tree = input.required<TreeNode>();
     depth = input<number>(0);
     index = input.required<number>();
     expanded = input.required<number[]>();
-    
+
     nodeSelected = output<TreeNode>({ alias: 'selectionChange' });
 
     toggle() {
         // If we just toggled ourselves and we aren't a leaf, unselect the current depth
-        if (this.expanded()[this.depth()] === this.index() && this.tree().children.length !== 0) {
+        if (
+            this.expanded()[this.depth()] === this.index() &&
+            this.tree().children.length !== 0
+        ) {
             this.expanded()[this.depth()] = -1;
-        } else { // Select the current index at the current depth
+        } else {
+            // Select the current index at the current depth
             this.expanded()[this.depth()] = this.index();
         }
 

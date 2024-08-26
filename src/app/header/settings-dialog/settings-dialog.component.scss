@@ -4,10 +4,10 @@ mat-dialog-content {
     height: 100%;
 }
 
-mat-tab-group, ::ng-deep.mat-mdc-tab-body-wrapper {
+mat-tab-group,
+::ng-deep.mat-mdc-tab-body-wrapper {
     height: 100%;
 }
-
 
 @media (max-width: 700px) {
     mat-dialog-content {

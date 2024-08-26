@@ -3,10 +3,13 @@ import { CalculationService } from '../services/calculation.service';
 import { BaseComponent } from '../base.component';
 import { PriceResult } from '../models/price-result.model';
 import { CommonModule } from '@angular/common';
-import { PriceResultComponent } from "../price-result/price-result.component";
+import { PriceResultComponent } from '../price-result/price-result.component';
 import { CraftResult, getProfit } from '../models/craft-result.model';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
+import {
+    MatButtonToggleChange,
+    MatButtonToggleModule,
+} from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -14,18 +17,18 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     selector: 'app-main',
     standalone: true,
     imports: [
-    // Core
-    CommonModule,
-    // Angular material
-    ScrollingModule,
-    MatButtonToggleModule,
-    MatIconModule,
-    MatTooltipModule,
-    // Custom components
-    PriceResultComponent
-],
+        // Core
+        CommonModule,
+        // Angular material
+        ScrollingModule,
+        MatButtonToggleModule,
+        MatIconModule,
+        MatTooltipModule,
+        // Custom components
+        PriceResultComponent,
+    ],
     templateUrl: './main.component.html',
-    styleUrl: './main.component.scss'
+    styleUrl: './main.component.scss',
 })
 export class MainComponent extends BaseComponent {
     public resultsLength = output<number>();
@@ -39,18 +42,31 @@ export class MainComponent extends BaseComponent {
     constructor(private calculationService: CalculationService) {
         super();
         this.resultsLength.emit(this.results.length);
-        this.subscription.add(this.calculationService.priceResults.subscribe(results => {
-            results = results.map(x => {
-                const marketPrice = this.useDcPrices ? x.marketPriceDc : x.marketPriceWorld;
-                x.cheapestCraft = x.craftedPrices.getMinByProperty<CraftResult>(x => x.price);
-                x.shopProfit = getProfit(x.shopPrice, marketPrice);
-                x.craftProfit = (x.cheapestCraft == null) ? 0 : getProfit(x.cheapestCraft.price, marketPrice * x.cheapestCraft.amount);
-                return x;
-            });
-            
-            this.results = this.sortResults(results);
-            this.resultsLength.emit(this.results.length);
-        }));
+        this.subscription.add(
+            this.calculationService.priceResults.subscribe((results) => {
+                results = results.map((x) => {
+                    const marketPrice = this.useDcPrices
+                        ? x.marketPriceDc
+                        : x.marketPriceWorld;
+                    x.cheapestCraft =
+                        x.craftedPrices.getMinByProperty<CraftResult>(
+                            (x) => x.price,
+                        );
+                    x.shopProfit = getProfit(x.shopPrice, marketPrice);
+                    x.craftProfit =
+                        x.cheapestCraft == null
+                            ? 0
+                            : getProfit(
+                                  x.cheapestCraft.price,
+                                  marketPrice * x.cheapestCraft.amount,
+                              );
+                    return x;
+                });
+
+                this.results = this.sortResults(results);
+                this.resultsLength.emit(this.results.length);
+            }),
+        );
     }
 
     mockResult(): PriceResult {
@@ -58,28 +74,28 @@ export class MainComponent extends BaseComponent {
             item: {
                 id: 1,
                 selected: false,
-                Singular: "Mocked Item",
-                Plural: "Mocked Items",
-                Description: "Item mocked for testing",
-                Name: "Mocked Item",
-                Icon: "Mocked.png",
+                Singular: 'Mocked Item',
+                Plural: 'Mocked Items',
+                Description: 'Item mocked for testing',
+                Name: 'Mocked Item',
+                Icon: 'Mocked.png',
                 StackSize: 999,
                 Price_Mid_: 500, // Shop purchase price
                 Price_Low_: 1, // Shop sell price
                 craftable: false,
                 itemLevel: 50,
-                equipLevel: "50",
+                equipLevel: '50',
             },
-            
-            name: "Mocked Item",
+
+            name: 'Mocked Item',
             requiredAmount: 1,
             marketPriceDc: 5000,
             marketPriceWorld: 5000,
             marketThroughputDc: 0,
             marketThroughputWorld: 0,
             shopPrice: 500,
-            dc: "MockedDC",
-            world: "MockedWorld",
+            dc: 'MockedDC',
+            world: 'MockedWorld',
             craftedPrices: [],
             cheapestCraft: undefined,
             shopProfit: 4500,
@@ -88,7 +104,7 @@ export class MainComponent extends BaseComponent {
             hqSaleVelocity: 0,
             history: {
                 itemId: 1,
-                dcName: "",
+                dcName: '',
                 lastUploadTime: -1,
                 stackSizeHistogram: {},
                 stackSizeHistogramHQ: {},
@@ -98,13 +114,12 @@ export class MainComponent extends BaseComponent {
                 hqSaleVelocity: 0,
                 expiry: new Date(),
                 entries: [],
-
-            }
-        }
+            },
+        };
     }
 
     sortOrderChanged(event: MatButtonToggleChange) {
-        this.sortAscending = event.value === "true";
+        this.sortAscending = event.value === 'true';
         this.results = this.sortResults(this.results);
     }
 
@@ -114,7 +129,7 @@ export class MainComponent extends BaseComponent {
     }
 
     sortPropertyChanged(event: MatButtonToggleChange) {
-        this.sortCrafted = event.value === "true";
+        this.sortCrafted = event.value === 'true';
         this.results = this.sortResults(this.results);
         this.resultsLength.emit(this.results.length);
     }
@@ -130,7 +145,10 @@ export class MainComponent extends BaseComponent {
                 }
             };
         } else if (this.sortCriteria === 'throughput') {
-            selector = (x: PriceResult) => this.useDcPrices ? x.marketThroughputDc : x.marketThroughputWorld;
+            selector = (x: PriceResult) =>
+                this.useDcPrices
+                    ? x.marketThroughputDc
+                    : x.marketThroughputWorld;
         }
 
         if (this.sortAscending) {
@@ -150,9 +168,9 @@ export class MainComponent extends BaseComponent {
         this.results = [];
         this.resultsLength.emit(this.results.length);
     }
-    
+
     @ViewChild('dialog', { static: false }) dialog: ElementRef | undefined;
-    
+
     openModal() {
         if (this.dialog) {
             this.dialog.nativeElement.showModal();

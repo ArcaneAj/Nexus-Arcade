@@ -44,8 +44,8 @@
 }
 
 .fadein img {
-    position:absolute;
-    top:12px;
+    position: absolute;
+    top: 12px;
     -webkit-animation-name: fade;
     -webkit-animation-iteration-count: infinite;
     -webkit-animation-duration: 20s;
@@ -55,18 +55,38 @@
 }
 
 @-webkit-keyframes fade {
-    0% {opacity: 0;}
-    25% {opacity: 1;}
-    50% {opacity: 1;}
-    75% {opacity: 0;}
-    100% {opacity: 0;}
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    75% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 @keyframes fade {
-    0% {opacity: 0;}
-    25% {opacity: 1;}
-    50% {opacity: 1;}
-    75% {opacity: 0;}
-    100% {opacity: 0;}
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    75% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 #f1 {
@@ -77,7 +97,6 @@
     -webkit-animation-delay: -10s;
     animation-delay: -10s;
 }
-
 
 //// Three colour pattern
 // @-webkit-keyframes fade {
@@ -107,14 +126,12 @@
 //     background-color: lightgreen;
 // }
 
-
 @media (max-width: 700px) {
-
     .kofi-link {
         visibility: visible;
         position: inherit;
     }
-    
+
     .discord-link {
         visibility: visible;
         position: inherit;

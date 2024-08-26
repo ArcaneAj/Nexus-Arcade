@@ -2,24 +2,27 @@
 <mat-dialog-content>
     <mat-tab-group>
         <mat-tab label="Purchase Priority">
-            <app-price-result-tree [result]="data.result" [depth]="0"></app-price-result-tree>
+            <app-price-result-tree
+                [result]="data.result"
+                [depth]="0"
+            ></app-price-result-tree>
         </mat-tab>
         <mat-tab label="Price History Statistics">
             <div class="graph">
-                <p-chart type="scatter" [data]="basicData" [options]="basicOptions" width='100%' height="55vh" />
+                <p-chart
+                    type="scatter"
+                    [data]="basicData"
+                    [options]="basicOptions"
+                    width="100%"
+                    height="55vh"
+                />
             </div>
         </mat-tab>
     </mat-tab-group>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-button
-    [mat-dialog-close]="undefined"
-        cdkFocusInitial>
+    <button mat-button [mat-dialog-close]="undefined" cdkFocusInitial>
         Cancel
     </button>
-    <button mat-button
-        [mat-dialog-close]="{}"
-        [disabled]="false">
-        Save
-    </button>
+    <button mat-button [mat-dialog-close]="{}" [disabled]="false">Save</button>
 </mat-dialog-actions>

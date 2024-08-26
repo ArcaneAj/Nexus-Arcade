@@ -5,7 +5,6 @@ import { Item } from './models/item.model';
 import { NamedObject } from './models/named-object.model';
 import { ItemRecipe } from './models/item-recipe.model';
 
-
 export class AppDB extends Dexie {
     items!: Table<Item, string>;
     marketableItems!: Table<Item, string>;

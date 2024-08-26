@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
     selector: 'INVALID_COMPONENT',
     standalone: true,
     imports: [],
-    template: 'INVALID_COMPONENT'
+    template: 'INVALID_COMPONENT',
 })
 export abstract class BaseComponent implements OnDestroy {
     public subscription: Subscription = new Subscription();

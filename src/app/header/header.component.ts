@@ -13,21 +13,20 @@ import { SettingsService } from '../services/settings.service';
     standalone: true,
     imports: [MatButtonModule, MatDialogModule],
     templateUrl: './header.component.html',
-    styleUrl: './header.component.scss'
+    styleUrl: './header.component.scss',
 })
 export class HeaderComponent extends BaseComponent implements OnInit {
-
     readonly dialog = inject(MatDialog);
 
     openDialog() {
         const dialogRef = this.dialog.open(SettingsDialogComponent, {
             data: {
                 worlds: this.worlds,
-                dataCenters: this.dataCenters
+                dataCenters: this.dataCenters,
             },
-            height: "80vh"
-          });
-    
+            height: '80vh',
+        });
+
         dialogRef.afterClosed().subscribe((result: World | undefined) => {
             if (result !== undefined) {
                 this.settings.setCurrentWorld(result);
@@ -44,9 +43,13 @@ export class HeaderComponent extends BaseComponent implements OnInit {
     ) {
         super();
     }
-    
+
     ngOnInit(): void {
-        this.subscription.add(this.storage.DataCenters().subscribe(x => this.dataCenters = x));
-        this.subscription.add(this.storage.Worlds().subscribe(x => this.worlds = x));
+        this.subscription.add(
+            this.storage.DataCenters().subscribe((x) => (this.dataCenters = x)),
+        );
+        this.subscription.add(
+            this.storage.Worlds().subscribe((x) => (this.worlds = x)),
+        );
     }
 }

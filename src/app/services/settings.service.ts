@@ -5,10 +5,10 @@ import { db } from '../db';
 import { Observable, Subject } from 'rxjs';
 
 export const languages = {
-    "en" : "English",
-    "de" : "German",
-    "ja" : "Japanese",
-    "fr" : "French",
+    en: 'English',
+    de: 'German',
+    ja: 'Japanese',
+    fr: 'French',
 } as const;
 
 export type Language = keyof typeof languages;
@@ -16,27 +16,27 @@ export type Language = keyof typeof languages;
 const DEFAULT_DATACENTER: DataCenter = {
     name: 'Materia',
     region: 'Oceania',
-    worlds: [21, 22, 86, 87, 88]
-}
+    worlds: [21, 22, 86, 87, 88],
+};
 
 const DEFAULT_WORLD: World = {
     id: 21,
     name: 'Ravana',
-    dataCenter: DEFAULT_DATACENTER
+    dataCenter: DEFAULT_DATACENTER,
 };
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class SettingsService {
-
     private worldChangedSubject: Subject<World> = new Subject<World>();
-    public worldChanged: Observable<World> = this.worldChangedSubject.asObservable();
-    
+    public worldChanged: Observable<World> =
+        this.worldChangedSubject.asObservable();
+
     private currentLanguage: Language = 'en';
     private currentWorld: World = DEFAULT_WORLD;
 
-    constructor() { }
+    constructor() {}
 
     public getCurrentLanguage(): Language {
         return this.currentLanguage;
