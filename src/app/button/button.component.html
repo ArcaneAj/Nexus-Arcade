@@ -1,0 +1,8 @@
+<button
+    (mousedown)="mouseDown()" 
+    [ngStyle]="{
+        height: height() == undefined ? '100%' : height(),
+        width: width() == undefined ? '100%' : width(),
+        }">
+{{text()}}
+</button>

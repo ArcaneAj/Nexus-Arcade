@@ -71,28 +71,24 @@ mat-list {
     height: calc(100% - 56px);
 }
 
-.half-button {
-    border-radius: 0px;
-    width: 50%;
-    height: 42px;
-}
-
-.reset-button {
+.reset-button > ::ng-deep button {
     background: rgb(255, 180, 171);
     background: linear-gradient(
         90deg,
         rgba(255, 180, 171, 1) 0%,
         rgba(255, 176, 207, 1) 100%
     );
+    color: #690005;
 }
 
-.calculate-button {
+.calculate-button > ::ng-deep button {
     background: rgb(255, 176, 207);
     background: linear-gradient(
         90deg,
         rgba(255, 176, 207, 1) 0%,
         rgba(255, 171, 243, 1) 100%
     );
+    color: #5b005b;
 }
 
 ::ng-deep .p-toast-message {

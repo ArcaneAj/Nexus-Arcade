@@ -7,22 +7,20 @@
         [(content)]="searchFilter"
     ></app-input>
     <div class="buttons">
-        <button
-            mat-flat-button
-            color="warn"
-            class="half-button reset-button"
+        <app-button
+            height="42px"
+            width="50%"
+            class="reset-button"
+            text="Reset"
             (mousedown)="clearSelection()"
-        >
-            Reset
-        </button>
-        <button
-            mat-flat-button
-            color="primary"
-            class="half-button calculate-button"
+        ></app-button>
+        <app-button
+            height="42px"
+            width="50%"
+            class="calculate-button"
+            text="Calculate"
             (mousedown)="calculate()"
-        >
-            Calculate
-        </button>
+        ></app-button>
     </div>
     @if (items && items.length > 0) {
         <div class="item-select">

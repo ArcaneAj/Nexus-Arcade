@@ -1,0 +1,9 @@
+button {
+    border: none;
+    font-family: var(--mdc-filled-button-label-text-font);
+    font-size: var(--mdc-filled-button-label-text-size);
+    letter-spacing: var(--mdc-filled-button-label-text-tracking);
+    font-weight: var(--mdc-filled-button-label-text-weight);
+    text-transform: var(--mdc-filled-button-label-text-transform);
+    line-height: 1.5rem;
+}
