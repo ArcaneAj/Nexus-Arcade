@@ -9,11 +9,13 @@ import { Component, input, output } from '@angular/core';
     styleUrl: './button.component.scss',
 })
 export class ButtonComponent {
-    public mousedown = output<void>();
+    public clicked = output<void>();
     public height = input<string>();
     public width = input<string>();
-    public text = input<string>();
+    public disabled = input<boolean>();
     mouseDown() {
-        this.mousedown.emit();
+        if (this.disabled() !== true) {
+            this.clicked.emit();
+        }
     }
 }

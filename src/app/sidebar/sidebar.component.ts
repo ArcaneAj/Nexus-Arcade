@@ -3,7 +3,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 // Angular material
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -36,7 +35,6 @@ import { ButtonComponent } from '../button/button.component';
         CommonModule,
         // Angular material
         FormsModule,
-        MatButtonModule,
         MatIconModule,
         MatListModule,
         ScrollingModule,

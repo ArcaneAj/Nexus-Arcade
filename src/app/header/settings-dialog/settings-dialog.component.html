@@ -10,28 +10,29 @@
             ></app-selection-tree>
         </mat-tab>
         <mat-tab label="Utils">
-            <button
-                mat-button
-                (click)="purge()"
+            <app-button
+                width="50%"
+                height="40px"
+                (clicked)="purge()"
                 matTooltip="Do this whenever new items are released and added to universalis etc"
             >
                 Purge cache
-            </button>
+            </app-button>
         </mat-tab>
     </mat-tab-group>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-button [mat-dialog-close]="undefined" cdkFocusInitial>
+    <app-button
+        (clicked)="cancel()">
         Cancel
-    </button>
-    <button
-        mat-button
-        [mat-dialog-close]="this.newWorld"
+    </app-button>
+    <app-button
+        (clicked)="accept()"
         [disabled]="
             this.newWorld === this.currentWorld ||
             expanded[expanded.length - 1] === -1
         "
     >
         Save
-    </button>
+    </app-button>
 </mat-dialog-actions>

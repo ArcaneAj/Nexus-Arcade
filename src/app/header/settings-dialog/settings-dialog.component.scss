@@ -18,3 +18,15 @@ mat-tab-group,
 .node-selected {
     background-color: red;
 }
+
+app-button:hover > ::ng-deep button {
+    background: rgb(255, 171, 243, 0.1);
+    color: rgb(255, 171, 243);
+}
+
+app-button > ::ng-deep button {
+    background: none;
+    color: rgb(255, 171, 243);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}

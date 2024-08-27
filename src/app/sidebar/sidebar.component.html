@@ -11,16 +11,18 @@
             height="42px"
             width="50%"
             class="reset-button"
-            text="Reset"
-            (mousedown)="clearSelection()"
-        ></app-button>
+            (clicked)="clearSelection()"
+        >
+            Reset
+        </app-button>
         <app-button
             height="42px"
             width="50%"
             class="calculate-button"
-            text="Calculate"
-            (mousedown)="calculate()"
-        ></app-button>
+            (clicked)="calculate()"
+        >
+            Calculate
+        </app-button>
     </div>
     @if (items && items.length > 0) {
         <div class="item-select">

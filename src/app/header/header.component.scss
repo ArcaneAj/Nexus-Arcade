@@ -8,6 +8,18 @@
     background-color: var(--mat-app-background-color, transparent);
 }
 
+.settings-button:hover > ::ng-deep button {
+    background: rgb(255, 171, 243, 0.1);
+    color: rgb(255, 171, 243);
+}
+
+.settings-button > ::ng-deep button {
+    background: none;
+    color: rgb(255, 171, 243);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
 .logo {
     display: flex;
     flex-direction: row;

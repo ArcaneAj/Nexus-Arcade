@@ -6,9 +6,11 @@
         <span style="font-size: 0.5rem">beta</span>
     </div>
     <div class="links">
-        <button class="settings-button" mat-button (click)="openDialog()">
+        <app-button
+            class="settings-button"
+            (clicked)="openDialog()">
             Settings
-        </button>
+        </app-button>
         <a
             href="https://ko-fi.com/arcaneaj"
             target="_blank"
