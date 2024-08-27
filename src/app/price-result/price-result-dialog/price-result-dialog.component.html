@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Settings</h2>
+<h2 mat-dialog-title>Price Info</h2>
 <mat-dialog-content>
     <mat-tab-group>
         <mat-tab label="Purchase Priority">
@@ -21,8 +21,8 @@
     </mat-tab-group>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-button [mat-dialog-close]="undefined" cdkFocusInitial>
-        Cancel
-    </button>
-    <button mat-button [mat-dialog-close]="{}" [disabled]="false">Save</button>
+    <app-button
+        (clicked)="close()">
+        Close
+    </app-button>
 </mat-dialog-actions>

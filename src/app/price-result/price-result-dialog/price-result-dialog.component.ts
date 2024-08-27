@@ -1,6 +1,9 @@
 import { Component, Inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import {
+    MAT_DIALOG_DATA,
+    MatDialogModule,
+    MatDialogRef,
+} from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -8,6 +11,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { PriceResultTreeComponent } from '../../price-result-tree/price-result-tree.component';
 import { PriceResult } from '../../models/price-result.model';
 import { ChartModule } from 'primeng/chart';
+import { ButtonComponent } from '../../button/button.component';
 
 @Component({
     selector: 'app-price-result-dialog',
@@ -15,12 +19,12 @@ import { ChartModule } from 'primeng/chart';
     imports: [
         CommonModule,
         MatDialogModule,
-        MatButtonModule,
         MatIconModule,
         MatTabsModule,
         MatTooltipModule,
         PriceResultTreeComponent,
         ChartModule,
+        ButtonComponent,
     ],
     templateUrl: './price-result-dialog.component.html',
     styleUrl: './price-result-dialog.component.scss',
@@ -34,15 +38,21 @@ export class PriceResultDialogComponent {
         public data: {
             result: PriceResult;
         },
+        private dialogRef: MatDialogRef<PriceResultDialogComponent>
     ) {
         this.configureGraph();
     }
+
+    close() {
+        this.dialogRef.close();
+    }
+
     configureGraph() {
         /// TESTING
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
-            '--text-color-secondary',
+            '--text-color-secondary'
         );
         const surfaceBorder =
             documentStyle.getPropertyValue('--surface-border');
