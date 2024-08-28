@@ -39,17 +39,17 @@ export class HeaderComponent extends BaseComponent implements OnInit {
 
     constructor(
         private storage: StorageService,
-        private settings: SettingsService
+        private settings: SettingsService,
     ) {
         super();
     }
 
     ngOnInit(): void {
         this.subscription.add(
-            this.storage.DataCenters().subscribe((x) => (this.dataCenters = x))
+            this.storage.DataCenters().subscribe((x) => (this.dataCenters = x)),
         );
         this.subscription.add(
-            this.storage.Worlds().subscribe((x) => (this.worlds = x))
+            this.storage.Worlds().subscribe((x) => (this.worlds = x)),
         );
     }
 }

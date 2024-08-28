@@ -27,16 +27,16 @@ export class PriceResultComponent {
     public result = input.required<PriceResult>();
     public name = computed(() => this.result().name);
     public marketPriceDc = computed(() =>
-        Math.round(this.result().marketPriceDc)
+        Math.round(this.result().marketPriceDc),
     );
     public marketPriceWorld = computed(() =>
-        Math.round(this.result().marketPriceWorld)
+        Math.round(this.result().marketPriceWorld),
     );
     public marketThroughputDc = computed(() =>
-        Math.round(this.result().marketThroughputDc)
+        Math.round(this.result().marketThroughputDc),
     );
     public marketThroughputWorld = computed(() =>
-        Math.round(this.result().marketThroughputWorld)
+        Math.round(this.result().marketThroughputWorld),
     );
     public shopPrice = computed(() => this.result().shopPrice);
     public cheapestCraft = computed(() => {
@@ -47,7 +47,7 @@ export class PriceResultComponent {
         return cheapestCraft;
     });
     public cheapestCraftPrice = computed(() =>
-        Math.round(this.cheapestCraft()?.price ?? Number.MAX_SAFE_INTEGER)
+        Math.round(this.cheapestCraft()?.price ?? Number.MAX_SAFE_INTEGER),
     );
     public shopProfit = computed(() => this.result().shopProfit);
     public craftProfit = computed(() => this.result().craftProfit);
@@ -89,15 +89,15 @@ function populateCheapestTree(cheapestCraft: CraftResult) {
     for (const component of cheapestCraft.components) {
         component.cheapestCraft =
             component.craftedPrices.getMinByProperty<CraftResult>(
-                (x) => x.price
+                (x) => x.price,
             );
         component.shopProfit = getProfit(
             component.shopPrice,
-            component.marketPriceDc
+            component.marketPriceDc,
         );
         component.craftProfit = getProfit(
             component.cheapestCraft?.price,
-            component.marketPriceDc
+            component.marketPriceDc,
         );
         if (component.cheapestCraft != null) {
             populateCheapestTree(component.cheapestCraft);

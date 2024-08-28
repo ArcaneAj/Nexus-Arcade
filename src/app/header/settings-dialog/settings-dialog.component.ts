@@ -49,10 +49,10 @@ export class SettingsDialogComponent {
         private dialogRef: MatDialogRef<SettingsDialogComponent>,
         private storage: StorageService,
         private settings: SettingsService,
-        private universalis: UniversalisService
+        private universalis: UniversalisService,
     ) {
         this.currentWorld = this.data.worlds.find(
-            (x) => x.name === this.settings.getCurrentWorld().name
+            (x) => x.name === this.settings.getCurrentWorld().name,
         )!;
         this.newWorld = this.currentWorld;
         this.GenerateWorldTree();
@@ -68,7 +68,7 @@ export class SettingsDialogComponent {
 
     private GenerateWorldTree() {
         const worldDict: { [id: number]: World } = Object.fromEntries(
-            this.data.worlds.map((item) => [item.id, item])
+            this.data.worlds.map((item) => [item.id, item]),
         );
         const root: TreeNode = {
             name: '',
@@ -79,7 +79,7 @@ export class SettingsDialogComponent {
             (a, b) =>
                 +isASCII(b.region) - +isASCII(a.region) ||
                 b.region.localeCompare(a.region) ||
-                a.name.localeCompare(b.name)
+                a.name.localeCompare(b.name),
         );
         for (const [dcIndex, dataCenter] of sortedDataCenters.entries()) {
             const dataCenterNode: TreeNode = {
