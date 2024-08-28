@@ -3,6 +3,8 @@
     [ngStyle]="{
         height: height() == undefined ? '100%' : height(),
         width: width() == undefined ? '100%' : width(),
+        color: disabled() === true ? 'grey' : null,
+        background: disabled() === true ? 'none' : null
         }">
     <ng-content></ng-content>
 </button>
