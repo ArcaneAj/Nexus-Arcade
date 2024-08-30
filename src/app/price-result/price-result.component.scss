@@ -76,6 +76,15 @@
     align-self: center;
 }
 
+.details {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 12;
+    grid-row-end: 12;
+    justify-self: center;
+    align-self: center;
+}
+
 .invalid {
     grid-column-start: 1;
     grid-column-end: 2;
