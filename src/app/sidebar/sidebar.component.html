@@ -68,7 +68,7 @@
                                 | order: changeFlag
                         "
                         (mousedown)="onSelect(item)"
-                        [ngClass]="{ 'item-selected': item.selected }"
+                        [ngClass]="{ 'item-selected': item.selected, 'item-not-selected': !item.selected }"
                     >
                         {{ item.Name }}
                     </mat-list-item>

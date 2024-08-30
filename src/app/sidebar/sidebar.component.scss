@@ -71,10 +71,6 @@ mat-list {
     height: calc(100% - 56px);
 }
 
-mat-list-item:hover {
-    background: #2c262a;
-}
-
 .reset-button > ::ng-deep button {
     background: rgb(255, 180, 171);
     background: linear-gradient(
@@ -130,6 +126,16 @@ mat-list-item:hover {
         rgba(255, 171, 243, 1) 75%,
         rgba(0, 0, 0, 0) 100%
     );
+    
+}
+
+.item-selected:hover {
+    background: rgb(255, 171, 243, 0.8);
+    background: linear-gradient(
+        90deg,
+        rgba(255, 171, 243, 0.8) 75%,
+        rgba(0, 0, 0, 0) 100%
+    );
 }
 
 .item-selected:nth-child(odd) {
@@ -147,8 +153,21 @@ mat-list-item:hover {
     );
 }
 
+.item-selected:nth-child(odd):hover {
+    background: rgb(255, 180, 171, 0.8);
+    background: linear-gradient(
+        90deg,
+        rgba(255, 180, 171, 0.8) 75%,
+        rgba(0, 0, 0, 0) 100%
+    );
+}
+
 .item-selected:not(:first-of-type) {
     border-top: 0px;
+}
+
+.item-not-selected:hover {
+    background: #2c262a;
 }
 
 .loader-wrapper {
