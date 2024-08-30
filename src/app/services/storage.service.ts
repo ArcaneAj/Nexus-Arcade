@@ -72,8 +72,9 @@ export class StorageService {
                     console.log('Updated items');
                 };
             } else {
-                // Web Workers are not supported in this environment.
-                // You should add a fallback so that your program still executes correctly.
+                alert(
+                    'Please use a browser that supports web workers for this website. Internet Explorer 9 and below are not supported!'
+                );
             }
         }
     }
