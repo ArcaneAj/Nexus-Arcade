@@ -1,4 +1,5 @@
 <button
+    [@onClick]="isDirty ? 'dirty' : 'clean'"
     (mousedown)="mouseDown()"
     [ngStyle]="{
         height: height() == undefined ? '100%' : height(),
