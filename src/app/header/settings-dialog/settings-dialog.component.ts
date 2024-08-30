@@ -17,6 +17,8 @@ import { UniversalisService } from '../../services/universalis.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ButtonComponent } from '../../button/button.component';
+import { DefaultsComponent } from '../../defaults/defaults.component';
+import { Setting } from '../../models/setting.model';
 
 @Component({
     selector: 'app-settings-dialog',
@@ -30,6 +32,7 @@ import { ButtonComponent } from '../../button/button.component';
         MatTooltipModule,
         SelectionTreeComponent,
         ButtonComponent,
+        DefaultsComponent,
     ],
     templateUrl: './settings-dialog.component.html',
     styleUrl: './settings-dialog.component.scss',
@@ -39,6 +42,7 @@ export class SettingsDialogComponent {
     public expanded: number[] = [];
     public currentWorld: World;
     public newWorld: World;
+    public defaults: Setting[] = [];
 
     constructor(
         @Inject(MAT_DIALOG_DATA)
@@ -49,16 +53,17 @@ export class SettingsDialogComponent {
         private dialogRef: MatDialogRef<SettingsDialogComponent>,
         private storage: StorageService,
         private settings: SettingsService,
-        private universalis: UniversalisService,
+        private universalis: UniversalisService
     ) {
         this.currentWorld = this.data.worlds.find(
-            (x) => x.name === this.settings.getCurrentWorld().name,
+            (x) => x.name === this.settings.getCurrentWorld().name
         )!;
         this.newWorld = this.currentWorld;
         this.GenerateWorldTree();
     }
 
     accept() {
+        this.settings.updateDefaults(this.defaults);
         this.dialogRef.close(this.newWorld);
     }
 
@@ -68,19 +73,20 @@ export class SettingsDialogComponent {
 
     private GenerateWorldTree() {
         const worldDict: { [id: number]: World } = Object.fromEntries(
-            this.data.worlds.map((item) => [item.id, item]),
+            this.data.worlds.map((item) => [item.id, item])
         );
         const root: TreeNode = {
             name: '',
             children: [],
         };
 
-        const sortedDataCenters = this.data.dataCenters.sort(
-            (a, b) =>
+        const sortedDataCenters = this.data.dataCenters.sort((a, b) => {
+            return (
                 +isASCII(b.region) - +isASCII(a.region) ||
                 b.region.localeCompare(a.region) ||
-                a.name.localeCompare(b.name),
-        );
+                a.name.localeCompare(b.name)
+            );
+        });
         for (const [dcIndex, dataCenter] of sortedDataCenters.entries()) {
             const dataCenterNode: TreeNode = {
                 name: dataCenter.name,
@@ -117,6 +123,10 @@ export class SettingsDialogComponent {
         this.storage.purge();
         this.universalis.purgeCache();
         this.dialogRef.close();
+    }
+
+    defaultsChanged(defaults: Setting[]) {
+        this.defaults = defaults;
     }
 }
 

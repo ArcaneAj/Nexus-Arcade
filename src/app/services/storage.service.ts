@@ -7,10 +7,10 @@ import { liveQuery, Observable } from 'dexie';
 import { DataCenter } from '../models/datacenter.model';
 import { World } from '../models/world.model';
 import { Item } from '../models/item.model';
-import { NamedObject } from '../models/named-object.model';
 import { XivApiService } from './xivapi.service';
 import { ItemRecipe } from '../models/item-recipe.model';
 import { ItemCacheUpdateRequest } from './loader.worker';
+import { Setting } from '../models/setting.model';
 
 @Injectable({
     providedIn: 'root',
@@ -48,11 +48,12 @@ export class StorageService {
     }
 
     public async FetchSettings(): Promise<void> {
-        const currentWorld: NamedObject | undefined = await db.settings.get(
+        const currentWorld: Setting | undefined = await db.settings.get(
             'currentWorld'
         );
+
         if (currentWorld != null) {
-            this.settings.setCurrentWorld(currentWorld as World);
+            this.settings.setCurrentWorld(currentWorld.value);
         }
     }
 

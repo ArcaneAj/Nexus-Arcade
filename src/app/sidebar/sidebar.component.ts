@@ -73,9 +73,24 @@ export class SidebarComponent
         private xivApi: XivApiService,
         private calculationService: CalculationService,
         public settings: SettingsService,
-        private messageService: MessageService,
+        private messageService: MessageService
     ) {
         super();
+        this.subscription.add(
+            this.settings.Settings().subscribe((x) => {
+                for (const setting of x) {
+                    if (setting.name === 'onlyCrafted') {
+                        this.onlyCrafted = setting.value;
+                    }
+                    if (setting.name === 'minLevel') {
+                        this.minLevel = setting.value;
+                    }
+                    if (setting.name === 'maxLevel') {
+                        this.maxLevel = setting.value;
+                    }
+                }
+            })
+        );
     }
 
     ngOnInit(): void {
@@ -85,11 +100,11 @@ export class SidebarComponent
                 this.items = items;
                 // this.selectFirst();
                 // this.calculate();
-            }),
+            })
         );
 
         this.subscription.add(
-            this.settings.worldChanged.subscribe((x) => this.calculate()),
+            this.settings.worldChanged.subscribe((x) => this.calculate())
         );
 
         this.subscription.add(
@@ -97,7 +112,7 @@ export class SidebarComponent
                 if (x.item != null) {
                     this.onSelect(x.item);
                 }
-            }),
+            })
         );
     }
 
@@ -132,9 +147,9 @@ export class SidebarComponent
                 this.searchFilter,
                 this.onlyCrafted,
                 this.minLevel,
-                this.maxLevel,
+                this.maxLevel
             ),
-            false,
+            false
         );
         for (const item of orderedItems) {
             if (!item.selected) {
@@ -152,9 +167,9 @@ export class SidebarComponent
                 this.searchFilter,
                 this.onlyCrafted,
                 this.minLevel,
-                this.maxLevel,
+                this.maxLevel
             ),
-            false,
+            false
         );
         let previousItem = null;
         for (const item of orderedItems) {
@@ -178,7 +193,7 @@ export class SidebarComponent
     clearSelection(): void {
         this.setSelected(
             this.items.filter((x) => x.selected),
-            false,
+            false
         );
     }
 
@@ -194,18 +209,18 @@ export class SidebarComponent
     private discoverIngredientIds(
         itemIds: number[][],
         recipeCache: ItemRecipe[][],
-        depth: number = 0,
+        depth: number = 0
     ): void {
         this.subscription.add(
             this.storage.Recipes().subscribe((recipes) => {
                 const tier0 = recipes.filter((x) =>
-                    itemIds[depth].includes(x.id),
+                    itemIds[depth].includes(x.id)
                 );
                 if (tier0.length === 0) {
                     this.fetchPrices(
                         itemIds[0],
                         itemIds.flat().unique(),
-                        recipeCache.flat().toDict((item) => item.id),
+                        recipeCache.flat().toDict((item) => item.id)
                     );
                     return;
                 }
@@ -218,31 +233,31 @@ export class SidebarComponent
                         if (jobIds.length === 0) return [];
                         return jobIds.flatMap((id) =>
                             x.recipes[+id].Ingredients.map(
-                                (i) => i.itemId,
+                                (i) => i.itemId
                             ).concat(
-                                x.recipes[+id].Crystals.map((i) => i.itemId),
-                            ),
+                                x.recipes[+id].Crystals.map((i) => i.itemId)
+                            )
                         );
                     })
                     .filter(
-                        (value, index, array) => array.indexOf(value) === index,
+                        (value, index, array) => array.indexOf(value) === index
                     );
 
                 itemIds[depth + 1] = tier1ids;
                 this.discoverIngredientIds(itemIds, recipeCache, depth + 1);
-            }),
+            })
         );
     }
 
     private fetchPrices(
         rootIds: number[],
         itemIds: number[],
-        recipeCache: { [id: number]: ItemRecipe },
+        recipeCache: { [id: number]: ItemRecipe }
     ): void {
         const observable = combineLatest({
             itemHistoryResponse: this.universalis.history(
                 itemIds,
-                this.settings.getCurrentWorld().dataCenter,
+                this.settings.getCurrentWorld().dataCenter
             ),
             items: this.storage.Items(),
             gilShopIds: this.xivApi.gilShopItems(),
@@ -251,23 +266,23 @@ export class SidebarComponent
         this.subscription.add(
             this.storage.Items().subscribe((items) => {
                 this.calculationService.getPriceSkeleton(rootIds, items);
-            }),
+            })
         );
         console.log('Beginning market fetch.');
         const start = Date.now();
         this.subscription.add(
             observable.subscribe((x) => {
                 console.log(
-                    `Finished market fetch in ${Date.now() - start}ms.`,
+                    `Finished market fetch in ${Date.now() - start}ms.`
                 );
                 this.calculationService.calculatePrices(
                     rootIds,
                     recipeCache,
                     x.itemHistoryResponse,
                     x.items,
-                    x.gilShopIds,
+                    x.gilShopIds
                 );
-            }),
+            })
         );
     }
 }

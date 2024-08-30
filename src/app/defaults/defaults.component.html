@@ -1,0 +1,27 @@
+
+<div class="only-crafted">
+    <mat-checkbox [(ngModel)]="onlyCrafted.value" (ngModelChange)="settingChanged()">
+        Only Crafted
+    </mat-checkbox>
+</div>
+<div class="craft-level">
+    iLevel:
+    <app-input-number
+        class="craft-level-input"
+        [height]="56"
+        [min]="0"
+        [max]="999"
+        [(content)]="minLevel.value"
+        (contentChange)="settingChanged()"
+    >
+    </app-input-number>
+    <app-input-number
+        class="craft-level-input"
+        [height]="56"
+        [min]="0"
+        [max]="999"
+        [(content)]="maxLevel.value"
+        (contentChange)="settingChanged()"
+    >
+    </app-input-number>
+</div>

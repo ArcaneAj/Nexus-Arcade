@@ -4,23 +4,24 @@ import { World } from './models/world.model';
 import { Item } from './models/item.model';
 import { NamedObject } from './models/named-object.model';
 import { ItemRecipe } from './models/item-recipe.model';
+import { Setting } from './models/setting.model';
 
 export class AppDB extends Dexie {
     items!: Table<Item, string>;
     marketableItems!: Table<Item, string>;
     dataCenters!: Table<DataCenter, string>;
     worlds!: Table<World, number>;
-    settings!: Table<NamedObject, string>;
+    settings!: Table<Setting, string>;
     recipes!: Table<ItemRecipe, number>;
 
     constructor() {
         super('ngdexieliveQuery');
-        this.version(3).stores({
+        this.version(4).stores({
             items: 'id',
             marketableItems: 'id',
             dataCenters: 'name',
             worlds: 'id',
-            settings: '',
+            settings: 'name',
             recipes: 'id',
         });
     }
@@ -45,8 +46,12 @@ export class AppDB extends Dexie {
         await db.recipes.bulkPut(recipes);
     }
 
-    public async upsertSetting(name: string, setting: any) {
-        await db.settings.put(setting, name);
+    public async upsertSetting(setting: Setting) {
+        await db.settings.put(setting);
+    }
+
+    public async upsertSettingBulk(items: Setting[]) {
+        await db.settings.bulkPut(items);
     }
 }
 

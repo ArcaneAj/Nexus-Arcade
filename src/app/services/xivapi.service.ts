@@ -158,10 +158,7 @@ interface XivApiRecipe {
     providedIn: 'root',
 })
 export class XivApiService {
-    constructor(
-        private httpService: HttpService,
-        private papa: Papa,
-    ) {}
+    constructor(private httpService: HttpService, private papa: Papa) {}
 
     public items(): Observable<Item[]> {
         return this.httpService.getText(ITEMS_URL).pipe(
@@ -173,9 +170,9 @@ export class XivApiService {
                 return parsed
                     .slice(3) // Skip the meta rows
                     .map((itemRaw: string[]) =>
-                        parseItem(properties, types, itemRaw),
+                        parseItem(properties, types, itemRaw)
                     );
-            }),
+            })
         );
     }
 
@@ -189,9 +186,9 @@ export class XivApiService {
                 return parsed
                     .slice(3) // Skip the meta rows
                     .map((recipeRaw: string[]) =>
-                        parseRecipe(properties, types, recipeRaw),
+                        parseRecipe(properties, types, recipeRaw)
                     );
-            }),
+            })
         );
     }
 
@@ -200,15 +197,15 @@ export class XivApiService {
             map((x) => {
                 const parsed: string[][] = this.papa.parse(x).data;
                 const itemIdIndex = parsed[1].findIndex(
-                    (x: string) => x === 'Item',
+                    (x: string) => x === 'Item'
                 );
                 return parsed
                     .slice(3) // Skip the meta rows
                     .map((rawData: string[]) => +rawData[itemIdIndex])
                     .filter(
-                        (value, index, array) => array.indexOf(value) === index,
+                        (value, index, array) => array.indexOf(value) === index
                     ); // Unique item ids
-            }),
+            })
         );
     }
 }
@@ -239,7 +236,7 @@ const booleanTypes: string[] = [
 function parseItem(
     properties: string[],
     types: string[],
-    values: string[],
+    values: string[]
 ): Item {
     const merged = Array(properties.length);
     for (let i = 0; i < properties.length; i++) {
@@ -248,11 +245,8 @@ function parseItem(
         merged.push([propertyname, parse(types[i], values[i])]);
     }
     const obj = Object.fromEntries(
-        merged.filter((x) => x[0] !== ''),
+        merged.filter((x) => x[0] !== '')
     ) as XivApiItem;
-    // if (obj.id === 39630) {
-    //     console.log(obj);
-    // }
 
     const item: Item = {
         id: obj.id,
@@ -274,7 +268,7 @@ function parseItem(
 function parseRecipe(
     properties: string[],
     types: string[],
-    values: string[],
+    values: string[]
 ): Recipe {
     const merged = Array(properties.length);
     for (let i = 0; i < properties.length; i++) {
@@ -284,7 +278,7 @@ function parseRecipe(
     }
 
     const obj = Object.fromEntries(
-        merged.filter((x) => x[0] !== ''),
+        merged.filter((x) => x[0] !== '')
     ) as XivApiRecipe;
     const recipe: Recipe = {
         id: obj.id,

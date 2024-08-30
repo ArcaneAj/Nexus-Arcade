@@ -1,13 +1,16 @@
 <h2 mat-dialog-title>Settings</h2>
 <mat-dialog-content>
     <mat-tab-group>
-        <mat-tab label="World-Select">
+        <mat-tab label="World Select">
             <app-selection-tree
                 [tree]="tree"
                 [expanded]="expanded"
                 [index]="0"
                 (selectionChange)="selectionChange($event)"
             ></app-selection-tree>
+        </mat-tab>
+        <mat-tab label="Default Preferences">
+            <app-defaults (defaultsChanged)="defaultsChanged($event)"></app-defaults>
         </mat-tab>
         <mat-tab label="Utils">
             <app-button
@@ -26,6 +29,7 @@
     <app-button
         (clicked)="accept()"
         [disabled]="
+            defaults.length === 0 &&
             this.newWorld === this.currentWorld ||
             expanded[expanded.length - 1] === -1
         "
