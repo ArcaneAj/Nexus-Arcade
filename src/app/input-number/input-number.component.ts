@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import * as uuid from 'uuid';
 
 @Component({
     selector: 'app-input-number',
@@ -14,6 +15,7 @@ export class InputNumberComponent {
     public min = input<number>();
     public max = input<number>();
     public content = model<number>();
+    public id: string = uuid.v4();
 
     onChange() {
         const max = this.max();
