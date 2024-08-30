@@ -146,6 +146,10 @@ export class MainComponent extends BaseComponent {
 
     sortCriteriaChanged(event: MatButtonToggleChange) {
         this.sortCriteria = event.value;
+        if (this.sortCriteria !== 'profit') {
+            this.sortCrafted = true;
+        }
+
         this.results = this.sortResults(this.results);
     }
 

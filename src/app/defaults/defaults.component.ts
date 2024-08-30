@@ -96,6 +96,10 @@ export class DefaultsComponent extends BaseComponent {
 
     sortCriteriaChanged(event: MatButtonToggleChange) {
         this.sortCriteria.value = event.value;
+        if (this.sortCriteria.value !== 'profit') {
+            this.sortCrafted.value = true;
+        }
+
         this.settingChanged();
     }
 
