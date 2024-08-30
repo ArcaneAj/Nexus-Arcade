@@ -160,13 +160,14 @@ export class MainComponent extends BaseComponent {
     }
 
     sortResults(results: PriceResult[]): PriceResult[] {
-        var selector = (x: PriceResult) => x.hqSaleVelocity + x.nqSaleVelocity;
+        var selector = (x: PriceResult): number | undefined =>
+            x.hqSaleVelocity + x.nqSaleVelocity;
         if (this.sortCriteria === 'profit') {
             selector = (x: PriceResult) => {
                 if (this.sortCrafted) {
-                    return x.craftProfit ?? Number.MAX_SAFE_INTEGER;
+                    return x.craftProfit;
                 } else {
-                    return x.shopProfit ?? Number.MAX_SAFE_INTEGER;
+                    return x.shopProfit;
                 }
             };
         } else if (this.sortCriteria === 'throughput') {
