@@ -12,6 +12,7 @@ import {
 } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SettingsService } from '../services/settings.service';
 
 @Component({
     selector: 'app-main',
@@ -39,8 +40,28 @@ export class MainComponent extends BaseComponent {
     public disableModal = true;
     private useDcPrices = false;
 
-    constructor(private calculationService: CalculationService) {
+    constructor(
+        private calculationService: CalculationService,
+        private settings: SettingsService
+    ) {
         super();
+
+        this.subscription.add(
+            this.settings.Settings().subscribe((x) => {
+                for (const setting of x) {
+                    if (setting.name === 'sortAscending') {
+                        this.sortAscending = setting.value;
+                    }
+                    if (setting.name === 'sortCriteria') {
+                        this.sortCriteria = setting.value;
+                    }
+                    if (setting.name === 'sortCrafted') {
+                        this.sortCrafted = setting.value;
+                    }
+                }
+            })
+        );
+
         this.resultsLength.emit(this.results.length);
         this.subscription.add(
             this.calculationService.priceResults.subscribe((results) => {
@@ -50,7 +71,7 @@ export class MainComponent extends BaseComponent {
                         : x.marketPriceWorld;
                     x.cheapestCraft =
                         x.craftedPrices.getMinByProperty<CraftResult>(
-                            (x) => x.price,
+                            (x) => x.price
                         );
                     x.shopProfit = getProfit(x.shopPrice, marketPrice);
                     x.craftProfit =
@@ -58,14 +79,14 @@ export class MainComponent extends BaseComponent {
                             ? 0
                             : getProfit(
                                   x.cheapestCraft.price,
-                                  marketPrice * x.cheapestCraft.amount,
+                                  marketPrice * x.cheapestCraft.amount
                               );
                     return x;
                 });
 
                 this.results = this.sortResults(results);
                 this.resultsLength.emit(this.results.length);
-            }),
+            })
         );
     }
 

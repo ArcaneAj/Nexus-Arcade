@@ -4,7 +4,18 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { InputNumberComponent } from '../input-number/input-number.component';
 import { SettingsService } from '../services/settings.service';
 import { BaseComponent } from '../base.component';
-import { BoolSetting, NumberSetting, Setting } from '../models/setting.model';
+import {
+    BoolSetting,
+    NumberSetting,
+    Setting,
+    StringSetting,
+} from '../models/setting.model';
+import {
+    MatButtonToggleChange,
+    MatButtonToggleModule,
+} from '@angular/material/button-toggle';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-defaults',
@@ -14,6 +25,9 @@ import { BoolSetting, NumberSetting, Setting } from '../models/setting.model';
         FormsModule,
         MatCheckboxModule,
         InputNumberComponent,
+        MatButtonToggleModule,
+        MatIconModule,
+        MatTooltipModule,
     ],
     templateUrl: './defaults.component.html',
     styleUrl: './defaults.component.scss',
@@ -30,6 +44,18 @@ export class DefaultsComponent extends BaseComponent {
     public maxLevel: NumberSetting = {
         name: 'maxLevel',
         value: 999,
+    };
+    public sortAscending: BoolSetting = {
+        name: 'sortAscending',
+        value: false,
+    };
+    public sortCrafted: BoolSetting = {
+        name: 'sortCrafted',
+        value: true,
+    };
+    public sortCriteria: StringSetting = {
+        name: 'sortCriteria',
+        value: 'profit',
     };
 
     public defaultsChanged = output<Setting[]>();
@@ -56,7 +82,25 @@ export class DefaultsComponent extends BaseComponent {
             this.onlyCrafted,
             this.minLevel,
             this.maxLevel,
+            this.sortAscending,
+            this.sortCriteria,
+            this.sortCrafted,
         ];
         this.defaultsChanged.emit(defaults);
+    }
+
+    sortOrderChanged(event: MatButtonToggleChange) {
+        this.sortAscending.value = event.value === 'true';
+        this.settingChanged();
+    }
+
+    sortCriteriaChanged(event: MatButtonToggleChange) {
+        this.sortCriteria.value = event.value;
+        this.settingChanged();
+    }
+
+    sortPropertyChanged(event: MatButtonToggleChange) {
+        this.sortCrafted.value = event.value === 'true';
+        this.settingChanged();
     }
 }

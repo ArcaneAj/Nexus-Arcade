@@ -1,27 +1,88 @@
-
-<div class="only-crafted">
-    <mat-checkbox [(ngModel)]="onlyCrafted.value" (ngModelChange)="settingChanged()">
-        Only Crafted
-    </mat-checkbox>
+<div class="buttons">
+    <div class="only-crafted">
+        <mat-checkbox [(ngModel)]="onlyCrafted.value" (ngModelChange)="settingChanged()">
+            Only Crafted
+        </mat-checkbox>
+    </div>
+    <div class="craft-level">
+        iLevel:
+        <app-input-number
+            class="craft-level-input"
+            [height]="56"
+            [min]="0"
+            [max]="999"
+            [(content)]="minLevel.value"
+            (contentChange)="settingChanged()"
+        >
+        </app-input-number>
+        <app-input-number
+            class="craft-level-input"
+            [height]="56"
+            [min]="0"
+            [max]="999"
+            [(content)]="maxLevel.value"
+            (contentChange)="settingChanged()"
+        >
+        </app-input-number>
+    </div>
 </div>
-<div class="craft-level">
-    iLevel:
-    <app-input-number
-        class="craft-level-input"
-        [height]="56"
-        [min]="0"
-        [max]="999"
-        [(content)]="minLevel.value"
-        (contentChange)="settingChanged()"
+<div class="sort">
+    <mat-button-toggle-group
+        name="sortOrder"
+        aria-label="Sort Order"
+        [hideSingleSelectionIndicator]="true"
+        (change)="sortOrderChanged($event)"
     >
-    </app-input-number>
-    <app-input-number
-        class="craft-level-input"
-        [height]="56"
-        [min]="0"
-        [max]="999"
-        [(content)]="maxLevel.value"
-        (contentChange)="settingChanged()"
+        <mat-button-toggle
+            value="true"
+            [checked]="sortAscending"
+            matTooltip="Ascending"
+            ><mat-icon>keyboard_arrow_upward</mat-icon></mat-button-toggle
+        >
+        <mat-button-toggle
+            value="false"
+            [checked]="!sortAscending"
+            matTooltip="Descending"
+            ><mat-icon>keyboard_arrow_down</mat-icon></mat-button-toggle
+        >
+    </mat-button-toggle-group>
+    <mat-button-toggle-group
+        name="sortCriteria"
+        aria-label="Sort Criteria"
+        [hideSingleSelectionIndicator]="true"
+        (change)="sortCriteriaChanged($event)"
     >
-    </app-input-number>
+        <mat-button-toggle value="profit" [checked]="sortCriteria.value === 'profit'"
+            >Profit</mat-button-toggle
+        >
+        <mat-button-toggle
+            value="throughput"
+            [checked]="sortCriteria.value === 'throughput'"
+            >G/wk</mat-button-toggle
+        >
+        <mat-button-toggle value="units" [checked]="sortCriteria.value === 'units'"
+            >S/wk</mat-button-toggle
+        >
+    </mat-button-toggle-group>
+    @if (sortCriteria.value === "profit") {
+        <mat-button-toggle-group
+            name="sortProperty"
+            aria-label="Sort Property"
+            [hideSingleSelectionIndicator]="true"
+            (change)="sortPropertyChanged($event)"
+        >
+            <mat-button-toggle
+                value="false"
+                [checked]="!sortCrafted"
+                matTooltip="NPC shops"
+                ><mat-icon>shopping_cart</mat-icon></mat-button-toggle
+            >
+            <mat-button-toggle
+                value="true"
+                [checked]="sortCrafted"
+                matTooltip="Crafted"
+                ><mat-icon>construction</mat-icon></mat-button-toggle
+            >
+        </mat-button-toggle-group>
+    }
 </div>
