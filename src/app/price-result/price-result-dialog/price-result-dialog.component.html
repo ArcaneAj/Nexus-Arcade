@@ -1,12 +1,6 @@
 <h2 mat-dialog-title>Price Info</h2>
 <mat-dialog-content>
     <mat-tab-group>
-        <mat-tab label="Purchase Priority">
-            <app-price-result-tree
-                [result]="data.result"
-                [depth]="0"
-            ></app-price-result-tree>
-        </mat-tab>
         <mat-tab label="Price History Statistics">
             <div class="graph">
                 <p-chart
@@ -18,6 +12,14 @@
                 />
             </div>
         </mat-tab>
+        @if (data.result.marketPriceDc !== 0 && data.result.craftedPrices.length !== 0 && data.result.cheapestCraft != null && data.result.cheapestCraft.price < 999999) {
+            <mat-tab label="Purchase Priority">
+                <app-price-result-tree
+                    [result]="data.result"
+                    [depth]="0"
+                ></app-price-result-tree>
+            </mat-tab>
+        }
     </mat-tab-group>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

@@ -38,7 +38,7 @@ export class PriceResultDialogComponent {
         public data: {
             result: PriceResult;
         },
-        private dialogRef: MatDialogRef<PriceResultDialogComponent>,
+        private dialogRef: MatDialogRef<PriceResultDialogComponent>
     ) {
         this.configureGraph();
     }
@@ -52,7 +52,7 @@ export class PriceResultDialogComponent {
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
-            '--text-color-secondary',
+            '--text-color-secondary'
         );
         const surfaceBorder =
             documentStyle.getPropertyValue('--surface-border');
