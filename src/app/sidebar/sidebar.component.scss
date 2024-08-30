@@ -71,6 +71,10 @@ mat-list {
     height: calc(100% - 56px);
 }
 
+mat-list-item:hover {
+    background: #2c262a;
+}
+
 .reset-button > ::ng-deep button {
     background: rgb(255, 180, 171);
     background: linear-gradient(
