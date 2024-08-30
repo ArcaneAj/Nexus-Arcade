@@ -5,6 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "analyze-bundle",
+            "request": "launch",
+            "runtimeArgs": [
+                "run",
+                "analyze-bundle"
+            ],
+            "runtimeExecutable": "npm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
             "name": "ng serve",
             "type": "chrome",
             "request": "launch",
