@@ -8,6 +8,9 @@ import {
 import { CommonModule } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 
+const CLEAN_DIRTY_MS = 200;
+const DIRTY_CLEAN_MS = 200;
+
 @Component({
     selector: 'app-button',
     standalone: true,
@@ -28,8 +31,8 @@ import { Component, input, output } from '@angular/core';
                     opacity: 0.8,
                 })
             ),
-            transition('clean => dirty', [animate('0.2s')]),
-            transition('dirty => clean', [animate('0.2s')]),
+            transition('clean => dirty', [animate(CLEAN_DIRTY_MS)]),
+            transition('dirty => clean', [animate(DIRTY_CLEAN_MS)]),
         ]),
     ],
 })
@@ -49,6 +52,6 @@ export class ButtonComponent {
         this.clicked.emit();
         setTimeout(() => {
             this.isDirty = false;
-        }, 200);
+        }, CLEAN_DIRTY_MS);
     }
 }
