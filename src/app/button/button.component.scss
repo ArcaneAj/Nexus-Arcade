@@ -7,3 +7,7 @@ button {
     text-transform: var(--mdc-filled-button-label-text-transform);
     line-height: 1.5rem;
 }
+
+:host:hover {
+    filter: brightness(85%);
+}
