@@ -78,7 +78,7 @@ export class CalculationService {
                     },
                 };
                 return priceResult;
-            }),
+            })
         );
     }
 
@@ -87,7 +87,7 @@ export class CalculationService {
         recipeCache: { [id: number]: ItemRecipe },
         itemHistoryResponse: ItemsHistoryResponse,
         items: Item[],
-        gilShopIds: number[],
+        gilShopIds: number[]
     ): void {
         this.recipeCache = Object.assign({}, this.recipeCache, recipeCache);
         this.itemCache = items.toDict((x) => x.id);
@@ -95,7 +95,7 @@ export class CalculationService {
         this.gilShopIds = gilShopIds.unique().sort();
         this.priceResultCache = {};
         this.priceResultsSubject.next(
-            rootIds.map((x) => this.getPriceForItem(x)),
+            rootIds.map((x) => this.getPriceForItem(x))
         );
     }
 
@@ -113,12 +113,12 @@ export class CalculationService {
         const marketPriceDc = getDcPrice(itemHistory.entries);
         const marketPriceWorld = getWorldPrice(
             itemHistory.entries,
-            currentWorld,
+            currentWorld
         );
         const marketThroughputDc = getDcThroughput(itemHistory.entries);
         const marketThroughputWorld = getWorldThroughput(
             itemHistory.entries,
-            currentWorld,
+            currentWorld
         );
         let craftedPrices: CraftResult[] = this.getCraftedPrices(id);
 
@@ -185,7 +185,7 @@ function getShopPrice(item: Item, gilShopIds: number[]): number {
 
 function getWorldThroughput(
     entries: ItemHistoryEntry[],
-    worldName: string,
+    worldName: string
 ): number {
     return getMarketThroughput(entries.filter((x) => x.worldName == worldName));
 }
@@ -197,7 +197,7 @@ function getDcThroughput(entries: ItemHistoryEntry[]): number {
 function getMarketThroughput(entries: ItemHistoryEntry[]): number {
     return entries.reduce(
         (sum, entry) => sum + entry.quantity * entry.pricePerUnit,
-        0,
+        0
     );
 }
 
@@ -210,6 +210,29 @@ function getDcPrice(entries: ItemHistoryEntry[]): number {
 }
 
 function getMarketPrice(entries: ItemHistoryEntry[]): number {
+    return getMarketPriceMedian(entries);
+}
+
+function getMarketPriceMedian(entries: ItemHistoryEntry[]): number {
+    if (entries.length === 0) {
+        return -1;
+    }
+
+    const prices: number[] = [];
+    for (const entry of entries) {
+        prices.push(...new Array(entry.quantity).fill(entry.pricePerUnit));
+    }
+
+    prices.sort();
+
+    const half = Math.floor(prices.length / 2);
+
+    return prices.length % 2
+        ? prices[half] // odd items
+        : (prices[half - 1] + prices[half]) / 2; // even items
+}
+
+function getMarketPriceMean(entries: ItemHistoryEntry[]): number {
     if (entries.length === 0) {
         return -1;
     }
@@ -228,6 +251,6 @@ function getLowestPrice(result: PriceResult): number {
     return Math.min(
         ...result.craftedPrices.map((x) => x.price / x.amount),
         result.marketPriceDc ?? Number.MAX_SAFE_INTEGER,
-        result.shopPrice ?? Number.MAX_SAFE_INTEGER,
+        result.shopPrice ?? Number.MAX_SAFE_INTEGER
     );
 }
