@@ -52,7 +52,7 @@
                     </app-input-number>
                 </div>
             </div>
-            <mat-list>
+            <mat-list [ngClass]="{ 'mat-list-squished': count > 0 }">
                 <cdk-virtual-scroll-viewport
                     [itemSize]="50"
                     class="virtual-viewport"
@@ -74,6 +74,16 @@
                     </mat-list-item>
                 </cdk-virtual-scroll-viewport>
             </mat-list>
+            @if(count > 0) {
+                <app-button
+                    height="42px"
+                    width="100%"
+                    class="order-button"
+                    (clicked)="order()"
+                >
+                    Place Order
+                </app-button>
+            }
         </div>
         <p-toast
             position="bottom-left"

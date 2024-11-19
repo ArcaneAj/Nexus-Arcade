@@ -2,13 +2,13 @@
     class="prefix-wrapper"
     [ngStyle]="{ height: height() == undefined ? '100%' : height() + 'px' }"
 >
-    <mat-icon>search</mat-icon>
+    <mat-icon>{{icon()}}</mat-icon>
 </div>
 
 <input
     [id]="id" 
     type="text"
-    [placeholder]="placeHolder"
+    [placeholder]="placeHolder()"
     (keydown.enter)="emitEnter()"
     (keydown.escape)="emitEscape()"
     [(ngModel)]="content"

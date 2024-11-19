@@ -15,4 +15,8 @@ export class HttpService {
     public getText(route: string): Observable<string> {
         return this.http.get(route, { responseType: 'text' });
     }
+
+    public post<T>(route: string, body: any): Observable<T> {
+        return this.http.post<T>(route, body);
+    }
 }

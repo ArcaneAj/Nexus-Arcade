@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 // Core
 import { CommonModule } from '@angular/common';
 // Angular material
@@ -26,6 +26,10 @@ import { AnimateModule } from 'primeng/animate';
 import { InputComponent } from '../input/input.component';
 import { InputNumberComponent } from '../input-number/input-number.component';
 import { ButtonComponent } from '../button/button.component';
+import { MatDialog } from '@angular/material/dialog';
+import { OrderDialogComponent } from './order-dialog/order-dialog.component';
+import { DataCenter } from '../models/datacenter.model';
+import { World } from '../models/world.model';
 
 @Component({
     selector: 'app-sidebar',
@@ -57,6 +61,8 @@ export class SidebarComponent
     extends BaseComponent
     implements OnInit, OnDestroy
 {
+    readonly dialog = inject(MatDialog);
+
     public searchFilter: string = '';
     public changeFlag: boolean = false;
     public onlyCrafted: boolean = false;
@@ -64,6 +70,10 @@ export class SidebarComponent
     public maxLevel: number = 999;
 
     public items: Item[] = [];
+    public dataCenters: DataCenter[] = [];
+    public worlds: World[] = [];
+
+    public count = 0;
 
     constructor(
         private filterPipe: FilterPipe,
@@ -99,6 +109,8 @@ export class SidebarComponent
                 this.setSelected(items, false);
                 this.items = items;
                 // this.selectFirst();
+                // this.selectFirst();
+                // this.selectFirst();
                 // this.calculate();
             })
         );
@@ -114,11 +126,20 @@ export class SidebarComponent
                 }
             })
         );
+        this.subscription.add(
+            this.storage.DataCenters().subscribe((x) => (this.dataCenters = x))
+        );
+        this.subscription.add(
+            this.storage.Worlds().subscribe((x) => (this.worlds = x))
+        );
     }
 
     private setSelected(items: Item[], selected: boolean): void {
         for (const item of items) {
             item.selected = selected;
+            if (item.selected !== selected) {
+                this.count += selected ? 1 : -1;
+            }
         }
     }
 
@@ -138,6 +159,7 @@ export class SidebarComponent
                 summary: 'Removed ' + item.Name,
             });
         }
+        this.count += item.selected ? 1 : -1;
     }
 
     selectFirst(): void {
@@ -153,6 +175,9 @@ export class SidebarComponent
         );
         for (const item of orderedItems) {
             if (!item.selected) {
+                if (!item.selected) {
+                    this.count += 1;
+                }
                 item.selected = true;
                 this.changeFlag = !this.changeFlag;
                 return;
@@ -175,6 +200,9 @@ export class SidebarComponent
         for (const item of orderedItems) {
             if (!item.selected) {
                 if (previousItem !== null) {
+                    if (previousItem.selected) {
+                        this.count += -1;
+                    }
                     previousItem.selected = false;
                     this.changeFlag = !this.changeFlag;
                 }
@@ -185,6 +213,9 @@ export class SidebarComponent
         }
 
         if (previousItem !== null) {
+            if (previousItem.selected) {
+                this.count += -1;
+            }
             previousItem.selected = false;
             this.changeFlag = !this.changeFlag;
         }
@@ -195,6 +226,7 @@ export class SidebarComponent
             this.items.filter((x) => x.selected),
             false
         );
+        this.count = 0;
     }
 
     calculate(): void {
@@ -284,5 +316,21 @@ export class SidebarComponent
                 );
             })
         );
+    }
+
+    public order() {
+        const itemIds = this.items.filter((x) => x.selected).map((x) => x.id);
+        console.log(itemIds);
+
+        const dialogRef = this.dialog.open(OrderDialogComponent, {
+            data: {
+                itemIds,
+                worlds: this.worlds,
+                dataCenters: this.dataCenters,
+            },
+            height: '80vh',
+        });
+
+        dialogRef.afterClosed().subscribe((result: any) => {});
     }
 }

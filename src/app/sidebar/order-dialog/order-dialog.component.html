@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Place Order</h2>
+<mat-dialog-content>
+    <app-input
+        class="search-form-field"
+        [height]="56"
+        [placeHolder]="'Character Name'"
+        [icon]="''"
+        [(content)]="name"
+    ></app-input>
+    
+    <app-selection-tree
+        [tree]="tree"
+        [expanded]="expanded"
+        [index]="0"
+        (selectionChange)="selectionChange($event)"
+></app-selection-tree>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <app-button (clicked)="cancel()"> Cancel </app-button>
+    <app-button
+        (clicked)="accept()"
+        [disabled]="!name"
+    >
+        Submit
+    </app-button>
+</mat-dialog-actions>

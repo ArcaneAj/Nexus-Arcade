@@ -12,7 +12,8 @@ import * as uuid from 'uuid';
     styleUrl: './input.component.scss',
 })
 export class InputComponent {
-    public placeHolder: string = 'Item Search';
+    public placeHolder = input<string>('Item Search');
+    public icon = input<string>('search');
     public height = input<number>();
     public content = model<string>();
     public keydownEnter = output<void>();
