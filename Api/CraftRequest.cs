@@ -22,7 +22,7 @@ namespace Api
         }
 
         [Function("List")]
-        public async Task<IActionResult> List([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req, [FromBody] User user)
+        public async Task<IActionResult> List([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req, [FromBody] User user)
         {
             var existingUser = await _userService.GetAsync(user.Name, user.World);
             if (existingUser == null)
