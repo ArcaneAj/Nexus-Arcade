@@ -63,6 +63,14 @@ export class SettingsService {
         this.worldChangedSubject.next(world);
     }
 
+    public set(name: string, value: any): void {
+        const setting: Setting = {
+            name: name,
+            value: value,
+        };
+        db.upsertSetting(setting);
+    }
+
     public async updateDefaults(items: Setting[]): Promise<void> {
         const oldSettings = await db.settings.toArray();
 

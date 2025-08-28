@@ -14,7 +14,7 @@ export class FilterPipe implements PipeTransform {
         filter: string,
         onlyCrafted: boolean,
         minLevel: number,
-        maxLevel: number,
+        maxLevel: number
     ): Item[] {
         if (value === null) {
             return [];
@@ -28,8 +28,8 @@ export class FilterPipe implements PipeTransform {
             }
 
             if (
-                minLevel > (i.recipeLevel ?? 0) ||
-                maxLevel < (i.recipeLevel ?? 0)
+                minLevel > (i.recipeLevel ?? +i.equipLevel) ||
+                maxLevel < (i.recipeLevel ?? +i.equipLevel)
             ) {
                 return false;
             }
@@ -42,7 +42,7 @@ export class FilterPipe implements PipeTransform {
             for (const prefix of prefixes) {
                 if (
                     !words.some((w) =>
-                        w.toLowerCase().startsWith(prefix.toLowerCase()),
+                        w.toLowerCase().startsWith(prefix.toLowerCase())
                     )
                 ) {
                     return false;

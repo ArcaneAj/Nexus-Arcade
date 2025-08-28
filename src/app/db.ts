@@ -2,7 +2,6 @@ import Dexie, { Table } from 'dexie';
 import { DataCenter } from './models/datacenter.model';
 import { World } from './models/world.model';
 import { Item } from './models/item.model';
-import { NamedObject } from './models/named-object.model';
 import { ItemRecipe } from './models/item-recipe.model';
 import { Setting } from './models/setting.model';
 

@@ -1,19 +1,46 @@
-<h2 mat-dialog-title>Place Order</h2>
+<h2 mat-dialog-title>Order Management</h2>
 <mat-dialog-content>
-    <app-input
-        class="search-form-field"
-        [height]="56"
-        [placeHolder]="'Character Name'"
-        [icon]="''"
-        [(content)]="name"
-    ></app-input>
-    
-    <app-selection-tree
-        [tree]="tree"
-        [expanded]="expanded"
-        [index]="0"
-        (selectionChange)="selectionChange($event)"
-></app-selection-tree>
+    <mat-tab-group>
+        <mat-tab label="Place Order">
+            <div class="grid">
+                <div>
+                    <app-input
+                        class="search-form-field"
+                        [height]="56"
+                        [placeHolder]="'Character Name'"
+                        [icon]="''"
+                        [(content)]="name"
+                    ></app-input>
+                    
+                    <app-selection-tree
+                        [tree]="tree"
+                        [expanded]="expanded"
+                        [index]="0"
+                        (selectionChange)="selectionChange($event)"
+                ></app-selection-tree>
+                </div>
+                <div>
+                    <mat-list>
+                        <cdk-virtual-scroll-viewport
+                            [itemSize]="50"
+                            class="virtual-viewport"
+                        >
+                            <mat-list-item
+                                *cdkVirtualFor="
+                                    let item of data.selectedItems
+                                "
+                            >
+                                {{ item.Name }}
+                            </mat-list-item>
+                        </cdk-virtual-scroll-viewport>
+                    </mat-list>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="Manage Orders">
+
+        </mat-tab>
+    </mat-tab-group>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <app-button (clicked)="cancel()"> Cancel </app-button>

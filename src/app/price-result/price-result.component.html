@@ -4,51 +4,60 @@
     </div>
 
     @if (marketPriceDc() > 0) {
-        <div class="dc-price">
-            {{ result().dc }} Price: {{ marketPriceDc() | number: "1.0-2" }}
-        </div>
-        <div class="world-price">
-            {{ result().world }} Price:
-            {{ marketPriceWorld() | number: "1.0-2" }}
-        </div>
-        <div class="dc-gil">
-            {{ result().dc }}: {{ marketThroughputDc() | number: "1.0-2" }} G/wk
-        </div>
-        <div class="world-gil">
-            {{ result().world }}:
-            {{ marketThroughputWorld() | number: "1.0-2" }} G/wk
-        </div>
-        <div class="units">
-            {{ result().hqSaleVelocity | number: "1.0-2" }}HQ
-            {{ result().nqSaleVelocity | number: "1.0-2" }}NQ S/day
-        </div>
+        @if (isCollectable()) {
+            <div class="dc-price">
+                Scrip per Item: {{ marketPriceWorld() | number: "1.0-2" }}
+            </div>
+            <div class="world-price">
+                Gil per Scrip: {{ ratio() | number: "1.0-2" }}
+            </div>
+        } @else {
+            <div class="dc-price">
+                {{ result().dc }} Price: {{ marketPriceDc() | number: "1.0-2" }}
+            </div>
+            <div class="world-price">
+                {{ result().world }} Price:
+                {{ marketPriceWorld() | number: "1.0-2" }}
+            </div>
+            <div class="dc-gil">
+                {{ result().dc }}: {{ marketThroughputDc() | number: "1.0-2" }} G/wk
+            </div>
+            <div class="world-gil">
+                {{ result().world }}:
+                {{ marketThroughputWorld() | number: "1.0-2" }} G/wk
+            </div>
+            <div class="units">
+                {{ result().hqSaleVelocity | number: "1.0-2" }}HQ
+                {{ result().nqSaleVelocity | number: "1.0-2" }}NQ S/day
+            </div>
 
-        @if (sortCrafted()) {
-            @if (cheapestCraftPrice() < 999999) {
-                <div class="cost">
-                    Crafted Cost: {{ cheapestCraftPrice() | number: "1.0-2" }}
-                </div>
-                <div class="profit">
-                    Craft profit: {{ craftProfit() === undefined ? 'N/A' : craftProfit() | number: "1.0-2" }}
-                </div>
-            } @else {
-                <div class="invalid">Item not craftable</div>
+            @if (sortCrafted()) {
+                @if (cheapestCraftPrice() < 999999) {
+                    <div class="cost">
+                        Crafted Cost: {{ cheapestCraftPrice() | number: "1.0-2" }}
+                    </div>
+                    <div class="profit">
+                        Craft profit: {{ craftProfit() === undefined ? 'N/A' : craftProfit() | number: "1.0-2" }}
+                    </div>
+                } @else {
+                    <div class="invalid">Item not craftable</div>
+                }
             }
-        }
-        @if (!sortCrafted()) {
-            @if ((shopPrice() ?? 1000000) < 999999) {
-                <div class="cost">
-                    Shop Cost: {{ shopPrice() | number: "1.0-2" }}
-                </div>
-                <div class="profit">
-                    Shop profit: {{ shopProfit() === undefined ? 'N/A' : shopProfit() | number: "1.0-2" }}
-                </div>
-            } @else {
-                <div class="invalid">Item not purchasable</div>
+            @if (!sortCrafted()) {
+                @if ((shopPrice() ?? 1000000) < 999999) {
+                    <div class="cost">
+                        Shop Cost: {{ shopPrice() | number: "1.0-2" }}
+                    </div>
+                    <div class="profit">
+                        Shop profit: {{ shopProfit() === undefined ? 'N/A' : shopProfit() | number: "1.0-2" }}
+                    </div>
+                } @else {
+                    <div class="invalid">Item not purchasable</div>
+                }
             }
-        }
 
-        <div class="details">Click for more details!</div>
+            <div class="details">Click for more details!</div>
+        }
     } @else if (marketPriceDc() < 0) {
         <span class="none-sold">None sold in last week</span>
     } @else {

@@ -106,6 +106,7 @@ export class MainComponent extends BaseComponent {
                 craftable: false,
                 itemLevel: 50,
                 equipLevel: '50',
+                IsCollectable: false,
             },
 
             name: 'Mocked Item',

@@ -17,6 +17,10 @@ import { TreeNode } from '../../selection-tree/tree-node.model';
 import { SettingsService } from '../../services/settings.service';
 import { DataCenter } from '../../models/datacenter.model';
 import { RequestService } from '../../services/request.service';
+import { BaseComponent } from '../../base.component';
+import { Item } from '../../models/item.model';
+import { MatListModule } from '@angular/material/list';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @Component({
     selector: 'app-settings-dialog',
@@ -31,11 +35,13 @@ import { RequestService } from '../../services/request.service';
         ButtonComponent,
         InputComponent,
         SelectionTreeComponent,
+        MatListModule,
+        ScrollingModule,
     ],
     templateUrl: './order-dialog.component.html',
     styleUrl: './order-dialog.component.scss',
 })
-export class OrderDialogComponent {
+export class OrderDialogComponent extends BaseComponent {
     public name = ''; //TODO: Save this in local storage
     public tree!: TreeNode;
     public expanded: number[] = [];
@@ -45,7 +51,7 @@ export class OrderDialogComponent {
     constructor(
         @Inject(MAT_DIALOG_DATA)
         public data: {
-            itemIds: number[];
+            selectedItems: Item[];
             worlds: World[];
             dataCenters: DataCenter[];
         },
@@ -53,32 +59,51 @@ export class OrderDialogComponent {
         private settings: SettingsService,
         private requestService: RequestService
     ) {
+        super();
         this.currentWorld = this.data.worlds.find(
             (x) => x.name === this.settings.getCurrentWorld().name
         )!;
         this.newWorld = this.currentWorld;
         this.GenerateWorldTree();
+
+        this.subscription.add(
+            this.settings.Settings().subscribe((x) => {
+                for (const setting of x) {
+                    if (setting.name === 'playerName') {
+                        this.name = setting.value;
+                    }
+                }
+            })
+        );
     }
 
     accept() {
+        this.settings.set('playerName', this.name);
         this.requestService
             .add({
                 user: {
                     name: this.name,
                     world: this.currentWorld.name,
                 },
-                itemCrafts: this.data.itemIds.map((x) => {
+                itemCrafts: this.data.selectedItems.map((x) => {
                     return {
-                        itemId: x,
+                        itemId: x.id,
                         quantity: 1,
                     };
                 }),
             })
-            .subscribe((x) => console.log(x));
+            .subscribe((x: any) => console.log(x));
         this.dialogRef.close();
     }
 
     cancel() {
+        console.log('list');
+        this.requestService
+            .list({
+                name: 'Nesrie Kisne',
+                world: 'Ravana',
+            })
+            .subscribe((x: any) => console.log(x));
         this.dialogRef.close();
     }
 

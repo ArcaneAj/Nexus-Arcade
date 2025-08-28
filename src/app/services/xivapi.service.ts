@@ -5,6 +5,8 @@ import { Papa } from 'ngx-papaparse';
 import { Item } from '../models/item.model';
 import { Recipe } from '../models/recipe.model';
 import { CrafterJobs } from '../constants';
+import { CollectableShopItem } from '../models/collectable-shop-item.model';
+import { CollectablesShopRewardScrip } from '../models/collectable-shop-reward-scrip.model';
 
 const ITEMS_URL =
     'https://raw.githubusercontent.com/xivapi/ffxiv-datamining/master/csv/Item.csv';
@@ -12,6 +14,10 @@ const RECIPE_URL =
     'https://raw.githubusercontent.com/xivapi/ffxiv-datamining/master/csv/Recipe.csv';
 const SHOP_URL =
     'https://raw.githubusercontent.com/xivapi/ffxiv-datamining/master/csv/GilShopItem.csv';
+const CollectablesShopItem_URL =
+    'https://raw.githubusercontent.com/xivapi/ffxiv-datamining/refs/heads/master/csv/CollectablesShopItem.csv';
+const CollectablesShopRewardScrip_URL =
+    'https://raw.githubusercontent.com/xivapi/ffxiv-datamining/refs/heads/master/csv/CollectablesShopRewardScrip.csv';
 
 interface XivApiItem {
     id: number;
@@ -154,6 +160,18 @@ interface XivApiRecipe {
     PatchNumber: number;
 }
 
+interface XivApiCollectableShopItem {
+    CollectablesShopItemGroup: string;
+    CollectablesShopRefine: string;
+    CollectablesShopRewardScrip: string;
+    Item: string;
+    Key: number;
+    LevelMax: number;
+    LevelMin: number;
+    Stars: number;
+    id: number;
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -205,6 +223,40 @@ export class XivApiService {
                     .filter(
                         (value, index, array) => array.indexOf(value) === index
                     ); // Unique item ids
+            })
+        );
+    }
+
+    public collectableShopItems(): Observable<CollectableShopItem[]> {
+        return this.httpService.getText(CollectablesShopItem_URL).pipe(
+            map((x) => {
+                const parsed = this.papa.parse(x).data;
+                const meta = parsed.slice(0, 3);
+                const properties = meta[1];
+                const types = meta[2];
+                return parsed
+                    .slice(3) // Skip the meta rows
+                    .map((itemRaw: string[]) =>
+                        parseCollectable(properties, types, itemRaw)
+                    );
+            })
+        );
+    }
+
+    public collectableShopRewardScrip(): Observable<
+        CollectablesShopRewardScrip[]
+    > {
+        return this.httpService.getText(CollectablesShopRewardScrip_URL).pipe(
+            map((x) => {
+                const parsed = this.papa.parse(x).data;
+                const meta = parsed.slice(0, 3);
+                const properties = meta[1];
+                const types = meta[2];
+                return parsed
+                    .slice(3) // Skip the meta rows
+                    .map((itemRaw: string[]) =>
+                        parseScripRewards(properties, types, itemRaw)
+                    );
             })
         );
     }
@@ -261,6 +313,7 @@ function parseItem(
         craftable: false,
         itemLevel: obj.Level_Equip_,
         equipLevel: obj.Level_Item_,
+        IsCollectable: obj.IsCollectable,
     };
     return item;
 }
@@ -333,6 +386,52 @@ function parseRecipe(
         ].filter((x) => x.amount),
     };
     return recipe;
+}
+
+function parseCollectable(
+    properties: string[],
+    types: string[],
+    values: string[]
+): CollectableShopItem {
+    const merged = Array(properties.length);
+    for (let i = 0; i < properties.length; i++) {
+        const propertyname =
+            properties[i] === '#' ? 'id' : properties[i].replace(/\W/gi, '_');
+        merged.push([propertyname, parse(types[i], values[i])]);
+    }
+    const obj = Object.fromEntries(
+        merged.filter((x) => x[0] !== '')
+    ) as XivApiCollectableShopItem;
+
+    const item: CollectableShopItem = {
+        CollectablesShopItemGroup: +obj.CollectablesShopItemGroup,
+        CollectablesShopRefine: +obj.CollectablesShopRefine,
+        CollectablesShopRewardScrip: +obj.CollectablesShopRewardScrip,
+        Item: +obj.Item,
+        Key: obj.Key,
+        LevelMax: obj.LevelMax,
+        LevelMin: obj.LevelMin,
+        Stars: obj.Stars,
+        id: obj.id,
+    };
+    return item;
+}
+
+function parseScripRewards(
+    properties: string[],
+    types: string[],
+    values: string[]
+): CollectablesShopRewardScrip {
+    const merged = Array(properties.length);
+    for (let i = 0; i < properties.length; i++) {
+        const propertyname =
+            properties[i] === '#' ? 'id' : properties[i].replace(/\W/gi, '_');
+        merged.push([propertyname, parse(types[i], values[i])]);
+    }
+    const item = Object.fromEntries(
+        merged.filter((x) => x[0] !== '')
+    ) as CollectablesShopRewardScrip;
+    return item;
 }
 
 function isIntegral(typeName: string): boolean {

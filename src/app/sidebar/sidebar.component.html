@@ -32,6 +32,11 @@
                         Only Crafted
                     </mat-checkbox>
                 </div>
+                <div class="only-crafted">
+                    <mat-checkbox (change)="onCollectablesChange($event)" [(ngModel)]="viewCollectables">
+                        Collectables
+                    </mat-checkbox>
+                </div>
                 <div class="craft-level">
                     iLevel:
                     <app-input-number
@@ -52,7 +57,7 @@
                     </app-input-number>
                 </div>
             </div>
-            <mat-list [ngClass]="{ 'mat-list-squished': count > 0 }">
+            <mat-list class="mat-list-squished">
                 <cdk-virtual-scroll-viewport
                     [itemSize]="50"
                     class="virtual-viewport"
@@ -74,16 +79,14 @@
                     </mat-list-item>
                 </cdk-virtual-scroll-viewport>
             </mat-list>
-            @if(count > 0) {
-                <app-button
-                    height="42px"
-                    width="100%"
-                    class="order-button"
-                    (clicked)="order()"
-                >
-                    Place Order
-                </app-button>
-            }
+            <app-button
+                height="42px"
+                width="100%"
+                class="order-button"
+                (clicked)="order()"
+            >
+                Manage Orders
+            </app-button>
         </div>
         <p-toast
             position="bottom-left"

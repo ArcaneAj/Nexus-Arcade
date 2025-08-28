@@ -2,7 +2,6 @@ import { Component, computed, inject, input, output } from '@angular/core';
 import { PriceResult } from '../models/price-result.model';
 import { CommonModule } from '@angular/common';
 import { CraftResult, getProfit } from '../models/craft-result.model';
-import { PriceResultTreeComponent } from '../price-result-tree/price-result-tree.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,12 +10,7 @@ import { PriceResultDialogComponent } from './price-result-dialog/price-result-d
 @Component({
     selector: 'app-price-result',
     standalone: true,
-    imports: [
-        CommonModule,
-        PriceResultTreeComponent,
-        MatButtonModule,
-        MatIconModule,
-    ],
+    imports: [CommonModule, MatButtonModule, MatIconModule],
     templateUrl: './price-result.component.html',
     styleUrl: './price-result.component.scss',
 })
@@ -26,6 +20,7 @@ export class PriceResultComponent {
     public sortCrafted = input.required<boolean>();
     public result = input.required<PriceResult>();
     public name = computed(() => this.result().name);
+    public isCollectable = computed(() => this.result().item.IsCollectable);
     public marketPriceDc = computed(() =>
         Math.round(this.result().marketPriceDc)
     );
@@ -51,6 +46,9 @@ export class PriceResultComponent {
     );
     public shopProfit = computed(() => this.result().shopProfit);
     public craftProfit = computed(() => this.result().craftProfit);
+    public ratio = computed(
+        () => this.cheapestCraftPrice() / this.marketPriceWorld()
+    );
 
     readonly dialog = inject(MatDialog);
 

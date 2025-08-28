@@ -13,4 +13,5 @@ export interface Item {
     itemLevel: number;
     equipLevel: string;
     recipeLevel?: number;
+    IsCollectable: boolean;
 }

@@ -16,10 +16,13 @@ import { SettingsService } from '../services/settings.service';
 import { Item } from '../models/item.model';
 import { UniversalisService } from '../services/universalis.service';
 import { ItemRecipe } from '../models/item-recipe.model';
-import { combineLatest } from 'rxjs';
+import { combineLatest, forkJoin } from 'rxjs';
 import { XivApiService } from '../services/xivapi.service';
 import { CalculationService } from '../services/calculation.service';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import {
+    MatCheckboxChange,
+    MatCheckboxModule,
+} from '@angular/material/checkbox';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { AnimateModule } from 'primeng/animate';
@@ -61,15 +64,25 @@ export class SidebarComponent
     extends BaseComponent
     implements OnInit, OnDestroy
 {
+    onCollectablesChange($event: MatCheckboxChange) {
+        if ($event.checked) {
+            this.items = this.collectables;
+        } else {
+            this.items = this.marketables;
+        }
+    }
     readonly dialog = inject(MatDialog);
 
     public searchFilter: string = '';
     public changeFlag: boolean = false;
     public onlyCrafted: boolean = false;
+    public viewCollectables: boolean = true;
     public minLevel: number = 0;
     public maxLevel: number = 999;
 
     public items: Item[] = [];
+    public marketables: Item[] = [];
+    public collectables: Item[] = [];
     public dataCenters: DataCenter[] = [];
     public worlds: World[] = [];
 
@@ -107,11 +120,62 @@ export class SidebarComponent
         this.subscription.add(
             this.storage.MarketableItems().subscribe((items) => {
                 this.setSelected(items, false);
-                this.items = items;
+                this.marketables = items;
+                if (!this.viewCollectables) {
+                    this.items = this.marketables;
+                }
                 // this.selectFirst();
                 // this.selectFirst();
                 // this.selectFirst();
                 // this.calculate();
+            })
+        );
+
+        const observable = forkJoin({
+            items: this.xivApi.items(),
+            collectables: this.xivApi.collectableShopItems(),
+            scrip: this.xivApi.collectableShopRewardScrip(),
+        });
+        this.subscription.add(
+            observable.subscribe((data) => {
+                const collectableItems = data.items.filter(
+                    (x) =>
+                        x.IsCollectable &&
+                        x.Name.toLowerCase().includes('rarefied')
+                );
+                const collectables: Item[] = [];
+                for (const item of collectableItems) {
+                    const collectableShopItem = data.collectables.find(
+                        (c) => c.Item === item.id
+                    );
+                    const collectableShopRewardScrip = data.scrip.find(
+                        (s) =>
+                            s.id ===
+                            collectableShopItem?.CollectablesShopRewardScrip
+                    );
+
+                    if (
+                        collectableShopRewardScrip?.Currency === 2 ||
+                        collectableShopRewardScrip?.Currency === 6
+                    ) {
+                        item.Price_Low_ =
+                            collectableShopRewardScrip?.HighReward ?? 0;
+                        collectables.push(item);
+                    }
+
+                    if (item.Name.includes('Acacia Rod')) {
+                        console.log(item);
+                    }
+                }
+
+                this.collectables = collectables;
+                if (this.viewCollectables) {
+                    this.items = this.collectables;
+                    this.selectFirst();
+                    this.selectFirst();
+                    this.selectFirst();
+                    this.calculate();
+                }
             })
         );
 
@@ -293,6 +357,8 @@ export class SidebarComponent
             ),
             items: this.storage.Items(),
             gilShopIds: this.xivApi.gilShopItems(),
+            collectables: this.xivApi.collectableShopItems(),
+            scrip: this.xivApi.collectableShopRewardScrip(),
         });
 
         this.subscription.add(
@@ -312,19 +378,20 @@ export class SidebarComponent
                     recipeCache,
                     x.itemHistoryResponse,
                     x.items,
-                    x.gilShopIds
+                    x.gilShopIds,
+                    x.collectables,
+                    x.scrip
                 );
             })
         );
     }
 
     public order() {
-        const itemIds = this.items.filter((x) => x.selected).map((x) => x.id);
-        console.log(itemIds);
+        const selectedItems = this.items.filter((x) => x.selected);
 
         const dialogRef = this.dialog.open(OrderDialogComponent, {
             data: {
-                itemIds,
+                selectedItems,
                 worlds: this.worlds,
                 dataCenters: this.dataCenters,
             },

@@ -30,3 +30,23 @@ app-button > ::ng-deep button {
     padding: 0.5rem 1rem;
     border-radius: 20px;
 }
+
+.grid {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+}
+
+.virtual-viewport {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+mat-list {
+    padding: 0px;
+    height: 100%;
+}

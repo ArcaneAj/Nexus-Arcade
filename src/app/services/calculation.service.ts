@@ -8,6 +8,8 @@ import { Ingredient } from '../models/ingredient.model';
 import { ItemHistoryEntry } from '../models/item-history-entry.model';
 import { Observable, Subject } from 'rxjs';
 import { SettingsService } from './settings.service';
+import { CollectableShopItem } from '../models/collectable-shop-item.model';
+import { CollectablesShopRewardScrip } from '../models/collectable-shop-reward-scrip.model';
 
 @Injectable({
     providedIn: 'root',
@@ -29,6 +31,9 @@ export class CalculationService {
     private itemCache: { [id: number]: Item } = {};
     private itemHistoryResponse!: ItemsHistoryResponse;
     private gilShopIds: number[] = [];
+
+    private collectables: { [id: number]: CollectableShopItem } = {};
+    private scrip: { [id: number]: CollectablesShopRewardScrip } = {};
 
     constructor(private settings: SettingsService) {
         this.priceResultCache = {};
@@ -87,8 +92,12 @@ export class CalculationService {
         recipeCache: { [id: number]: ItemRecipe },
         itemHistoryResponse: ItemsHistoryResponse,
         items: Item[],
-        gilShopIds: number[]
+        gilShopIds: number[],
+        collectables: CollectableShopItem[],
+        scrip: CollectablesShopRewardScrip[]
     ): void {
+        this.collectables = collectables.toDict((x) => x.Item);
+        this.scrip = scrip.toDict((x) => x.id);
         this.recipeCache = Object.assign({}, this.recipeCache, recipeCache);
         this.itemCache = items.toDict((x) => x.id);
         this.itemHistoryResponse = itemHistoryResponse;
@@ -107,6 +116,43 @@ export class CalculationService {
         }
 
         const item = this.itemCache[id];
+        if (item.IsCollectable) {
+            let craftedPrices: CraftResult[] = this.getCraftedPrices(id);
+            return {
+                item,
+                name: item.Name,
+                requiredAmount: 1,
+                craftedPrices,
+                marketPriceDc:
+                    this.scrip[
+                        this.collectables[id].CollectablesShopRewardScrip
+                    ].HighReward,
+                marketPriceWorld:
+                    this.scrip[
+                        this.collectables[id].CollectablesShopRewardScrip
+                    ].HighReward,
+                marketThroughputDc: 1,
+                marketThroughputWorld: 1,
+                dc: currentDc,
+                world: currentWorld,
+                shopPrice: 0,
+                nqSaleVelocity: 0,
+                hqSaleVelocity: 1,
+                history: {
+                    itemId: item.id,
+                    dcName: '',
+                    lastUploadTime: 0,
+                    stackSizeHistogram: {},
+                    stackSizeHistogramNQ: {},
+                    stackSizeHistogramHQ: {},
+                    regularSaleVelocity: 1,
+                    nqSaleVelocity: 0,
+                    hqSaleVelocity: 1,
+                    entries: [],
+                    expiry: 0,
+                },
+            };
+        }
         const itemHistory = this.itemHistoryResponse.items[id];
 
         const shopPrice = getShopPrice(item, this.gilShopIds);
