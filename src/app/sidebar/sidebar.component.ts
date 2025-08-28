@@ -76,7 +76,7 @@ export class SidebarComponent
     public searchFilter: string = '';
     public changeFlag: boolean = false;
     public onlyCrafted: boolean = false;
-    public viewCollectables: boolean = true;
+    public viewCollectables: boolean = false;
     public minLevel: number = 0;
     public maxLevel: number = 999;
 
@@ -171,10 +171,6 @@ export class SidebarComponent
                 this.collectables = collectables;
                 if (this.viewCollectables) {
                     this.items = this.collectables;
-                    this.selectFirst();
-                    this.selectFirst();
-                    this.selectFirst();
-                    this.calculate();
                 }
             })
         );
