@@ -163,7 +163,11 @@ export class MainComponent extends BaseComponent {
     sortResults(results: PriceResult[]): PriceResult[] {
         var selector = (x: PriceResult): number | undefined =>
             x.hqSaleVelocity + x.nqSaleVelocity;
-        if (this.sortCriteria === 'profit') {
+        if (results[0].item.IsCollectable) {
+            selector = (x: PriceResult) => {
+                return (x.cheapestCraft?.price ?? 0) / x.marketPriceDc;
+            };
+        } else if (this.sortCriteria === 'profit') {
             selector = (x: PriceResult) => {
                 if (this.sortCrafted) {
                     return x.craftProfit;

@@ -118,19 +118,21 @@ export class CalculationService {
         const item = this.itemCache[id];
         if (item.IsCollectable) {
             let craftedPrices: CraftResult[] = this.getCraftedPrices(id);
+            let scrips = 1;
+            const scripsId = this.collectables[id]?.CollectablesShopRewardScrip;
+            if (scripsId) {
+                const reward = this.scrip[scripsId]?.HighReward;
+                if (reward) {
+                    scrips = reward;
+                }
+            }
             return {
                 item,
                 name: item.Name,
                 requiredAmount: 1,
                 craftedPrices,
-                marketPriceDc:
-                    this.scrip[
-                        this.collectables[id].CollectablesShopRewardScrip
-                    ].HighReward,
-                marketPriceWorld:
-                    this.scrip[
-                        this.collectables[id].CollectablesShopRewardScrip
-                    ].HighReward,
+                marketPriceDc: scrips,
+                marketPriceWorld: scrips,
                 marketThroughputDc: 1,
                 marketThroughputWorld: 1,
                 dc: currentDc,

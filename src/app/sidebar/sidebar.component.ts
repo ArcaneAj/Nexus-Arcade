@@ -162,15 +162,17 @@ export class SidebarComponent
                             collectableShopRewardScrip?.HighReward ?? 0;
                         collectables.push(item);
                     }
-
-                    if (item.Name.includes('Acacia Rod')) {
-                        console.log(item);
-                    }
                 }
 
                 this.collectables = collectables;
                 if (this.viewCollectables) {
                     this.items = this.collectables;
+                    // this.selectFirst();
+                    // this.selectFirst();
+                    // this.selectFirst();
+                    // this.selectFirst();
+                    // this.selectFirst();
+                    // this.calculate();
                 }
             })
         );
